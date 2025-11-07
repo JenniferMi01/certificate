@@ -39,7 +39,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'attestations',
     'rest_framework',
-    'rest_framework_simplejwt.token_blacklist'
+    'rest_framework_simplejwt.token_blacklist',
+    'django_extensions'
 ]
 
 MIDDLEWARE = [
@@ -141,4 +142,11 @@ SIMPLE_JWT = {
     'ACCESS_TOKEN_LIFETIME': timedelta(minutes=2),  # ou 5 min
     'REFRESH_TOKEN_LIFETIME': timedelta(days=1),
     'BLACKLIST_AFTER_ROTATION': True,
+}
+
+# Configuration pour django-extensions
+GRAPH_MODELS = {
+    'all_applications': False,
+    'group_models': True,
+    'app_labels': ['attestations'],
 }
