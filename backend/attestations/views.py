@@ -13,82 +13,11 @@ from rest_framework_simplejwt.authentication import JWTAuthentication
 
 
 
-# CRUD EMPLOYE
-@api_view(['GET', 'POST'])
-@authentication_classes([JWTAuthentication])  # Vérifie le token
-@permission_classes([IsAuthenticated]) 
-def employe_list_create(request):
-    """GET → retourne la liste de tous les employés
-       POST → crée un nouvel employé"""
-    if request.method == 'GET':
-        employes = Employe.objects.all()  # Récupère tous les employés de la base
-        serializer = EmployeSerializer(employes, many=True)  # Sérialise la liste en JSON
-        return Response(serializer.data)  # Retourne la liste sérialisée
-    elif request.method == 'POST':
-        serializer = EmployeSerializer(data=request.data)  # Sérialise les données reçues pour validation
-        if serializer.is_valid():  # Vérifie que les données sont conformes au modèle
-            serializer.save()  # Sauvegarde le nouvel employé
-            return Response(serializer.data, status=status.HTTP_201_CREATED)  # Retourne l'objet créé
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)  # Erreur si données invalides
-
-@api_view(['GET', 'PUT', 'DELETE'])
-def employe_detail(request, pk):
-    """GET → retourne les détails d'un employé
-       PUT → met à jour un employé
-       DELETE → supprime un employé"""
-    employe = get_object_or_404(Employe, pk=pk)  # Récupère l'employé ou renvoie 404
-    if request.method == 'GET':
-        serializer = EmployeSerializer(employe)
-        return Response(serializer.data)
-    elif request.method == 'PUT':
-        serializer = EmployeSerializer(employe, data=request.data)  # Sérialise les nouvelles données
-        if serializer.is_valid():
-            serializer.save()  # Sauvegarde les modifications
-            return Response(serializer.data)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-    elif request.method == 'DELETE':
-        employe.delete()  # Supprime l'employé
-        message = f"Employé {pk} supprimé avec succès."
-        return Response(data={message}, status=status.HTTP_204_NO_CONTENT)  # 204 → pas de contenu à renvoyer
-
-
-# CRUD POSTE HISTORIQUE
-@api_view(['GET', 'POST'])
-def poste_list_create(request):
-    """GET → retourne la liste des postes historiques
-       POST → crée un nouveau poste historique"""
-    if request.method == 'GET':
-        postes = PosteHistorique.objects.all()  # Récupère tous les postes historiques de la base
-        serializer = PosteHistoriqueSerializer(postes, many=True)  # Sérialise la liste pour la transformer en JSON
-        return Response(serializer.data)  # Retourne la liste sérialisée
-    elif request.method == 'POST':
-        serializer = PosteHistoriqueSerializer(data=request.data)  # Sérialise les données reçues pour validation
-        if serializer.is_valid():  # Vérifie si les données sont valides selon le modèle
-            serializer.save()  # Sauvegarde le nouveau poste historique dans la base
-            return Response(serializer.data, status=status.HTTP_201_CREATED)  # Retourne l'objet créé
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)  # Retourne les erreurs si données invalides
-
-@api_view(['GET', 'PUT', 'DELETE'])
-def poste_detail(request, pk):
-    """GET → détail d'un poste historique
-       PUT → met à jour le poste
-       DELETE → supprime le poste"""
-    poste = get_object_or_404(PosteHistorique, pk=pk)  # Récupère le poste par PK ou renvoie 404 si inexistant
-    if request.method == 'GET':
-        serializer = PosteHistoriqueSerializer(poste)  # Sérialise le poste pour l’envoyer en JSON
-        return Response(serializer.data)  # Retourne le poste
-    elif request.method == 'PUT':
-        serializer = PosteHistoriqueSerializer(poste, data=request.data)  # Sérialise les nouvelles données
-        if serializer.is_valid():  # Vérifie la validité des données
-            serializer.save()  # Sauvegarde les modifications
-            return Response(serializer.data)  # Retourne l’objet mis à jour
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)  # Retourne les erreurs si invalides
-    elif request.method == 'DELETE':
-        poste.delete()  # Supprime le poste de la base
-        return Response(status=status.HTTP_204_NO_CONTENT)  # 204 → pas de contenu à renvoyer
 
 # CRUD CONGÉ
 @api_view(['GET', 'POST'])
+@authentication_classes([JWTAuthentication])  # Vérifie le token
+@permission_classes([IsAuthenticated]) 
 def conge_list_create(request):
     """GET → retourne la liste de tous les congés
        POST → crée un nouveau congé"""
@@ -104,6 +33,8 @@ def conge_list_create(request):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)  # Retourne les erreurs si données invalides
 
 @api_view(['GET', 'PUT', 'DELETE'])
+@authentication_classes([JWTAuthentication])  # Vérifie le token
+@permission_classes([IsAuthenticated])
 def conge_detail(request, pk):
     """GET → détail d'un congé
        PUT → met à jour un congé
@@ -145,6 +76,8 @@ def generer_pdf(employe, titre, texte_corps):
 
 # ATTESTATION DE TRAVAIL
 @api_view(['GET'])
+@authentication_classes([JWTAuthentication])  # Vérifie le token
+@permission_classes([IsAuthenticated])
 def attestation_travail_pdf(request, matricule):
     """Renvoie un PDF d'attestation de travail pour un employé"""
     employe = get_object_or_404(Employe, matricule=matricule)  # Cherche l'employé
@@ -160,6 +93,8 @@ def attestation_travail_pdf(request, matricule):
 
 # ATTESTATION DE CONGÉ
 @api_view(['GET'])
+@authentication_classes([JWTAuthentication])  # Vérifie le token
+@permission_classes([IsAuthenticated])
 def attestation_conge_pdf(request, matricule):
     """Renvoie un PDF d'attestation de congé pour un employé"""
     employe = get_object_or_404(Employe, matricule=matricule)
@@ -178,6 +113,8 @@ def attestation_conge_pdf(request, matricule):
 
 # CERTIFICAT DE TRAVAIL
 @api_view(['GET'])
+@authentication_classes([JWTAuthentication])  # Vérifie le token
+@permission_classes([IsAuthenticated])
 def certificat_travail_pdf(request, matricule):
     """Renvoie un PDF de certificat de travail pour un employé"""
     
