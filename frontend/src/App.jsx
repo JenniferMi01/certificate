@@ -3,7 +3,7 @@ import Demo from './components/login'
 
 function App() {
   return (
-    <div>
+    <div className="bg-purple-600 h-screen flex items-center justify-center">
       <Demo />
     </div>
   )
