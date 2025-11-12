@@ -40,10 +40,12 @@ INSTALLED_APPS = [
     'attestations',
     'rest_framework',
     'rest_framework_simplejwt.token_blacklist',
-    'django_extensions'
+    'django_extensions',
+    'corsheaders',
 ]
 
 MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',  # Doit être avant CommonMiddleware
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -150,3 +152,10 @@ GRAPH_MODELS = {
     'group_models': True,
     'app_labels': ['attestations'],
 }
+
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:5173",  # ton app React
+]
+
+# Si tu veux autoriser tous les domaines (à utiliser seulement en DEV)
+CORS_ALLOW_ALL_ORIGINS = True

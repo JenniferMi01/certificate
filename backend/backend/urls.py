@@ -19,6 +19,7 @@ from django.urls import path, include
 from rest_framework_simplejwt.views import (
     TokenObtainPairView,
     TokenRefreshView,
+    TokenVerifyView
 )
 from .views import logout_view
 
@@ -31,5 +32,6 @@ urlpatterns += [
     path('api/login/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
     path('api/logout/', logout_view, name='logout'),
     path('api/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
+    path('api/token/verify/', TokenVerifyView.as_view(), name='token_verify'),
 ]
 
