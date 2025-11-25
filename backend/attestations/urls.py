@@ -8,6 +8,9 @@ from rest_framework_simplejwt.views import (
 from .views import employes_views
 from .views import postehistorique_views
 from .views import conge_views
+from .views import login_view
+from .views import signup_view, login_view
+
 # from .views import pdf_views
 
 urlpatterns = [
@@ -32,6 +35,10 @@ urlpatterns = [
 
     # URL pour récupérer, mettre à jour ou supprimer un congé spécifique (GET, PUT, DELETE)
     path('conges/<int:pk>/', conge_views.conge_detail, name='conge_detail'),
+    # --- Route de login ---
+     path('api/login/', login_view, name='login'),  # ✅ Utilisation de login_view (pas login_views)
+     path('signup/', signup_view, name='signup'),
+
 
 
     # --- Routes PDF ---
@@ -44,6 +51,22 @@ urlpatterns = [
     # URL pour générer le certificat de travail en PDF pour un employé via son matricule
 #     path('pdf/certificat/<str:matricule>/', pdf_views.certificat_travail_pdf, name='certificat_travail_pdf'),
 ]
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

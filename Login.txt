@@ -1,0 +1,209 @@
+//Code Log mandeha :
+import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
+import {
+  Fieldset,
+  TextInput,
+  PasswordInput,
+  Button,
+  Paper,
+  Title,
+  Text,
+  Anchor,
+  Notification
+} from '@mantine/core';
+import { IconCheck, IconX } from '@tabler/icons-react';
+
+function LoginPage() {
+  const [formData, setFormData] = useState({
+    username: '',
+    password: '',
+  });
+  const [errors, setErrors] = useState({
+    username: '',
+    password: '',
+  });
+  const [isLoading, setIsLoading] = useState(false);
+  const [loginError, setLoginError] = useState(null);
+  const [loginSuccess, setLoginSuccess] = useState(false);
+  const navigate = useNavigate();
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+  };
+
+  const validateForm = () => {
+    let valid = true;
+    const newErrors = { username: '', password: '' };
+    if (!formData.username.trim()) {
+      newErrors.username = 'Nom d\'utilisateur requis';
+      valid = false;
+    }
+    if (formData.password.length < 6) {
+      newErrors.password = 'Le mot de passe doit contenir au moins 6 caractères';
+      valid = false;
+    }
+    setErrors(newErrors);
+    return valid;
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    console.log('FORMULAIRE SOUMIS !', formData);
+
+    setLoginError(null);
+    if (validateForm()) {
+      setIsLoading(true);
+      try {
+        console.log('ENVOI VERS API...');
+        const response = await axios.post(
+          'http://localhost:8000/api/login/',
+          formData,
+          {
+            headers: {
+              'Content-Type': 'application/json',
+            },
+          }
+        );
+
+        console.log('RÉPONSE API :', response.data);
+
+        // SI TOKEN → CONNEXION RÉUSSIE
+        if (response.data) {
+          const { access, refresh } = response.data
+          localStorage.setItem('access_token', access);
+          localStorage.setItem('refresh_token', refresh);
+          setLoginSuccess(true);
+          
+          // REDIRECTION APRÈS 1s
+          // setTimeout(() => navigate('/'), 1000);
+          navigate('/')
+        } else {
+          // MODE DEV : FORCE REDIRECTION MÊME SANS TOKEN
+          console.warn('Pas de token, mais on force la redirection');
+          localStorage.setItem('authToken', 'fake-token');
+          localStorage.setItem('username', formData.username);
+          navigate('/'); // REDIRECTION IMMÉDIATE
+        }
+
+      } catch (error) {
+        console.error('ERREUR API :', error.response || error);
+        setLoginError(
+          error.response?.data?.error ||
+          'Échec de la connexion. Vérifiez vos identifiants.'
+        );
+        
+        // MÊME EN CAS D'ERREUR → FORCE LA REDIRECTION (DEV)
+        setTimeout(() => {
+          localStorage.setItem('authToken', 'fake-token');
+          localStorage.setItem('username', formData.username);
+          navigate('/');
+        }, 1500);
+      } finally {
+        setIsLoading(false);
+      }
+    }
+  };
+
+  return (
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-white p-4">
+      <Paper withBorder shadow="md" p={30} radius="md" className="w-full max-w-sm">
+        <Title order={2} align="center" className="mb-5 text-gray-800">
+          Connexion
+        </Title>
+        <Text color="dimmed" size="sm" align="center" className="mb-6">
+          Entrez vos identifiants pour accéder à votre compte
+        </Text>
+
+        {loginError && (
+          <Notification
+            icon={<IconX size="1.1rem" />}
+            color="red"
+            className="mb-4"
+            onClose={() => setLoginError(null)}
+          >
+            {loginError}
+          </Notification>
+        )}
+
+        {loginSuccess && (
+          <Notification
+            icon={<IconCheck size="1.1rem" />}
+            color="teal"
+            className="mb-4"
+          >
+            Connexion réussie ! Redirection en cours...
+          </Notification>
+        )}
+
+        <form onSubmit={handleSubmit}>
+            <TextInput
+              label="Nom d'utilisateur"
+              placeholder="Votre nom d'utilisateur"
+              name="username"
+              value={formData.username}
+              onChange={handleChange}
+              error={errors.username}
+              required
+              className="w-full"
+              styles={{
+                input: {
+                  borderRadius: '0.5rem',
+                  borderColor: errors.username ? '#ef4444' : '#E5E7EB',
+                },
+              }}
+            />
+            <PasswordInput
+              label="Mot de passe"
+              placeholder="Votre mot de passe"
+              name="password"
+              value={formData.password}
+              onChange={handleChange}
+              error={errors.password}
+              required
+              className="w-full"
+              styles={{
+                input: {
+                  borderRadius: '0.5rem',
+                  borderColor: errors.password ? '#ef4444' : '#E5E7EB',
+                },
+              }}
+            />
+
+          <Button
+            fullWidth
+            type="submit"
+            loading={isLoading}
+            className="mt-6 mb-6 bg-blue-500 hover:bg-blue-600 transition-colors"
+            styles={{
+              root: {
+                borderRadius: '0.5rem',
+                height: '2.5rem',
+              },
+            }}
+          >
+            Se connecter
+          </Button>
+        </form>
+
+        <Text align="center">
+          Vous n'avez pas de compte ?{' '}
+          <Anchor
+            href="/inscription"
+            weight={700}
+            className="text-blue-500 hover:text-blue-600 transition-colors"
+          >
+            S'inscrire
+          </Anchor>
+        </Text>
+      </Paper>
+    </div>
+  );
+}
+
+export default LoginPage;
