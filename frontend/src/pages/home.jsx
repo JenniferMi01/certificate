@@ -18,7 +18,7 @@ export default function Home() {
         <div className="logo">RH Doc</div>
         <nav>
           <Link to="/" className="nav-link">
-            <FaHome /> Tableau de bord
+            <FaHome /> Tableau de brraord
           </Link>
           <Link to="/attestation-travail" className="nav-link">
             <FaFileAlt /> Attestation de travail

@@ -1,43 +1,50 @@
-// src/pages/dashboard.jsx
-import { FaHome, FaFileAlt, FaScroll, FaBed, FaHistory, FaSignOutAlt, FaUsers, FaClock, FaDownload } from 'react-icons/fa';
-import './dashboard.css'; // on va créer ce fichier juste après
+// src/pages/Dashboard.jsx
+
+import { 
+  FaHome, FaFileAlt, FaScroll, FaBed, FaHistory, FaSignOutAlt,
+  FaUsers, FaClock, FaDownload
+} from 'react-icons/fa';
+
+import { Link } from "react-router-dom";
+import './dashboard.css';
 
 export default function Dashboard() {
   return (
     <div className="dashboard-container">
+
       {/* SIDEBAR */}
       <aside className="sidebar">
         <div className="logo">RH Doc</div>
         <nav>
-          <a href="/dashboard">
+          <Link to="/dashboard">
             <FaHome /> Tableau de bord
-          </a>
-          <a href="/formulaires/attestation">
+          </Link>
+          <Link to="/formulaires/attestation">
             <FaFileAlt /> Attestation de travail
-          </a>
-          <a href="/formulaires/certificat">
+          </Link>
+          <Link to="/formulaires/certificat">
             <FaScroll /> Certificat de travail
-          </a>
-          <a href="/formulaires/conge" className="active">
+          </Link>
+          <Link to="/formulaires/conge" className="active">
             <FaBed /> Attestation de congé
-          </a>
-          <a href="/historique">
+          </Link>
+          <Link to="/historique">
             <FaHistory /> Historique
-          </a>
-          <a href="/login">
+          </Link>
+          <Link to="/login">
             <FaSignOutAlt /> Déconnexion
-          </a>
+          </Link>
         </nav>
       </aside>
 
-      {/* MAIN CONTENT */}
+      {/* MAIN */}
       <main className="main-content">
         <header>
           <h1>Bienvenue, <span>Johary R.</span></h1>
           <p>Générez vos documents en quelques clics</p>
         </header>
 
-        {/* Stats Cards */}
+        {/* Cards */}
         <section className="stats">
           <div className="stat-card">
             <FaFileAlt className="icon" />
@@ -62,14 +69,16 @@ export default function Dashboard() {
           </div>
         </section>
 
-        {/* Charts Row */}
+        {/* Charts */}
         <section className="charts-row">
-          {/* Courbe Évolution */}
+
+          {/* area chart */}
           <div className="chart-card">
             <div className="chart-header">
               <h3>Évolution 2025</h3>
               <span className="growth">+89.1%</span>
             </div>
+
             <div className="area-chart">
               <svg viewBox="0 0 600 240">
                 <defs>
@@ -78,18 +87,40 @@ export default function Dashboard() {
                     <stop offset="100%" stopColor="#2563eb" stopOpacity="0" />
                   </linearGradient>
                 </defs>
-                <path d="M0,200 Q100,150 200,120 Q300,100 400,160 Q500,80 600,130 L600,240 L0,240 Z" fill="url(#gradient)" />
-                <path d="M0,200 Q100,150 200,120 Q300,100 400,160 Q500,80 600,130" fill="none" stroke="#2563eb" strokeWidth="4" strokeLinecap="round" />
-                <text x="300" y="120" textAnchor="middle" fontSize="36" fontWeight="900" fill="#1d4ed8">+89.1%</text>
+
+                <path 
+                  d="M0,200 Q100,150 200,120 Q300,100 400,160 Q500,80 600,130 L600,240 L0,240 Z" 
+                  fill="url(#gradient)" 
+                />
+
+                <path 
+                  d="M0,200 Q100,150 200,120 Q300,100 400,160 Q500,80 600,130"
+                  fill="none" 
+                  stroke="#2563eb" 
+                  strokeWidth="4" 
+                  strokeLinecap="round" 
+                />
+
+                <text 
+                  x="300" 
+                  y="120" 
+                  textAnchor="middle" 
+                  fontSize="36" 
+                  fontWeight="900" 
+                  fill="#1d4ed8"
+                >
+                  +89.1%
+                </text>
               </svg>
             </div>
           </div>
 
-          {/* Donut Chart */}
+          {/* Donut */}
           <div className="chart-card">
             <div className="chart-header">
               <h3>Répartition par type</h3>
             </div>
+
             <div className="donut-wrapper">
               <svg className="donut" viewBox="0 0 200 200">
                 <circle cx="100" cy="100" r="80" fill="none" stroke="#e2e8f0" strokeWidth="36" />
@@ -97,6 +128,7 @@ export default function Dashboard() {
                 <circle cx="100" cy="100" r="80" fill="none" stroke="#10b981" strokeWidth="36" strokeDasharray="120 500" strokeDashoffset="-290" />
                 <circle cx="100" cy="100" r="80" fill="none" stroke="#f97316" strokeWidth="36" strokeDasharray="90 500" strokeDashoffset="-410" />
               </svg>
+
               <div className="donut-center">
                 <div className="donut-big">95K</div>
                 <div className="donut-small">Total</div>
@@ -120,9 +152,10 @@ export default function Dashboard() {
           </div>
         </section>
 
-        {/* Tableau derniers documents */}
+        {/* Table */}
         <section className="recent-documents">
           <h2>Derniers documents</h2>
+
           <table>
             <thead>
               <tr>
@@ -133,6 +166,7 @@ export default function Dashboard() {
                 <th>Action</th>
               </tr>
             </thead>
+
             <tbody>
               <tr>
                 <td>19/11/2025</td>
@@ -158,6 +192,7 @@ export default function Dashboard() {
             </tbody>
           </table>
         </section>
+
       </main>
     </div>
   );
