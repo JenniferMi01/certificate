@@ -1,51 +1,47 @@
-import { NavLink } from "react-router-dom";
-import { Home, FileText, Briefcase, BedDouble, History } from "lucide-react";
-
-const menu = [
-  { to: "/", label: "Tableau de bord", icon: Home },
-  { to: "/attestation-travail", label: "Attestation de travail", icon: FileText },
-  { to: "/certificat-travail", label: "Certificat de travail", icon: Briefcase },
-  { to: "/attestation-conge", label: "Attestation de congé", icon: BedDouble },
-  { to: "/historique", label: "Historique", icon: History },
-];
+import { FaHome, FaFileAlt, FaScroll, FaBed, FaHistory, FaSignOutAlt } from 'react-icons/fa';
+import { Link, useLocation } from 'react-router-dom';
 
 export default function Sidebar() {
+  const location = useLocation();
+
+  const menuItems = [
+    { path: '/dashboard', icon: FaHome, label: 'Tableau de bord' },
+    { path: '/formulaires/attestation', icon: FaFileAlt, label: 'Attestation de travail' },
+    { path: '/formulaires/certificat', icon: FaScroll, label: 'Certificat de travail' },
+    { path: '/formulaires/conge', icon: FaBed, label: 'Attestation de congé' },
+    { path: '/historique', icon: FaHistory, label: 'Historique' },
+    { path: '/login', icon: FaSignOutAlt, label: 'Déconnexion' },
+  ];
+
   return (
-    <div className="w-80 bg-[#0f172a] text-white min-h-screen flex flex-col">
-      {/* Header */}
-      <div className="px-6 py-8 border-b border-gray-800">
-        <h1 className="text-2xl font-bold">RH Doc</h1>
+    <aside className="w-72 h-screen bg-gray-900 text-white fixed inset-y-0 left-0 z-50 flex flex-col shadow-2xl">
+      {/* Logo */}
+      <div className="p-8 text-3xl font-bold text-center border-b border-gray-800">
+        RH Doc
       </div>
 
-      {/* Menu */}
-      <nav className="flex-1 px-4 py-6 space-y-1">
-        {menu.map(({ to, label, icon: Icon }) => (
-          <NavLink
-            key={to}
-            to={to}
-            end
-            className={({ isActive }) =>
-              `flex items-center gap-4 px-4 py-3 rounded-lg transition-all group ${
+      {/* Navigation */}
+      <nav className="flex-1 px-4 py-6 space-y-2 overflow-y-auto">
+        {menuItems.map((item) => {
+          const Icon = item.icon;
+          const isActive = location.pathname === item.path;
+
+          return (
+            <Link
+              key={item.path}
+              to={item.path}
+              className={`flex items-center gap-4 px-6 py-4 rounded-xl text-lg font-medium transition-all duration-200 ${
                 isActive
-                  ? "bg-blue-600 text-white shadow-lg"
-                  : "text-gray-300 hover:bg-gray-800 hover:text-white"
-              }`
-            }
-          >
-            {({ isActive }) => (
-              <>
-                <Icon className={`w-5 h-5 ${isActive ? "text-white" : "text-gray-400 group-hover:text-white"}`} />
-                <span className="font-medium">{label}</span>
-                {isActive && <div className="w-1 h-8 bg-white rounded-l-full absolute right-0" />}
-              </>
-            )}
-          </NavLink>
-        ))}
+                  ? 'bg-blue-600 text-white shadow-lg'
+                  : 'text-gray-300 hover:bg-gray-800 hover:text-white'
+              }`}
+            >
+              <Icon size={24} />
+              <span>{item.label}</span>
+            </Link>
+          );
+        })}
       </nav>
-
-      <div className="px-6 py-4 border-t border-gray-800 text-center text-xs text-gray-500">
-        CNAS © 2025
-      </div>
-    </div>
+    </aside>
   );
 }
