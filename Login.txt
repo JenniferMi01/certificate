@@ -511,3 +511,9 @@ export default defineConfig({
 });
 
 
+
+
+
+==================================================================================================================
+Activation venv : "D:/Projet Final/certificate/backend/.venv/Scripts/Activate.ps1"
+
