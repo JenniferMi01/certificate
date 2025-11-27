@@ -1,5 +1,4 @@
 import React from 'react';
-
 export const AttestationTravail = () => {
   return (
     <div className="p-10">
