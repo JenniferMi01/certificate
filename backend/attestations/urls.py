@@ -1,3 +1,4 @@
+# backend/attestations/urls.py :
 from django.urls import path
 from . import views  # On importe les vues définies dans views.py
 from rest_framework_simplejwt.views import (
@@ -52,6 +53,65 @@ urlpatterns = [
 #     path('pdf/certificat/<str:matricule>/', pdf_views.certificat_travail_pdf, name='certificat_travail_pdf'),
 ]
 
+
+# ==================== NOUVELLES ROUTES POUR LES ATTESTATIONS ====================
+
+from rest_framework.decorators import api_view, permission_classes
+from rest_framework.permissions import AllowAny
+from rest_framework.response import Response
+from rest_framework import status
+from .models import AttestationTravail, AttestationConge, CertificatTravail
+from .serializers import AttestationTravailSerializer, AttestationCongeSerializer, CertificatTravailSerializer
+
+
+@api_view(['GET', 'POST'])
+@permission_classes([AllowAny])
+def attestation_travail_list_create(request):
+    if request.method == 'GET':
+        data = AttestationTravail.objects.all()
+        serializer = AttestationTravailSerializer(data, many=True)
+        return Response(serializer.data)
+    serializer = AttestationTravailSerializer(data=request.data)
+    if serializer.is_valid():
+        serializer.save()
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
+    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+@api_view(['GET', 'POST'])
+@permission_classes([AllowAny])
+def attestation_conge_list_create(request):
+    if request.method == 'GET':
+        data = AttestationConge.objects.all()
+        serializer = AttestationCongeSerializer(data, many=True)
+        return Response(serializer.data)
+    serializer = AttestationCongeSerializer(data=request.data)
+    if serializer.is_valid():
+        serializer.save()
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
+    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+@api_view(['GET', 'POST'])
+@permission_classes([AllowAny])
+def certificat_travail_list_create(request):
+    if request.method == 'GET':
+        data = CertificatTravail.objects.all()
+        serializer = CertificatTravailSerializer(data, many=True)
+        return Response(serializer.data)
+    serializer = CertificatTravailSerializer(data=request.data)
+    if serializer.is_valid():
+        serializer.save()
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
+    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+# Ajout des nouvelles routes
+urlpatterns += [
+    path('attestation-travail/', attestation_travail_list_create),
+    path('attestation-conge/', attestation_conge_list_create),
+    path('certificat-travail/', certificat_travail_list_create),
+]
 
 
 

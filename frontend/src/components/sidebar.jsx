@@ -331,7 +331,7 @@ function Sidebar() {
             root: {
               color: 'white',
               borderRadius: '4px',
-              '&[data-active]': { backgroundColor: '#34495e' },
+              '&[dataActive]': { backgroundColor: '#34495e' },
               '&:hover': { backgroundColor: '#34495e' },
             },
           }}
