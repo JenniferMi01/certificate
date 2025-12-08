@@ -25,8 +25,11 @@
 
 
 from rest_framework import serializers
-from .models import Employe, PosteHistorique, Conge, AttestationTravail, AttestationConge, CertificatTravail
-
+# from .models import Employe, PosteHistorique, Conge, AttestationTravail, AttestationConge, CertificatTravail
+from .models import Employe, PosteHistorique, Conge
+from .models.attestation_travail import AttestationTravail
+from .models.attestation_conge import AttestationConge
+from .models.certificat_travail import CertificatTravail
 
 # Anciens serializers (tu les gardes)
 class EmployeSerializer(serializers.ModelSerializer):
