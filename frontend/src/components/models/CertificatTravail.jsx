@@ -13,7 +13,6 @@ export const CertificatTravail = () => {
         <div className="header">
           <img src={logo} className="logo" alt="GULFSAT" />
           <div className="company">
-            <h1>GULFSAT MADAGASCAR</h1>
             Lot IVR 41 Avenue de l'Indépendance
             <br />
             Antanimena – 101 Antananarivo
