@@ -680,3 +680,397 @@ style.css :
           margin-bottom: 25px;
       }
   }
+
+
+
+  ===========================================================================================================
+  CertificatTravailPDF.jsx : 
+  // import React from 'react';
+// import { Document, Page, Text, View, StyleSheet } from '@react-pdf/renderer';
+
+// // Create styles
+// const styles = StyleSheet.create({
+//   page: {
+//     flexDirection: 'column',
+//     backgroundColor: '#FFFFFF',
+//     padding: 40,
+//     fontSize: 12,
+//     fontFamily: 'Helvetica',
+//   },
+//   header: {
+//     flexDirection: 'row',
+//     marginBottom: 30,
+//   },
+//   logo: {
+//     width: 80,
+//     height: 80,
+//     marginRight: 20,
+//   },
+//   company: {
+//     flex: 1,
+//     fontSize: 10,
+//   },
+//   companyTitle: {
+//     fontSize: 14,
+//     fontWeight: 'bold',
+//     marginBottom: 5,
+//   },
+//   title: {
+//     fontSize: 18,
+//     fontWeight: 'bold',
+//     textAlign: 'center',
+//     marginBottom: 30,
+//   },
+//   content: {
+//     lineHeight: 1.5,
+//     marginBottom: 40,
+//   },
+//   highlight: {
+//     backgroundColor: '#f0f0f0',
+//     padding: 10,
+//     marginVertical: 10,
+//     fontWeight: 'bold',
+//   },
+//   jobHistory: {
+//     marginLeft: 20,
+//     marginVertical: 5,
+//   },
+//   signatureBlock: {
+//     marginTop: 50,
+//     textAlign: 'left',
+//   },
+//   signName: {
+//     marginTop: 20,
+//     fontWeight: 'bold',
+//   },
+// });
+
+// const CertificatTravailPDF = () => (
+//   <Document>
+//     <Page size="A4" style={styles.page}>
+//       <View style={styles.header}>
+//         {/* <Image style={styles.logo} src={logo} /> */}
+//         <View style={{ width: 80, height: 80, marginRight: 20, backgroundColor: '#f0f0f0' }} />
+//         <View style={styles.company}>
+//           <Text style={styles.companyTitle}>GULFSAT MADAGASCAR</Text>
+//           <Text>
+//             Lot IVR 41 Avenue de l'Indépendance{'\n'}
+//             Antanimena – 101 Antananarivo{'\n'}
+//             Tél : 020 23 320 10 | info@gulfsat.mg
+//           </Text>
+//         </View>
+//       </View>
+
+//       <Text style={styles.title}>Certificat de Travail</Text>
+
+//       <View style={styles.content}>
+//         <Text>
+//           Nous soussignée, la <Text style={{ fontWeight: 'bold' }}>Société GULFSAT MADAGASCAR</Text>, sise au Lot IVR 41 Avenue de l'Indépendance, Antanimena – 101 Antananarivo,{'\n'}
+//           certifions par la présente que :{'\n'}
+//           {'\n'}
+//           <View style={styles.highlight}>
+//             <Text style={{ fontWeight: 'bold' }}>Madame RAKOTOBE Mariane</Text>{'\n'}
+//             Titulaire de la CIN n° <Text style={{ fontWeight: 'bold' }}>101 252 190 721</Text>{'\n'}
+//             Délivrée le 31 mars 2015 à Antananarivo V{'\n'}
+//             Résidant au Lot II C 10 D Bis A Manjakaray
+//           </View>
+//           a été employée au sein de notre société en qualité de :{'\n'}
+//           {'\n'}
+//           <View style={styles.jobHistory}>
+//             <Text>• « <Text style={{ fontWeight: 'bold' }}>Assistante Commerciale</Text> » du <Text style={{ fontWeight: 'bold' }}>01 janvier 2020 au 08 octobre 2022</Text></Text>{'\n'}
+//             <Text>• « <Text style={{ fontWeight: 'bold' }}>Chargée de Clientèle</Text> » du <Text style={{ fontWeight: 'bold' }}>09 octobre 2022 au 28 février 2023</Text></Text>{'\n'}
+//             <Text>• « <Text style={{ fontWeight: 'bold' }}>Responsable Commerciale</Text> » du <Text style={{ fontWeight: 'bold' }}>01 mars 2023 au 08 octobre 2025</Text></Text>
+//           </View>
+//           {'\n'}
+//           Elle nous quitte libre de tout engagement.{'\n'}
+//           {'\n'}
+//           En foi de quoi, le présent certificat lui est délivré pour servir et valoir ce que de droit.
+//         </Text>
+//       </View>
+
+//       <View style={styles.signatureBlock}>
+//         <Text>Fait à Antananarivo, le <Text style={{ fontWeight: 'bold' }}>08 octobre 2025</Text></Text>
+//         <Text style={styles.signName}>Johary RAJAONARIVONY</Text>
+//         <Text>Responsable des Ressources Humaines</Text>
+//       </View>
+//     </Page>
+//   </Document>
+// );
+
+// export default CertificatTravailPDF;
+
+
+// import React from 'react';
+// import { Document, Page, Text, View, StyleSheet } from '@react-pdf/renderer';
+
+// // Create styles
+// const styles = StyleSheet.create({
+//   page: {
+//     flexDirection: 'column',
+//     backgroundColor: '#FFFFFF',
+//     padding: 40,
+//     fontSize: 12,
+//     fontFamily: 'Helvetica',
+//   },
+//   header: {
+//     flexDirection: 'row',
+//     marginBottom: 30,
+//   },
+//   logo: {
+//     width: 80,
+//     height: 80,
+//     marginRight: 20,
+//   },
+//   company: {
+//     flex: 1,
+//     fontSize: 10,
+//   },
+//   companyTitle: {
+//     fontSize: 14,
+//     fontWeight: 'bold',
+//     marginBottom: 5,
+//   },
+//   title: {
+//     fontSize: 18,
+//     fontWeight: 'bold',
+//     textAlign: 'center',
+//     marginBottom: 30,
+//   },
+//   content: {
+//     lineHeight: 1.5,
+//     marginBottom: 40,
+//   },
+//   highlight: {
+//     backgroundColor: '#f0f0f0',
+//     padding: 10,
+//     marginVertical: 10,
+//   },
+//   highlightText: {
+//     fontWeight: 'bold',
+//   },
+//   jobHistory: {
+//     marginLeft: 20,
+//     marginVertical: 5,
+//   },
+//   signatureBlock: {
+//     marginTop: 50,
+//     textAlign: 'left',
+//   },
+//   signName: {
+//     marginTop: 20,
+//     fontWeight: 'bold',
+//   },
+// });
+
+// const CertificatTravailPDF = () => (
+//   <Document>
+//     <Page size="A4" style={styles.page}>
+//       <View style={styles.header}>
+//         {/* <Image style={styles.logo} src={logo} /> */}
+//         <View style={{ width: 80, height: 80, marginRight: 20, backgroundColor: '#f0f0f0' }} />
+//         <View style={styles.company}>
+//           <Text style={styles.companyTitle}>GULFSAT MADAGASCAR</Text>
+//           <Text>
+//             Lot IVR 41 Avenue de l'Indépendance{'\n'}
+//             Antanimena – 101 Antananarivo{'\n'}
+//             Tél : 020 23 320 10 | info@gulfsat.mg
+//           </Text>
+//         </View>
+//       </View>
+
+//       <Text style={styles.title}>Certificat de Travail</Text>
+
+//       <View style={styles.content}>
+//         <Text>
+//           Nous soussignée, la <Text style={{ fontWeight: 'bold' }}>Société GULFSAT MADAGASCAR</Text>, sise au Lot IVR 41 Avenue de l'Indépendance, Antanimena – 101 Antananarivo,
+//         </Text>
+//         <Text style={{ marginTop: 10 }}>
+//           certifions par la présente que :
+//         </Text>
+        
+//         <View style={styles.highlight}>
+//           <Text style={styles.highlightText}>Madame RAKOTOBE Mariane</Text>
+//           <Text>
+//             Titulaire de la CIN n° <Text style={styles.highlightText}>101 252 190 721</Text>
+//           </Text>
+//           <Text>Délivrée le 31 mars 2015 à Antananarivo V</Text>
+//           <Text>Résidant au Lot II C 10 D Bis A Manjakaray</Text>
+//         </View>
+        
+//         <Text style={{ marginTop: 10 }}>
+//           a été employée au sein de notre société en qualité de :
+//         </Text>
+        
+//         <View style={styles.jobHistory}>
+//           <Text>
+//             • « <Text style={styles.highlightText}>Assistante Commerciale</Text> » du <Text style={styles.highlightText}>01 janvier 2020 au 08 octobre 2022</Text>
+//           </Text>
+//           <Text>
+//             • « <Text style={styles.highlightText}>Chargée de Clientèle</Text> » du <Text style={styles.highlightText}>09 octobre 2022 au 28 février 2023</Text>
+//           </Text>
+//           <Text>
+//             • « <Text style={styles.highlightText}>Responsable Commerciale</Text> » du <Text style={styles.highlightText}>01 mars 2023 au 08 octobre 2025</Text>
+//           </Text>
+//         </View>
+        
+//         <Text style={{ marginTop: 10 }}>
+//           Elle nous quitte libre de tout engagement.
+//         </Text>
+        
+//         <Text style={{ marginTop: 10 }}>
+//           En foi de quoi, le présent certificat lui est délivré pour servir et valoir ce que de droit.
+//         </Text>
+//       </View>
+
+//       <View style={styles.signatureBlock}>
+//         <Text>
+//           Fait à Antananarivo, le <Text style={styles.highlightText}>08 octobre 2025</Text>
+//         </Text>
+//         <Text style={styles.signName}>Johary RAJAONARIVONY</Text>
+//         <Text>Responsable des Ressources Humaines</Text>
+//       </View>
+//     </Page>
+//   </Document>
+// );
+
+// export default CertificatTravailPDF;
+
+
+
+
+
+
+
+
+
+=============================================================================================================
+certificat-travail.css : 
+body {
+    margin: 0;
+    padding: 0;
+    background: #f4f4f4;
+    font-family: 'Calibri', 'Arial', sans-serif;
+}
+
+/* === FORMAT A4 === */
+.a4 {
+    width: 21cm;
+    min-height: 29.7cm;
+    margin: 30px auto;
+    background: white;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
+    position: relative;
+    overflow: hidden;
+    padding-bottom: 120px;
+    box-sizing: border-box;
+}
+
+/* === EN-TÊTE === */
+.header {
+    height: 140px;
+    background: linear-gradient(90deg, #003087, #0050b3);
+    color: white;
+    padding: 20px 50px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: relative;
+}
+
+/* Logo positionné à gauche */
+.logo {
+    position: absolute;
+    left: 75px;
+    top: 25px;
+    height: 90px;
+    max-width: 280px;
+    object-fit: contain;
+    opacity: 1;
+    z-index: 10;
+}
+
+/* Informations de l'entreprise à droite */
+.company {
+    text-align: right;
+    flex: 1;
+    font-size: 15px;
+    line-height: 1.6;
+}
+
+.company h1 {
+    font-size: 28px;
+    margin: 0 0 8px 0;
+    font-weight: normal;
+}
+
+/* === TITRE PRINCIPAL === */
+.title {
+    text-align: center;
+    font-size: 26px;
+    font-weight: bold;
+    margin: 60px 0 50px;
+    text-transform: uppercase;
+    letter-spacing: 3px;
+    color: #003087;
+}
+
+/* === CONTENU === */
+.content {
+    padding: 0 80px;
+    font-size: 17px;
+    line-height: 2;
+    text-align: justify;
+}
+
+/* Bloc d'information mis en évidence */
+.highlight {
+    background: #f0f5ff;
+    padding: 20px;
+    border-left: 6px solid #003087;
+    margin: 30px 0;
+    font-size: 18px;
+}
+
+/* Historique des postes (spécifique au certificat) */
+.job-history {
+    margin: 20px 0 20px 40px;
+    line-height: 1.8;
+}
+
+.job-history p {
+    margin: 8px 0;
+}
+
+/* === SIGNATURE === */
+.signature-block {
+    margin-top: 60px;
+    padding-right: 120px;
+    padding-bottom: 60px;
+    text-align: right;
+    font-size: 17px;
+    line-height: 1.8;
+}
+
+.signature-line {
+    width: 320px;
+    border-top: 2px solid #003087;
+    margin: 35px 0 15px auto;
+}
+
+.sign-name {
+    font-weight: bold;
+    font-size: 18px;
+}
+
+/* === IMPRESSION === */
+@media print {
+    body {
+        background: none;
+    }
+
+    .a4 {
+        margin: 0;
+        box-shadow: none;
+        padding-bottom: 100px;
+    }
+}

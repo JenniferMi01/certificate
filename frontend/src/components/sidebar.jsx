@@ -331,8 +331,8 @@ function Sidebar() {
             root: {
               color: 'white',
               borderRadius: '4px',
-              '&[dataActive]': { backgroundColor: '#34495e' },
-              '&:hover': { backgroundColor: '#34495e' },
+              '--nl-hover': '#34495e',
+              '--nl-bg-hover': '#34495e',
             },
           }}
         />
@@ -346,7 +346,8 @@ function Sidebar() {
             root: {
               color: 'white',
               borderRadius: '4px',
-              '&:hover': { backgroundColor: '#34495e' },
+              '--nl-hover': '#34495e',
+              '--nl-bg-hover': '#34495e',
             },
           }}
         />
@@ -360,7 +361,8 @@ function Sidebar() {
             root: {
               color: 'white',
               borderRadius: '4px',
-              '&:hover': { backgroundColor: '#34495e' },
+              '--nl-hover': '#34495e',
+              '--nl-bg-hover': '#34495e',
             },
           }}
         />
@@ -374,7 +376,8 @@ function Sidebar() {
             root: {
               color: 'white',
               borderRadius: '4px',
-              '&:hover': { backgroundColor: '#34495e' },
+              '--nl-hover': '#34495e',
+              '--nl-bg-hover': '#34495e',
             },
           }}
         />
@@ -388,7 +391,8 @@ function Sidebar() {
             root: {
               color: 'white',
               borderRadius: '4px',
-              '&:hover': { backgroundColor: '#34495e' },
+              '--nl-hover': '#34495e',
+              '--nl-bg-hover': '#34495e',
             },
           }}
         />
@@ -403,7 +407,8 @@ function Sidebar() {
               color: 'white',
               borderRadius: '4px',
               marginTop: '2rem',
-              '&:hover': { backgroundColor: '#34495e' },
+              '--nl-hover': '#34495e',
+              '--nl-bg-hover': '#34495e',
             },
           }}
         />
@@ -413,4 +418,3 @@ function Sidebar() {
 }
 
 export default Sidebar;
-

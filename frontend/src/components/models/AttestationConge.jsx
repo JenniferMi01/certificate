@@ -1,15 +1,24 @@
 import React from "react";
 import { Container } from '@mantine/core';
-import AttestationCongePDF from './AttestationCongePDF';
-import PDFViewer from './PDFViewer';
 
-import './attestation-conge.css'
+import { Button } from "@mantine/core";
+
+import '../models/assets/css/attestation-conge.css'
+
 import logo from './assets/img/logo.png'
 
+import { Margin, usePDF } from 'react-to-pdf';
+
 export const AttestationConge = () => {
+  const { toPDF, targetRef } = usePDF({
+    filename: 'use-pdf-example.pdf',
+    page: { margin: Margin.SMALL, orientation: 'portrait' },
+  });
+
   return (
     <Container size="md" py="xl">
-      <div className="a4">
+      <Button onClick={() => toPDF()}>Imprimer PDF</Button>
+      <div className="a4" ref={targetRef}>
         <div className="header">
           <img src={logo} className="logo" alt="GULFSAT" />
           <div className="company">
@@ -57,11 +66,6 @@ export const AttestationConge = () => {
           Directeur Administratif et Financier
         </div>
       </div>
-
-      <PDFViewer
-        document={<AttestationCongePDF />}
-        fileName="attestation-conge.pdf"
-      />
     </Container>
   );
 };

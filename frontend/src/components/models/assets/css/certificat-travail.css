@@ -1,0 +1,62 @@
+body {
+    margin: 0;
+    padding: 0;
+    background: #f4f4f4;
+    font-family: 'Calibri', 'Arial', sans-serif;
+}
+
+/* === FORMAT A4 === */
+.a4 {
+    width: 21cm;
+    height: 29.7cm;
+    margin: 30px auto;
+    background: white;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
+    position: relative;
+    overflow: visible;
+    /* Gardé pour éviter la coupure */
+    padding-bottom: 80px;
+    
+    /* Réduit de 120px à 80px */
+    box-sizing: border-box;
+}
+
+/* ... (Les styles .header, .logo, .company restent inchangés) ... */
+
+/* === TITRE PRINCIPAL === */
+.title {
+    text-align: center;
+    font-size: 26px;
+    font-weight: bold;
+    margin: 40px 0 40px;
+    
+    /* Réduit l'espace autour du titre */
+    text-transform: uppercase;
+    letter-spacing: 3px;
+    color: #003087;
+}
+
+/* === CONTENU === */
+.content {
+    padding: 0 80px;
+    font-size: 17px;
+    line-height: 1.7;
+    
+    /* Réduit l'interligne */
+    text-align: justify;
+}
+
+/* ... (Les styles .highlight et .job-history restent inchangés) ... */
+
+/* === SIGNATURE === */
+.signature-block {
+    margin-top: 40px;
+    /* Réduit l'espace avant le bloc de signature */
+    padding-right: 120px;
+    padding-bottom: 60px;
+    text-align: right;
+    font-size: 17px;
+    line-height: 1.8;
+}
+
+/* ... (Les styles .signature-line, .sign-name et @media print restent inchangés) ... */
