@@ -89,8 +89,7 @@ import axios from "axios";
 export const AttestationConge = () => {
   const [employeeList, setEmployeeList] = useState([]);
   const [selectedEmployeeId, setSelectedEmployeeId] = useState(null);
-  const [isPDFVisible, setIsPDFVisible] = useState(false); // <- Nampiana ho an'ny preview
-
+  const [isPDFVisible, setIsPDFVisible] = useState(false); 
   const LIST_EMPLOYEE_API = 'http://localhost:8000/api/attestations/employes/';
 
   useEffect(() => {
@@ -116,10 +115,23 @@ export const AttestationConge = () => {
 
   const handleEmployeeSelect = (employeeId) => {
     setSelectedEmployeeId(employeeId);
-    setIsPDFVisible(true); // <- Mampiseho ny modèle rehefa misafidy
+    setIsPDFVisible(true); 
     console.log("Employé sélectionné ID :", employeeId);
     // Eto afaka manao fetch détails an'ny employé iray raha ilaina any aoriana
   };
+
+   const [employeeData, setEmployeeData] = useState({
+      name: "RAKOTO Andrinirina",
+      sexe: "Mâle",
+      cin: "101 221 169 331",
+      cinIssueDate: "11 juin 2014",
+      cinIssuePlace: "Antananarivo IV",
+      address: "Lot III 67 A Mahamasina Sud – 101 Antananarivo",
+      position: "Commercial Grand Public",
+      startDate: "23 août 2024",
+      issueDate: "21 novembre 2025",
+      hrName: "Johary RAJAONARIVONY",
+    });
 
   const { toPDF, targetRef } = usePDF({
     filename: 'attestation-de-conge.pdf',
@@ -140,7 +152,6 @@ export const AttestationConge = () => {
           onChange={handleEmployeeSelect}
         />
       </div>
-
       <Button 
         onClick={() => toPDF()} 
         disabled={!selectedEmployeeId}
@@ -149,7 +160,6 @@ export const AttestationConge = () => {
         Imprimer PDF
       </Button>
 
-      {/* Ny modèle miseho rehefa misafidy employé (toy ny ao amin'ny Attestation de Travail) */}
       <div className={isPDFVisible ? 'a4 block' : 'hidden'} ref={targetRef}>
         <div className="header">
           <img src={logo} className="logo" alt="GULFSAT" />
