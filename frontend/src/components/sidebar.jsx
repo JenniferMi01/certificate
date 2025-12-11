@@ -37,8 +37,8 @@ function Sidebar() {
               to={item.to}
               className={`flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-colors duration-200 ${
                 isActive
-                  ? 'bg-blue-600 text-white'
-                  : 'text-gray-300 hover:bg-gray-700 hover:text-white'
+                  ? 'bg-slate-700 text-white'
+                  : 'text-gray-300 hover:bg-slate-700 hover:text-white'
               }`}
             >
               <Icon size={18} />
