@@ -87,7 +87,7 @@
 
 
 import React, { useEffect, useState } from "react";
-import { Container, Button } from "@mantine/core";
+import { Container, Button, Space } from "@mantine/core";
 import { Select } from "@mantine/core";
 
 import '../models/assets/css/certificat-travail.css';
@@ -99,7 +99,7 @@ import axios from "axios";
 export const CertificatTravail = () => {
   const [employeeList, setEmployeeList] = useState([]);
   const [selectedEmployeeId, setSelectedEmployeeId] = useState(null);
-  const [isPDFVisible, setIsPDFVisible] = useState(false); // Pour afficher le preview après sélection
+  const [isPDFVisible, setIsPDFVisible] = useState(false);
 
   const LIST_EMPLOYEE_API = 'http://localhost:8000/api/attestations/employes/';
 
@@ -113,7 +113,7 @@ export const CertificatTravail = () => {
 
     const fetchEmployeeData = async () => {
       try {
-        const response = await axios.get(`${LIST_EMPLOYEE_API}`, config);
+        const response = await axios.get(LIST_EMPLOYEE_API, config);
         console.log('Données des employés récupérées :', response.data);
         setEmployeeList(response.data || []);
       } catch (error) {
@@ -126,9 +126,9 @@ export const CertificatTravail = () => {
 
   const handleEmployeeSelect = (employeeId) => {
     setSelectedEmployeeId(employeeId);
-    setIsPDFVisible(true); // Affiche le modèle dès qu'un employé est sélectionné
+    setIsPDFVisible(true);
     console.log("Employé sélectionné ID :", employeeId);
-    // Ici tu pourras plus tard fetch les détails spécifiques de l'employé si besoin
+    // Tu pourras plus tard fetch les détails de l'employé ici
   };
 
   const { toPDF, targetRef } = usePDF({
@@ -138,7 +138,8 @@ export const CertificatTravail = () => {
 
   return (
     <Container size="md" py="xl">
-      <div>
+      {/* Select : largeur max 500px, aligné à gauche */}
+      <div style={{ maxWidth: "500px", marginBottom: "1.5rem" }}>
         <Select
           label="Sélectionner l'employé par matricule"
           placeholder="Rechercher le nom ou matricule de l'employé"
@@ -151,15 +152,20 @@ export const CertificatTravail = () => {
         />
       </div>
 
-      <Button
-        onClick={() => toPDF()}
-        disabled={!selectedEmployeeId}
-        style={{ marginTop: '1rem', marginBottom: '1rem' }}
-      >
-        Imprimer PDF
-      </Button>
+      {/* Bouton aligné à gauche avec bon espacement */}
+      <div style={{ marginBottom: "2rem" }}>
+        <Button
+          onClick={() => toPDF()}
+          disabled={!selectedEmployeeId}
+        >
+          Imprimer PDF
+        </Button>
+      </div>
 
-      {/* Le modèle apparaît seulement après sélection */}
+      {/* Espace supplémentaire avant le preview */}
+      <Space h="md" />
+
+      {/* Preview du certificat (visible seulement après sélection) */}
       <div className={isPDFVisible ? 'a4 block' : 'hidden'} ref={targetRef}>
         <div className="header">
           <img src={logo} className="logo" alt="GULFSAT" />
