@@ -98,19 +98,19 @@ import axios from "axios";
 
 export const CertificatTravail = () => {
   const [employeeList, setEmployeeList] = useState([]);
-  const [selectedEmployeeId, setSelectedEmployeeId] = useState(null);
+  const [selectedEmployee, setSelectedEmployee] = useState(null);
   const [isPDFVisible, setIsPDFVisible] = useState(false);
 
   const LIST_EMPLOYEE_API = 'http://localhost:8000/api/attestations/employes/';
 
-  useEffect(() => {
-    const config = {
-      headers: {
-        'Authorization': `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzY3NTAzNTM3LCJpYXQiOjE3NjQ5MTE1MzcsImp0aSI6IjA1NGY4YTZmNWNlNjQzNWZiYWIxY2Q0MzAxMzFhMTdjIiwidXNlcl9pZCI6IjIifQ.f0Rw6qSTKTdAPu-LfHv8SHj6ZE3q9f2lHlR6iIMFLps`,
-        'Content-Type': 'application/json'
-      }
-    };
+  const config = {
+    headers: {
+      'Authorization': `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzY3NTAzNTM3LCJpYXQiOjE3NjQ5MTE1MzcsImp0aSI6IjA1NGY4YTZmNWNlNjQzNWZiYWIxY2Q0MzAxMzFhMTcjIiwidXNlcl9pZCI6IjIifQ.f0Rw6qSTKTdAPu-LfHv8SHj6ZE3q9f2lHlR6iIMFLps`,
+      'Content-Type': 'application/json'
+    }
+  };
 
+  useEffect(() => {
     const fetchEmployeeData = async () => {
       try {
         const response = await axios.get(LIST_EMPLOYEE_API, config);
@@ -124,11 +124,23 @@ export const CertificatTravail = () => {
     fetchEmployeeData();
   }, []);
 
-  const handleEmployeeSelect = (employeeId) => {
-    setSelectedEmployeeId(employeeId);
-    setIsPDFVisible(true);
-    console.log("Employé sélectionné ID :", employeeId);
-    // Tu pourras plus tard fetch les détails de l'employé ici
+  const handleEmployeeSelect = async (employeeId) => {
+    if (!employeeId) {
+      setSelectedEmployee(null);
+      setIsPDFVisible(false);
+      return;
+    }
+
+    try {
+      const response = await axios.get(`${LIST_EMPLOYEE_API}${employeeId}/`, config);
+      setSelectedEmployee(response.data);
+      setIsPDFVisible(true);
+      console.log("Employé sélectionné :", response.data);
+    } catch (error) {
+      console.error('Erreur lors de la récupération des détails de l\'employé :', error);
+      setSelectedEmployee(null);
+      setIsPDFVisible(false);
+    }
   };
 
   const { toPDF, targetRef } = usePDF({
@@ -156,7 +168,7 @@ export const CertificatTravail = () => {
       <div style={{ marginBottom: "2rem" }}>
         <Button
           onClick={() => toPDF()}
-          disabled={!selectedEmployeeId}
+          disabled={!selectedEmployee}
         >
           Imprimer PDF
         </Button>
@@ -166,63 +178,67 @@ export const CertificatTravail = () => {
       <Space h="md" />
 
       {/* Preview du certificat (visible seulement après sélection) */}
-      <div className={isPDFVisible ? 'a4 block' : 'hidden'} ref={targetRef}>
-        <div className="header">
-          <img src={logo} className="logo" alt="GULFSAT" />
-          <div className="company">
-            Lot IVR 41 Avenue de l'Indépendance <br />
-            Antanimena – 101 Antananarivo <br />
-            Tél : 020 23 320 10 | info@gulfsat.mg
+      {selectedEmployee && (
+        <div className={isPDFVisible ? 'a4 block' : 'hidden'} ref={targetRef}>
+          <div className="header">
+            <img src={logo} className="logo" alt="GULFSAT" />
+            <div className="company">
+              Lot IVR 41 Avenue de l'Indépendance <br />
+              Antanimena – 101 Antananarivo <br />
+              Tél : 020 23 320 10 | info@gulfsat.mg
+            </div>
           </div>
-        </div>
 
-        <div className="title">Certificat de Travail</div>
+          <div className="title">Certificat de Travail</div>
 
-        <div className="content">
-          Nous soussignée, la <strong>Société GULFSAT MADAGASCAR</strong>, sise
-          au Lot IVR 41 Avenue de l'Indépendance, Antanimena – 101 Antananarivo, <br />
-          certifions par la présente que :<br />
-          <br />
-          <div className="highlight" style={{ marginTop: '-10px', marginBottom: '20px' }}>
-            <strong>Madame RAKOTOBE Mariane</strong>
+          <div className="content">
+            Nous soussignée, la <strong>Société GULFSAT MADAGASCAR</strong>, sise
+            au Lot IVR 41 Avenue de l'Indépendance, Antanimena – 101 Antananarivo, <br />
+            certifions par la présente que :<br />
             <br />
-            Titulaire de la CIN n° <strong>101 252 190 721</strong>
-            <br /> Délivrée le 31 mars 2015 à Antananarivo V <br /> Résidant au
-            Lot II C 10 D Bis A Manjakaray
+            <div className="highlight" style={{ marginTop: '-10px', marginBottom: '20px' }}>
+              <strong>
+                {selectedEmployee.sexe === 'F' ? 'Madame' : 'Monsieur'} {String(selectedEmployee.nom).toUpperCase()} {selectedEmployee.prenom}
+              </strong>
+              <br />
+              Titulaire de la CIN n° <strong>{selectedEmployee.cin}</strong>
+              <br /> Délivrée le {new Date(selectedEmployee.cin_date).toLocaleDateString('fr-FR')} à {selectedEmployee.cin_lieu} <br /> Résidant au
+              {selectedEmployee.adresse}
+            </div>
+
+            a été employée au sein de notre société en qualité de :
+            <br />
+            <div className="job-history">
+              {selectedEmployee.postes && selectedEmployee.postes.length > 0 ? (
+                selectedEmployee.postes
+                  .sort((a, b) => new Date(a.date_debut) - new Date(b.date_debut))
+                  .map((poste, index) => (
+                    <p key={index}>
+                      • « <strong>{poste.intitule}</strong> » du{" "}
+                      <strong>{new Date(poste.date_debut).toLocaleDateString('fr-FR')} {poste.date_fin ? `au ${new Date(poste.date_fin).toLocaleDateString('fr-FR')}` : 'à aujourd\'hui'}</strong>
+                    </p>
+                  ))
+              ) : (
+                <p>• « <strong>Employé</strong> » depuis le <strong>{new Date(selectedEmployee.date_embauche).toLocaleDateString('fr-FR')}</strong></p>
+              )}
+            </div>
+
+            {selectedEmployee.sexe === 'F' ? 'Elle' : 'Il'} nous quitte libre de tout engagement. <br />
+            <br />
+            En foi de quoi, le présent certificat lui est délivré pour servir et
+            valoir ce que de droit.
           </div>
 
-          a été employée au sein de notre société en qualité de :
-          <br />
-          <div className="job-history">
-            <p>
-              • « <strong>Assistante Commerciale</strong> » du{" "}
-              <strong>01 janvier 2020 au 08 octobre 2022</strong>
-            </p>
-            <p>
-              • « <strong>Chargée de Clientèle</strong> » du{" "}
-              <strong>09 octobre 2022 au 28 février 2023</strong>
-            </p>
-            <p>
-              • « <strong>Responsable Commerciale</strong> » du{" "}
-              <strong>01 mars 2023 au 08 octobre 2025</strong>
-            </p>
+          <div className="signature-block">
+            Fait à Antananarivo, le <strong>{new Date().toLocaleDateString('fr-FR')}</strong>
+            <br />
+            <br />
+            <br />
+            <div className="sign-name">Johary RAJAONARIVONY</div>
+            Responsable des Ressources Humaines
           </div>
-
-          Elle nous quitte libre de tout engagement. <br />
-          <br />
-          En foi de quoi, le présent certificat lui est délivré pour servir et
-          valoir ce que de droit.
         </div>
-
-        <div className="signature-block">
-          Fait à Antananarivo, le <strong>08 octobre 2025</strong>
-          <br />
-          <br />
-          <br />
-          <div className="sign-name">Johary RAJAONARIVONY</div>
-          Responsable des Ressources Humaines
-        </div>
-      </div>
+      )}
     </Container>
   );
 };

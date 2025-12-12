@@ -13,19 +13,19 @@ import axios from "axios";
 
 export const AttestationTravail = () => {
   const [employeeList, setEmployeeList] = useState([]);
-  const [selectedEmployeeId, setSelectedEmployeeId] = useState(null); // ← Ajouté pour éviter l'erreur
+  const [selectedEmployee, setSelectedEmployee] = useState(null);
   const [isPDFVisible, setIsPDFVisible] = useState(false);
 
   const LIST_EMPLOYEE_API = "http://localhost:8000/api/attestations/employes/";
 
-  useEffect(() => {
-    const config = {
-      headers: {
-        Authorization: `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzY3NTAzNTM3LCJpYXQiOjE3NjQ5MTE1MzcsImp0aSI6IjA1NGY4YTZmNWNlNjQzNWZiYWIxY2Q0MzAxMzFhMTdjIiwidXNlcl9pZCI6IjIifQ.f0Rw6qSTKTdAPu-LfHv8SHj6ZE3q9f2lHlR6iIMFLps`,
-        "Content-Type": "application/json",
-      },
-    };
+  const config = {
+    headers: {
+      Authorization: `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzY3NTAzNTM3LCJpYXQiOjE3NjQ5MTE1MzcsImp0aSI6IjA1NGY4YTZmNWNlNjQzNWZiYWIxY2Q0MzAxMzFhMTdjIiwidXNlcl9pZCI6IjIifQ.f0Rw6qSTKTdAPu-LfHv8SHj6ZE3q9f2lHlR6iIMFLps`,
+      "Content-Type": "application/json",
+    },
+  };
 
+  useEffect(() => {
     const fetchEmployeeData = async () => {
       try {
         const response = await axios.get(`${LIST_EMPLOYEE_API}`, config);
@@ -42,24 +42,24 @@ export const AttestationTravail = () => {
     fetchEmployeeData();
   }, []);
 
-  const handleSeePDF = (employeeId) => {
-    console.log("Employé sélectionné ID :", employeeId);
-    setSelectedEmployeeId(employeeId); // ← Mise à jour de l'ID sélectionné
-    setIsPDFVisible(true); // ← Affiche directement le preview (sans toggle)
-  };
+  const handleSeePDF = async (employeeId) => {
+    if (!employeeId) {
+      setSelectedEmployee(null);
+      setIsPDFVisible(false);
+      return;
+    }
 
-  const [employeeData, setEmployeeData] = useState({
-    name: "RAKOTOVAO Harilanto",
-    sexe: "Mâle",
-    cin: "101 241 169 331",
-    cinIssueDate: "11 juin 2014",
-    cinIssuePlace: "Antananarivo IV",
-    address: "Lot III 67 A Mahamasina Sud – 101 Antananarivo",
-    position: "Commercial Grand Public",
-    startDate: "23 août 2024",
-    issueDate: "21 novembre 2025",
-    hrName: "Johary RAJAONARIVONY",
-  });
+    try {
+      const response = await axios.get(`${LIST_EMPLOYEE_API}${employeeId}/`, config);
+      setSelectedEmployee(response.data);
+      setIsPDFVisible(true);
+      console.log("Employé sélectionné :", response.data);
+    } catch (error) {
+      console.error('Erreur lors de la récupération des détails de l\'employé :', error);
+      setSelectedEmployee(null);
+      setIsPDFVisible(false);
+    }
+  };
 
   const { toPDF, targetRef } = usePDF({
     filename: "attestation-de-travail.pdf",
@@ -101,7 +101,7 @@ export const AttestationTravail = () => {
       {/* Bouton avec marge et désactivé si rien n'est sélectionné */}
       <Button
         onClick={() => toPDF()}
-        disabled={!selectedEmployeeId}
+        disabled={!selectedEmployee}
         style={{ marginBottom: "2rem" }}
       >
         Imprimer PDF
@@ -111,51 +111,56 @@ export const AttestationTravail = () => {
       <Space h="md" />
 
       {/* Preview visible uniquement après sélection */}
-      <div className={isPDFVisible ? "a4 block" : "hidden"} ref={targetRef}>
-        <div className="header">
-          <img src={logo} className="logo" alt="GULFSAT" />
-          <div className="company">
-            Lot IVR 41 Avenue de l'Indépendance <br />
-            Antanimena – 101 Antananarivo <br />
-            Tél : 020 23 320 10 | info@gulfsat.mg
+      {selectedEmployee && (
+        <div className={isPDFVisible ? "a4 block" : "hidden"} ref={targetRef}>
+          <div className="header">
+            <img src={logo} className="logo" alt="GULFSAT" />
+            <div className="company">
+              Lot IVR 41 Avenue de l'Indépendance <br />
+              Antanimena – 101 Antananarivo <br />
+              Tél : 020 23 320 10 | info@gulfsat.mg
+            </div>
           </div>
-        </div>
-        <div className="title">Attestation d'emploi</div>
-        <div className="content">
-          Nous soussignés, la <strong>Société GULFSAT MADAGASCAR</strong>,<br />
-          attestons par la présente que :<br />
-          <br />
-          <div className="highlight">
-            <strong>
-              {employeeData.sexe == "Mâle" ? "Monsieur" : "Madame"}{" "}
-              {employeeData.name}
-            </strong>
-            <br /> Titulaire de la CIN n° <strong>{employeeData.cin}</strong>
+          <div className="title">Attestation d'emploi</div>
+          <div className="content">
+            Nous soussignés, la <strong>Société GULFSAT MADAGASCAR</strong>,<br />
+            attestons par la présente que :<br />
             <br />
-            Délivrée le {employeeData.cinIssueDate} à{" "}
-            {employeeData.cinIssuePlace}
-            <br /> Résidant au {employeeData.address}
+            <div className="highlight">
+              <strong>
+                {selectedEmployee.sexe === 'M' ? "Monsieur" : "Madame"} {String(selectedEmployee.nom).toUpperCase()} {selectedEmployee.prenom}
+              </strong>
+              <br /> Titulaire de la CIN n° <strong>{selectedEmployee.cin}</strong>
+              <br />
+              Délivrée le {new Date(selectedEmployee.cin_date).toLocaleDateString('fr-FR')} à{" "}
+              {selectedEmployee.cin_lieu}
+              <br /> Résidant au {selectedEmployee.adresse}
+            </div>
+            est employé dans notre société en qualité de{" "}
+            <strong>
+              {selectedEmployee.postes && selectedEmployee.postes.length > 0
+                ? selectedEmployee.postes[0].intitule
+                : 'Employé'}
+            </strong>
+            <br />
+            depuis le <strong>{new Date(selectedEmployee.date_embauche).toLocaleDateString('fr-FR')}</strong>, sous contrat à
+            durée indéterminée (CDI) à temps plein.
+            <br />
+            <br />
+            La présente attestation est délivrée à l'intéressé, à sa demande, pour
+            servir et valoir ce que de droit.
           </div>
-          est employé dans notre société en qualité de{" "}
-          <strong>{employeeData.position}</strong>
-          <br />
-          depuis le <strong>{employeeData.startDate}</strong>, sous contrat à
-          durée indéterminée (CDI) à temps plein.
-          <br />
-          <br />
-          La présente attestation est délivrée à l'intéressé, à sa demande, pour
-          servir et valoir ce que de droit.
+          <div className="signature-block">
+            Antananarivo, le <strong>{new Date().toLocaleDateString('fr-FR')}</strong>
+            <br />
+            <br />
+            <br />
+            <br />
+            <div className="sign-name">Johary RAJAONARIVONY</div>
+            Responsable des Ressources Humaines
+          </div>
         </div>
-        <div className="signature-block">
-          Antananarivo, le <strong>10 décembre 2025</strong>
-          <br />
-          <br />
-          <br />
-          <br />
-          <div className="sign-name">{employeeData.hrName}</div>
-          Responsable des Ressources Humaines
-        </div>
-      </div>
+      )}
     </Container>
   );
 };

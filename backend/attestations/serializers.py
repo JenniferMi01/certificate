@@ -32,14 +32,15 @@ from .models.attestation_conge import AttestationConge
 from .models.certificat_travail import CertificatTravail
 
 # Anciens serializers (tu les gardes)
-class EmployeSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Employe
-        fields = '__all__'
-
 class PosteHistoriqueSerializer(serializers.ModelSerializer):
     class Meta:
         model = PosteHistorique
+        fields = '__all__'
+
+class EmployeSerializer(serializers.ModelSerializer):
+    postes = PosteHistoriqueSerializer(many=True, read_only=True)
+    class Meta:
+        model = Employe
         fields = '__all__'
 
 class CongeSerializer(serializers.ModelSerializer):
