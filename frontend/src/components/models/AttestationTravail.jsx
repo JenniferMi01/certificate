@@ -18,9 +18,13 @@ export const AttestationTravail = () => {
 
   const LIST_EMPLOYEE_API = "http://localhost:8000/api/attestations/employes/";
 
+  const TOKEN = localStorage.getItem("access_token") || "";
+
+  console.log("Token d'accès récupéré :", TOKEN);
+
   const config = {
     headers: {
-      Authorization: `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzY3NTAzNTM3LCJpYXQiOjE3NjQ5MTE1MzcsImp0aSI6IjA1NGY4YTZmNWNlNjQzNWZiYWIxY2Q0MzAxMzFhMTdjIiwidXNlcl9pZCI6IjIifQ.f0Rw6qSTKTdAPu-LfHv8SHj6ZE3q9f2lHlR6iIMFLps`,
+      Authorization: `Bearer ${TOKEN}`,
       "Content-Type": "application/json",
     },
   };
