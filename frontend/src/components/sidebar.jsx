@@ -16,7 +16,7 @@ function Sidebar() {
     { to: "/attestation-travail", label: "Attestation de travail", icon: Briefcase },
     { to: "/certificat-travail", label: "Certificat de travail", icon: FileText },
     { to: "/attestation-conge", label: "Attestation de congé", icon: Clock },
-    { to: "/historique", label: "Historique", icon: History },
+    // { to: "/historique", label: "Historique", icon: History },
     { to: "/logout", label: "Déconnexion", icon: LogOut },
   ];
 
