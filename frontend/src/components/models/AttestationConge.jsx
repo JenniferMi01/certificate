@@ -132,8 +132,8 @@ export const AttestationConge = () => {
           <div className="signature-block">
             Antananarivo, le <strong>{new Date().toLocaleDateString('fr-FR')}</strong>
             <br /><br /><br />
-            <div className="sign-name">Ndrianja RAJEMISON</div>
-            Directeur Administratif et Financier
+            <div className="sign-name">Johary RAJAONARIVONY</div>
+            Responsable des Ressources Humaines
           </div>
         </div>
       )}
