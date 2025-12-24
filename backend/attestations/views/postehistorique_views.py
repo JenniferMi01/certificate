@@ -49,3 +49,4 @@ def poste_detail(request, pk):
         poste.delete()  # Supprime le poste de la base
         message = f"Poste historique {pk} supprimé avec succès."
         return Response(data={message}, status=status.HTTP_204_NO_CONTENT)  # 204 → pas de contenu à renvoyer
+    
