@@ -22,14 +22,14 @@ function Logout() {
 
 function ProtectedRoute({ children }) {
   const { isAuthenticated, loading } = useAuth();
-  if (loading) return <div>Loading...</div>;
+  if (loading) return <div>Chargement...</div>;
   return isAuthenticated ? children : <Navigate to="/login" />;
 }
 
 function AppContent() {
   const { isAuthenticated, loading } = useAuth();
 
-  if (loading) return <div>Loading...</div>;
+  if (loading) return <div>Chargement...</div>;
 
   return (
     <div style={{ display: "flex", height: "100vh" }}>
