@@ -7,7 +7,7 @@ from datetime import date
 
 
 class Command(BaseCommand):
-    help = 'Import employees from CSV file'
+    help = 'Import employees from CSV file. CSV must include: username, first_name, last_name, email, poste, matricule, password'
 
     def add_arguments(self, parser):
         parser.add_argument(
@@ -15,6 +15,11 @@ class Command(BaseCommand):
             type=str,
             default='static/employee_data.csv',
             help='Path to the CSV file containing employee data'
+        )
+        parser.add_argument(
+            '--dry-run',
+            action='store_true',
+            help='Run the import in dry-run mode without making changes to the database'
         )
 
     def handle(self, *args, **options):
@@ -35,10 +40,18 @@ class Command(BaseCommand):
                     email = row.get('email', '').strip()
                     poste = row.get('poste', '').strip()
                     matricule = row.get('matricule', '').strip()
+                    password = row.get('password', 'password').strip()
 
                     if not username or not matricule:
                         self.stdout.write(
                             self.style.WARNING(f'Skipping row with missing username or matricule: {row}')
+                        )
+                        skipped_count += 1
+                        continue
+
+                    if not password:
+                        self.stdout.write(
+                            self.style.WARNING(f'Skipping row with missing password: {row}')
                         )
                         skipped_count += 1
                         continue
@@ -63,6 +76,10 @@ class Command(BaseCommand):
                                 user.email = email
                                 user.save()
                                 updated_count += 1
+
+                            # Set password
+                            user.set_password(password)
+                            user.save()
 
                             # Create or update Employe
                             employe, employe_created = Employe.objects.get_or_create(
@@ -111,15 +128,20 @@ class Command(BaseCommand):
                                     date_debut=date.today()
                                 )
 
+                            # Rollback if dry run
+                            if options['dry_run']:
+                                transaction.set_rollback(True)
+
                     except Exception as e:
                         self.stdout.write(
                             self.style.ERROR(f'Error processing row {row}: {e}')
                         )
                         skipped_count += 1
 
+                mode = ' (dry-run mode)' if options['dry_run'] else ''
                 self.stdout.write(
                     self.style.SUCCESS(
-                        f'Import completed. Created: {created_count}, Updated: {updated_count}, Skipped: {skipped_count}'
+                        f'Import completed{mode}. Created: {created_count}, Updated: {updated_count}, Skipped: {skipped_count}'
                     )
                 )
 

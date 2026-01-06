@@ -57,3 +57,6 @@ npm install
 ```bash
 npm run dev
 ```
+
+user test :
+ annie / annie
