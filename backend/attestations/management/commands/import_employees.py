@@ -13,7 +13,7 @@ class Command(BaseCommand):
         parser.add_argument(
             '--csv-file',
             type=str,
-            default='backend/static/employee_data.csv',
+            default='static/employee_data.csv',
             help='Path to the CSV file containing employee data'
         )
 
