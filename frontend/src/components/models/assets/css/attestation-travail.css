@@ -98,3 +98,19 @@ body {
         box-shadow: none;
     }
 }
+
+/* === FOOTER OFFICIEL (DEMANDE ENCADREUR) === */
+.footer {
+    position: absolute;
+    bottom: 25px;
+    left: 60px;
+    right: 60px;
+
+    font-size: 11px;
+    line-height: 1.4;
+    text-align: center;
+    color: #333;
+
+    border-top: 1px solid #999;
+    padding-top: 8px;
+}

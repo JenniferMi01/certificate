@@ -123,6 +123,12 @@ export const AttestationTravail = () => {
               Lot IVR 41 Avenue de l'Indépendance <br />
               Antanimena – 101 Antananarivo <br />
               Tél : 020 23 320 10 | info@gulfsat.mg
+              {/* Gulfsat Madagascar SARL au capital de 5 000 000 000 Ar <br />
+              Siège social : 41 avenue Lénine Antanimena Antananarivo 101  <br />
+              BP 8127 - RCS Antananarivo 2001 B 000 25  <br />
+              NIF N° 4000004897 – STAT N° 61906 11 2001 0 10059 <br />
+              Tél : 23 320 10 – Mail: info@gulfsat.mg  */}
+
             </div>
           </div>
           <div className="title">Attestation d'emploi</div>
@@ -163,6 +169,12 @@ export const AttestationTravail = () => {
             <div className="sign-name">Johary RAJAONARIVONY</div>
             Responsable des Ressources Humaines
           </div>
+                <div className="footer">
+                  Gulfsat Madagascar SARL au capital de 5 000 000 000 Ar – Siège social : 41 avenue Lénine Antanimena Antananarivo 101 – <br />
+                  BP 8127 - RCS Antananarivo 2001 B 000 25  - NIF N° 4000004897 – STAT N° 61906 11 2001 0 10059 <br />
+                  Tél : 23 320 10 – Mail: info@gulfsat.mg 
+                </div>
+
         </div>
       )}
     </Container>

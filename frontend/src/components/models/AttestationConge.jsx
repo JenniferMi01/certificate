@@ -99,15 +99,17 @@ export const AttestationConge = () => {
               Lot IVR 41 Avenue de l'Indépendance<br />
               Antanimena – 101 Antananarivo<br />
               Tél : 020 23 320 10 | info@gulfsat.mg
+            
             </div>
           </div>
 
           <div className="title">Attestation de Congé</div>
 
           <div className="content">
-            Nous soussignés, la <strong>Société GULFSAT MADAGASCAR</strong>,<br />
+            Nous soussignés, la <strong>Société GULFSAT MADAGASCAR</strong>,
+            {/* <br /> */}
             attestons par la présente que :<br />
-            <br />
+            {/* <br /> */}
             <div className="highlight">
               <strong>
                 {selectedEmployee.sexe === 'F' ? 'Madame' : 'Monsieur'} {String(selectedEmployee.nom).toUpperCase()} {selectedEmployee.prenom}
@@ -135,6 +137,10 @@ export const AttestationConge = () => {
             <div className="sign-name">Johary RAJAONARIVONY</div>
             Responsable des Ressources Humaines
           </div>
+              <div className="footer">
+                Route Digue domaine d’Andranoabo – B.P 8127 - 101 – ANTANANARIVO – Tél :  23 320 10 – Fax :  22 331 96  – 1 691 640 <br />
+                Mail: info@gulfsat.mg 
+             </div>
         </div>
       )}
     </Container>
@@ -142,3 +148,6 @@ export const AttestationConge = () => {
 };
 
 export default AttestationConge;
+
+
+
