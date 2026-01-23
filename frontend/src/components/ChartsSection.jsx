@@ -155,7 +155,7 @@ function ChartsSection() {
               <Text size="sm">Attestation travail</Text>
             </Group>
             <Text size="sm" fw={600}>
-              58%
+              58
             </Text>
           </Group>
           <Group justify="space-between" mb="xs">
@@ -171,7 +171,7 @@ function ChartsSection() {
               <Text size="sm">Certificat travail</Text>
             </Group>
             <Text size="sm" fw={600}>
-              24%
+              24
             </Text>
           </Group>
           <Group justify="space-between">
@@ -187,7 +187,7 @@ function ChartsSection() {
               <Text size="sm">Attestation congé</Text>
             </Group>
             <Text size="sm" fw={600}>
-              18%
+              18
             </Text>
           </Group>
         </Box>
