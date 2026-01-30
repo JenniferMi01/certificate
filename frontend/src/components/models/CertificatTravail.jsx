@@ -33,24 +33,24 @@ export const CertificatTravail = () => {
     fetchEmployeeData();
   }, []);
 
-  // const handleEmployeeSelect = async (employeeId) => {
-  //   if (!employeeId) {
-  //     setSelectedEmployee(null);
-  //     setIsPDFVisible(false);
-  //     return;
-  //   }
+  const handleEmployeeSelect = async (employeeId) => {
+    if (!employeeId) {
+      setSelectedEmployee(null);
+      setIsPDFVisible(false);
+      return;
+    }
 
-  //   try {
-  //     const response = await axios.get(`${LIST_EMPLOYEE_API}/${employeeId}`);
-  //     setSelectedEmployee(response.data);
-  //     setIsPDFVisible(true);
-  //   } catch (error) {
-  //     console.error('Erreur lors de la récupération de l\'employé:', error);
-  //     console.error('Détails de l\'erreur:', error.response?.data);
-  //     setSelectedEmployee(null);
-  //     setIsPDFVisible(false);
-  //   }
-  // };
+    try {
+      const response = await axios.get(`${LIST_EMPLOYEE_API}/${employeeId}`);
+      setSelectedEmployee(response.data);
+      setIsPDFVisible(true);
+    } catch (error) {
+      console.error('Erreur lors de la récupération de l\'employé:', error);
+      console.error('Détails de l\'erreur:', error.response?.data);
+      setSelectedEmployee(null);
+      setIsPDFVisible(false);
+    }
+  };
 
   const { toPDF, targetRef } = usePDF({
     filename: "certificat-de-travail.pdf",
@@ -68,7 +68,7 @@ export const CertificatTravail = () => {
             label: `${emp.number || 'N/A'} - ${String(emp.name || '').toUpperCase()}`
           }))}
           searchable
-          // onChange={handleEmployeeSelect}
+          onChange={handleEmployeeSelect}
         />
       </div>
 
