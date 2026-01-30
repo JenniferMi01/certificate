@@ -16,44 +16,43 @@ export const CertificatTravail = () => {
   // ✅ AJOUT UNIQUEMENT
   const [libreEngagement, setLibreEngagement] = useState(false);
 
-  const LIST_EMPLOYEE_API = 'http://localhost:8000/api/attestations/employes/';
-  const TOKEN = localStorage.getItem("access_token") || "";
-
-  const config = {
-    headers: {
-      Authorization: `Bearer ${TOKEN}`,
-      "Content-Type": "application/json",
-    },
-  };
+  const LIST_EMPLOYEE_API = 'http://localhost:5000/employees';
 
   useEffect(() => {
     const fetchEmployeeData = async () => {
       try {
-        const response = await axios.get(LIST_EMPLOYEE_API, config);
-        setEmployeeList(response.data || []);
+        const response = await axios.get(LIST_EMPLOYEE_API);
+
+        console.log("Réponse de l'API :", response);
+        
+        setEmployeeList(response.data.data || []);
       } catch (error) {
-        console.error(error);
+        console.error('Erreur lors de la récupération des employés:', error);
+        console.error('Détails de l\'erreur:', error.response?.data);
+        // Optionnel : afficher un message d'erreur à l'utilisateur
       }
     };
     fetchEmployeeData();
   }, []);
 
-  const handleEmployeeSelect = async (employeeId) => {
-    if (!employeeId) {
-      setSelectedEmployee(null);
-      setIsPDFVisible(false);
-      return;
-    }
+  // const handleEmployeeSelect = async (employeeId) => {
+  //   if (!employeeId) {
+  //     setSelectedEmployee(null);
+  //     setIsPDFVisible(false);
+  //     return;
+  //   }
 
-    try {
-      const response = await axios.get(`${LIST_EMPLOYEE_API}${employeeId}/`, config);
-      setSelectedEmployee(response.data);
-      setIsPDFVisible(true);
-    } catch (error) {
-      setSelectedEmployee(null);
-      setIsPDFVisible(false);
-    }
-  };
+  //   try {
+  //     const response = await axios.get(`${LIST_EMPLOYEE_API}/${employeeId}`);
+  //     setSelectedEmployee(response.data);
+  //     setIsPDFVisible(true);
+  //   } catch (error) {
+  //     console.error('Erreur lors de la récupération de l\'employé:', error);
+  //     console.error('Détails de l\'erreur:', error.response?.data);
+  //     setSelectedEmployee(null);
+  //     setIsPDFVisible(false);
+  //   }
+  // };
 
   const { toPDF, targetRef } = usePDF({
     filename: "certificat-de-travail.pdf",
@@ -68,10 +67,10 @@ export const CertificatTravail = () => {
           placeholder="Rechercher le nom ou matricule de l'employé"
           data={employeeList.map((emp) => ({
             value: emp.id.toString(),
-            label: `${emp.matricule} - ${String(emp.nom).toUpperCase()} ${emp.prenom}`
+            label: `${emp.number || 'N/A'} - ${String(emp.name || '').toUpperCase()}`
           }))}
           searchable
-          onChange={handleEmployeeSelect}
+          // onChange={handleEmployeeSelect}
         />
       </div>
 
@@ -112,37 +111,27 @@ export const CertificatTravail = () => {
 
             <div className="highlight">
               <strong>
-                {selectedEmployee.sexe === 'F' ? 'Madame' : 'Monsieur'} {String(selectedEmployee.nom).toUpperCase()} {selectedEmployee.prenom}
+                {String(selectedEmployee.name || '').toUpperCase()}
               </strong>
               <br />
-              Titulaire de la CIN n° <strong>{selectedEmployee.cin}</strong>
+              Titulaire de la CIN n° <strong>{selectedEmployee.identification_id || 'N/A'}</strong>
               <br />
-              Délivrée le {new Date(selectedEmployee.cin_date).toLocaleDateString('fr-FR')} à {selectedEmployee.cin_lieu}
+              Délivrée le {selectedEmployee.date_delivrance_cin ? new Date(selectedEmployee.date_delivrance_cin).toLocaleDateString('fr-FR') : 'N/A'} à {selectedEmployee.lieu_delivrance_cin || 'N/A'}
               <br />
-              Résidant au {selectedEmployee.adresse}
+              Résidant au {selectedEmployee.work_email || 'N/A'}
             </div>
 
             a été employée au sein de notre société en qualité de :
             <div className="job-history">
-              {selectedEmployee.postes && selectedEmployee.postes.length > 0 ? (
-                selectedEmployee.postes.map((poste, index) => (
-                  <p key={index}>
-                    • « <strong>{poste.intitule}</strong> » du{" "}
-                    <strong>{new Date(poste.date_debut).toLocaleDateString('fr-FR')}</strong>
-                  </p>
-                ))
-              ) : (
-                <p>
-                  • « <strong>Employé</strong> » depuis le{" "}
-                  <strong>{new Date(selectedEmployee.date_embauche).toLocaleDateString('fr-FR')}</strong>
-                </p>
-              )}
+              <p>
+                • « <strong>{selectedEmployee.department?.name || 'Employé'}</strong> »
+              </p>
             </div>
 
             {/* ✅ PHRASE CONDITIONNELLE */}
             {libreEngagement && (
               <>
-                {selectedEmployee.sexe === 'F' ? 'Elle' : 'Il'} nous quitte libre de tout engagement.
+                {selectedEmployee.name ? (selectedEmployee.name.toLowerCase().includes('femme') ? 'Elle' : 'Il') : 'Il'} nous quitte libre de tout engagement.
                 <br /><br />
               </>
             )}
