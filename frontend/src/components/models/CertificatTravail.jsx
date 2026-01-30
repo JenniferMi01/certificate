@@ -22,9 +22,7 @@ export const CertificatTravail = () => {
     const fetchEmployeeData = async () => {
       try {
         const response = await axios.get(LIST_EMPLOYEE_API);
-
         console.log("Réponse de l'API :", response);
-        
         setEmployeeList(response.data.data || []);
       } catch (error) {
         console.error('Erreur lors de la récupération des employés:', error);
