@@ -33,6 +33,12 @@ export const CertificatTravail = () => {
     fetchEmployeeData();
   }, []);
 
+  const formatBy3 = (value) => {
+    return value
+      .toString()
+      .replace(/\B(?=(\d{3})+(?!\d))/g, " ");
+  }
+
   const handleEmployeeSelect = async (employeeId) => {
     if (!employeeId) {
       setSelectedEmployee(null);
@@ -112,11 +118,11 @@ export const CertificatTravail = () => {
                 {String(selectedEmployee.name || '').toUpperCase()}
               </strong>
               <br />
-              Titulaire de la CIN n° <strong>{selectedEmployee.identification_id || 'N/A'}</strong>
+              Titulaire de la CIN n° <strong>{formatBy3(selectedEmployee.identification_id) || 'N/A'}</strong>
               <br />
               Délivrée le {selectedEmployee.date_delivrance_cin ? new Date(selectedEmployee.date_delivrance_cin).toLocaleDateString('fr-FR') : 'N/A'} à {selectedEmployee.lieu_delivrance_cin || 'N/A'}
               <br />
-              Résidant au {selectedEmployee.work_email || 'N/A'}
+              Résidant au {selectedEmployee?.address_home_id[1] || 'N/A'}
             </div>
 
             a été employée au sein de notre société en qualité de :
