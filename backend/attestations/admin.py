@@ -34,3 +34,15 @@ class CongeAdmin(admin.ModelAdmin):
     
     # Filtres disponibles dans l'admin pour faciliter la navigation
     list_filter = ('approuve',)  # Permet de filtrer les congés approuvés ou non
+
+
+
+
+from .models import Employe, PosteHistorique, Conge
+from .models.attestation_travail import AttestationTravail
+from .models.attestation_conge import AttestationConge
+from .models.certificat_travail import CertificatTravail
+
+admin.site.register(AttestationTravail)
+admin.site.register(AttestationConge)
+admin.site.register(CertificatTravail)

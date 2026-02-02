@@ -1,0 +1,1584 @@
+//Code Login mandeha :
+import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
+import {
+  Fieldset,
+  TextInput,
+  PasswordInput,
+  Button,
+  Paper,
+  Title,
+  Text,
+  Anchor,
+  Notification
+} from '@mantine/core';
+import { IconCheck, IconX } from '@tabler/icons-react';
+
+function LoginPage() {
+  const [formData, setFormData] = useState({
+    username: '',
+    password: '',
+  });
+  const [errors, setErrors] = useState({
+    username: '',
+    password: '',
+  });
+  const [isLoading, setIsLoading] = useState(false);
+  const [loginError, setLoginError] = useState(null);
+  const [loginSuccess, setLoginSuccess] = useState(false);
+  const navigate = useNavigate();
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+  };
+
+  const validateForm = () => {
+    let valid = true;
+    const newErrors = { username: '', password: '' };
+    if (!formData.username.trim()) {
+      newErrors.username = 'Nom d\'utilisateur requis';
+      valid = false;
+    }
+    if (formData.password.length < 6) {
+      newErrors.password = 'Le mot de passe doit contenir au moins 6 caractères';
+      valid = false;
+    }
+    setErrors(newErrors);
+    return valid;
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    console.log('FORMULAIRE SOUMIS !', formData);
+
+    setLoginError(null);
+    if (validateForm()) {
+      setIsLoading(true);
+      try {
+        console.log('ENVOI VERS API...');
+        const response = await axios.post(
+          'http://localhost:8000/api/login/',
+          formData,
+          {
+            headers: {
+              'Content-Type': 'application/json',
+            },
+          }
+        );
+
+        console.log('RÉPONSE API :', response.data);
+
+        // SI TOKEN → CONNEXION RÉUSSIE
+        if (response.data) {
+          const { access, refresh } = response.data
+          localStorage.setItem('access_token', access);
+          localStorage.setItem('refresh_token', refresh);
+          setLoginSuccess(true);
+          
+          // REDIRECTION APRÈS 1s
+          // setTimeout(() => navigate('/'), 1000);
+          navigate('/')
+        } else {
+          // MODE DEV : FORCE REDIRECTION MÊME SANS TOKEN
+          console.warn('Pas de token, mais on force la redirection');
+          localStorage.setItem('authToken', 'fake-token');
+          localStorage.setItem('username', formData.username);
+          navigate('/'); // REDIRECTION IMMÉDIATE
+        }
+
+      } catch (error) {
+        console.error('ERREUR API :', error.response || error);
+        setLoginError(
+          error.response?.data?.error ||
+          'Échec de la connexion. Vérifiez vos identifiants.'
+        );
+        
+        // MÊME EN CAS D'ERREUR → FORCE LA REDIRECTION (DEV)
+        setTimeout(() => {
+          localStorage.setItem('authToken', 'fake-token');
+          localStorage.setItem('username', formData.username);
+          navigate('/');
+        }, 1500);
+      } finally {
+        setIsLoading(false);
+      }
+    }
+  };
+
+  return (
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-white p-4">
+      <Paper withBorder shadow="md" p={30} radius="md" className="w-full max-w-sm">
+        <Title order={2} align="center" className="mb-5 text-gray-800">
+          Connexion
+        </Title>
+        <Text color="dimmed" size="sm" align="center" className="mb-6">
+          Entrez vos identifiants pour accéder à votre compte
+        </Text>
+
+        {loginError && (
+          <Notification
+            icon={<IconX size="1.1rem" />}
+            color="red"
+            className="mb-4"
+            onClose={() => setLoginError(null)}
+          >
+            {loginError}
+          </Notification>
+        )}
+
+        {loginSuccess && (
+          <Notification
+            icon={<IconCheck size="1.1rem" />}
+            color="teal"
+            className="mb-4"
+          >
+            Connexion réussie ! Redirection en cours...
+          </Notification>
+        )}
+
+        <form onSubmit={handleSubmit}>
+            <TextInput
+              label="Nom d'utilisateur"
+              placeholder="Votre nom d'utilisateur"
+              name="username"
+              value={formData.username}
+              onChange={handleChange}
+              error={errors.username}
+              required
+              className="w-full"
+              styles={{
+                input: {
+                  borderRadius: '0.5rem',
+                  borderColor: errors.username ? '#ef4444' : '#E5E7EB',
+                },
+              }}
+            />
+            <PasswordInput
+              label="Mot de passe"
+              placeholder="Votre mot de passe"
+              name="password"
+              value={formData.password}
+              onChange={handleChange}
+              error={errors.password}
+              required
+              className="w-full"
+              styles={{
+                input: {
+                  borderRadius: '0.5rem',
+                  borderColor: errors.password ? '#ef4444' : '#E5E7EB',
+                },
+              }}
+            />
+
+          <Button
+            fullWidth
+            type="submit"
+            loading={isLoading}
+            className="mt-6 mb-6 bg-blue-500 hover:bg-blue-600 transition-colors"
+            styles={{
+              root: {
+                borderRadius: '0.5rem',
+                height: '2.5rem',
+              },
+            }}
+          >
+            Se connecter
+          </Button>
+        </form>
+
+        <Text align="center">
+          Vous n'avez pas de compte ?{' '}
+          <Anchor
+            href="/inscription"
+            weight={700}
+            className="text-blue-500 hover:text-blue-600 transition-colors"
+          >
+            S'inscrire
+          </Anchor>
+        </Text>
+      </Paper>
+    </div>
+  );
+}
+
+export default LoginPage;
+
+
+============================================================================================================
+components/sidebar.jsx (mandeha fa mbola tsy natokana ):
+import { NavLink } from "react-router-dom";
+import { Home, FileText, Briefcase, BedDouble, History } from "lucide-react";
+
+const menu = [
+  { to: "/", label: "Tableau de bord", icon: Home },
+  { to: "/attestation-travail", label: "Attestation de travail", icon: FileText },
+  { to: "/certificat-travail", label: "Certificat de travail", icon: Briefcase },
+  { to: "/attestation-conge", label: "Attestation de congé", icon: BedDouble },
+  { to: "/historique", label: "Historique", icon: History },
+];
+
+export default function Sidebar() {
+  return (
+    <div className="w-80 bg-[#0f172a] text-white min-h-screen flex flex-col">
+      {/* Header */}
+      <div className="px-6 py-8 border-b border-gray-800">
+        <h1 className="text-2xl font-bold">RH Doc</h1>
+      </div>
+
+      {/* Menu */}
+      <nav className="flex-1 px-4 py-6 space-y-1">
+        {menu.map(({ to, label, icon: Icon }) => (
+          <NavLink
+            key={to}
+            to={to}
+            end
+            className={({ isActive }) =>
+              `flex items-center gap-4 px-4 py-3 rounded-lg transition-all group ${
+                isActive
+                  ? "bg-blue-600 text-white shadow-lg"
+                  : "text-gray-300 hover:bg-gray-800 hover:text-white"
+              }`
+            }
+          >
+            {({ isActive }) => (
+              <>
+                <Icon className={`w-5 h-5 ${isActive ? "text-white" : "text-gray-400 group-hover:text-white"}`} />
+                <span className="font-medium">{label}</span>
+                {isActive && <div className="w-1 h-8 bg-white rounded-l-full absolute right-0" />}
+              </>
+            )}
+          </NavLink>
+        ))}
+      </nav>
+
+      <div className="px-6 py-4 border-t border-gray-800 text-center text-xs text-gray-500">
+        CNAS © 2025
+      </div>
+    </div>
+  );
+}
+
+
+2) compements/sidebar
+
+
+========================================================================================================================
+Dashboard complet mitambatra daholo : 
+// src/pages/Dashboard.jsx
+
+import { 
+  FaHome, FaFileAlt, FaScroll, FaBed, FaHistory, FaSignOutAlt,
+  FaUsers, FaClock, FaDownload
+} from 'react-icons/fa';
+
+import { Link } from "react-router-dom";
+import './dashboard.css';
+
+export default function Dashboard() {
+  return (
+    <div className="dashboard-container">
+
+      {/* SIDEBAR */}
+      <aside className="sidebar">
+        <div className="logo">RH Doc</div>
+        <nav>
+          <Link to="/dashboard">
+            <FaHome /> Tableau de bord
+          </Link>
+          <Link to="/formulaires/attestation">
+            <FaFileAlt /> Attestation de travail
+          </Link>
+          <Link to="/formulaires/certificat">
+            <FaScroll /> Certificat de travail
+          </Link>
+          <Link to="/formulaires/conge" className="active">
+            <FaBed /> Attestation de congé
+          </Link>
+          <Link to="/historique">
+            <FaHistory /> Historique
+          </Link>
+          <Link to="/login">
+            <FaSignOutAlt /> Déconnexion
+          </Link>
+        </nav>
+      </aside>
+
+      {/* MAIN */}
+      <main className="main-content">
+        <header>
+          <h1>Bienvenue, <span>Johary R.</span></h1>
+          <p>Générez vos documents en quelques clics</p>
+        </header>
+
+        {/* Cards */}
+        <section className="stats">
+          <div className="stat-card">
+            <FaFileAlt className="icon" />
+            <div>
+              <h3>21 324</h3>
+              <p>Documents totaux</p>
+            </div>
+          </div>
+          <div className="stat-card">
+            <FaUsers className="icon" />
+            <div>
+              <h3>247</h3>
+              <p>Employés actifs</p>
+            </div>
+          </div>
+          <div className="stat-card">
+            <FaClock className="icon" />
+            <div>
+              <h3>28s</h3>
+              <p>Temps moyen</p>
+            </div>
+          </div>
+        </section>
+
+        {/* Charts */}
+        <section className="charts-row">
+
+          {/* area chart */}
+          <div className="chart-card">
+            <div className="chart-header">
+              <h3>Évolution 2025</h3>
+              <span className="growth">+89.1%</span>
+            </div>
+
+            <div className="area-chart">
+              <svg viewBox="0 0 600 240">
+                <defs>
+                  <linearGradient id="gradient" x1="0%" y1="0%" x2="0%" y2="100%">
+                    <stop offset="0%" stopColor="#2563eb" stopOpacity="0.25" />
+                    <stop offset="100%" stopColor="#2563eb" stopOpacity="0" />
+                  </linearGradient>
+                </defs>
+
+                <path 
+                  d="M0,200 Q100,150 200,120 Q300,100 400,160 Q500,80 600,130 L600,240 L0,240 Z" 
+                  fill="url(#gradient)" 
+                />
+
+                <path 
+                  d="M0,200 Q100,150 200,120 Q300,100 400,160 Q500,80 600,130"
+                  fill="none" 
+                  stroke="#2563eb" 
+                  strokeWidth="4" 
+                  strokeLinecap="round" 
+                />
+
+                <text 
+                  x="300" 
+                  y="120" 
+                  textAnchor="middle" 
+                  fontSize="36" 
+                  fontWeight="900" 
+                  fill="#1d4ed8"
+                >
+                  +89.1%
+                </text>
+              </svg>
+            </div>
+          </div>
+
+          {/* Donut */}
+          <div className="chart-card">
+            <div className="chart-header">
+              <h3>Répartition par type</h3>
+            </div>
+
+            <div className="donut-wrapper">
+              <svg className="donut" viewBox="0 0 200 200">
+                <circle cx="100" cy="100" r="80" fill="none" stroke="#e2e8f0" strokeWidth="36" />
+                <circle cx="100" cy="100" r="80" fill="none" stroke="#2563eb" strokeWidth="36" strokeDasharray="290 500" />
+                <circle cx="100" cy="100" r="80" fill="none" stroke="#10b981" strokeWidth="36" strokeDasharray="120 500" strokeDashoffset="-290" />
+                <circle cx="100" cy="100" r="80" fill="none" stroke="#f97316" strokeWidth="36" strokeDasharray="90 500" strokeDashoffset="-410" />
+              </svg>
+
+              <div className="donut-center">
+                <div className="donut-big">95K</div>
+                <div className="donut-small">Total</div>
+              </div>
+            </div>
+
+            <div className="legend">
+              <div className="legend-item">
+                <span><div className="dot blue"></div> Attestation travail</span>
+                <strong>58%</strong>
+              </div>
+              <div className="legend-item">
+                <span><div className="dot green"></div> Certificat travail</span>
+                <strong>24%</strong>
+              </div>
+              <div className="legend-item">
+                <span><div className="dot orange"></div> Attestation congé</span>
+                <strong>18%</strong>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* Table */}
+        <section className="recent-documents">
+          <h2>Derniers documents</h2>
+
+          <table>
+            <thead>
+              <tr>
+                <th>Date</th>
+                <th>Employé</th>
+                <th>Type</th>
+                <th>Statut</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+
+            <tbody>
+              <tr>
+                <td>19/11/2025</td>
+                <td>RAMANDANIRAINY Josoa N. F.</td>
+                <td>Attestation de travail</td>
+                <td><span className="status success">Validé</span></td>
+                <td><a href="#"><FaDownload /></a></td>
+              </tr>
+              <tr>
+                <td>18/11/2025</td>
+                <td>RAKOTOBE Mariane</td>
+                <td>Certificat de travail</td>
+                <td><span className="status success">Validé</span></td>
+                <td><a href="#"><FaDownload /></a></td>
+              </tr>
+              <tr>
+                <td>18/11/2025</td>
+                <td>RAKOTO Andrianirina</td>
+                <td>Attestation de congé</td>
+                <td><span className="status success">Validé</span></td>
+                <td><a href="#"><FaDownload /></a></td>
+              </tr>
+            </tbody>
+          </table>
+        </section>
+
+      </main>
+    </div>
+  );
+}
+
+
+=================================================================
+App.jsx (attestation de congé ihany no miafficher): 
+import { Routes, Route } from "react-router-dom";
+import Sidebar from "./components/sidebar";
+import Dashboard from "./pages/dashboard";
+import { Attestation } from "./components/attestation-conge";
+// import AttestationTravail from "./pages/AttestationTravail";
+// import CertificatTravail from "./pages/CertificatTravail";
+// import Historique from "./pages/Historique";
+// import Login from "./pages/Login";
+
+export default function App() {
+  return (
+    <div className="flex">
+      <main className="flex-1 bg-green-500 min-h-screen">
+        <Routes>
+          {/* <Route path="/login" element={<Login />} /> */}
+          <Route path="/" element={<Dashboard />} />
+          <Route path="/formulaires/conge" element={<Attestation />} />
+          {/* <Route path="/attestation-travail" element={<AttestationTravail />} />
+          <Route path="/certificat-travail" element={<CertificatTravail />} /> */}
+          {/* <Route path="/historique" element={<Historique />} /> */}
+        </Routes>
+      </main>
+    </div>
+  );
+}
+=========================================================================================================
+vite.config.js : (original)
+import { defineConfig } from 'vite'
+import react from '@vitejs/plugin-react'
+import tailwindcss from '@tailwindcss/vite'
+
+// https://vite.dev/config/
+export default defineConfig({
+  plugins: [react(),tailwindcss()],
+
+  
+});
+
+
+
+
+
+==================================================================================================================
+Activation venv : "D:/Projet Final/certificate/backend/.venv/Scripts/Activate.ps1"
+
+===================================================================================================================================================
+certificattravail.jsx mandeha fa tsy tian'i RH : import React from "react";
+
+import './certificat-travail.css'
+import logo from './assets/img/logo.png'
+
+export const CertificatTravail = () => {
+  return (
+    <div className="document">
+      <img src={logo} className="logo" alt="GULFSAT Madagascar" />
+
+      <h1>CERTIFICAT DE TRAVAIL</h1>
+
+      <p>
+        Nous soussignée, <strong>Société GULFSAT MADAGASCAR</strong>, sise au Lot IVR 41 Avenue de l’Indépendance Antanimena – 101 Antananarivo,<br />
+        certifions par la présente que :
+      </p>
+
+      <div className="highlight">
+        <strong>Madame RAKOTOBE Mariane</strong>
+        <br />
+        Titulaire de la CIN n° <strong>101 252 190 721</strong>
+        <br />
+        Délivrée le 31 mars 2015 à Antananarivo V
+        <br />
+        Résidant au Lot II C 10 D Bis A Manjakaray
+      </div>
+
+      <p>
+        a été employée au sein de notre société en qualité de :<br />
+        <br />
+        • « <strong>Assistante Commerciale</strong> » du <strong>01 janvier 2020 au 08 octobre 2022</strong><br />
+        <br />
+        • « <strong>Chargée de Clientèle</strong> » du <strong>09 octobre 2022 au 28 février 2023</strong><br />
+        <br />
+        • « <strong>Responsable Commerciale</strong> » du <strong>01 mars 2023 au 08 octobre 2025</strong>
+      </p>
+
+      <p>
+        Elle nous quitte libre de tout engagement.
+        <br />
+        <br />
+        En foi de quoi, le présent certificat lui est délivré pour servir et valoir ce que de droit.
+      </p>
+
+      <div className="signature-block">
+        Fait à Antananarivo, le <strong>08 octobre 2025</strong>
+        <br></br>
+        <br></br>
+        <br></br>
+        {/* <div className="signature-line"></div> */}
+        <div className="sign-name">Johary RAJAONARIVONY</div>
+        Responsable des Ressources Humaines
+      </div>
+
+      <div className="footer">
+        Gulfsat Madagascar SARLU au capital de 5 000 000 000 Ar – Siège social : Lot IVR 41 Avenue de l’Indépendance Antanimena, 101 Antananarivo – 
+        BP 8127 – RCS Antananarivo 2001 B 00025 – NIF 4000004897 – STAT 61906 11 2001 0 10059<br />
+        Tél : 020 23 320 10 | info@gulfsat.mg
+      </div>
+    </div>
+  );
+};
+
+export default CertificatTravail;
+
+
+
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+style.css : 
+  body {
+      font-family: "Times New Roman", serif;
+      background: #e6e9ef;
+      padding: 40px 0;
+  }
+
+  .document {
+      width: 850px;
+      margin: auto;
+      background: white;
+      padding: 80px 80px 60px 80px;
+      /* padding ambony be kokoa mba tsy hi-antona ny logo */
+      box-shadow: 0 0 25px rgba(0, 0, 0, 0.20);
+      position: relative;
+      border: 12px double #1d3e72;
+  }
+
+  .document:before {
+      content: "";
+      position: absolute;
+      inset: 20px;
+      border: 1px solid #1d3e72;
+      pointer-events: none;
+  }
+
+  /* LOGO TSARA MIORINA TSARA – TSY MIANTONA INTSONY */
+  .logo {
+      display: block;
+      display: block;
+      margin: 0 auto 30px auto;
+      /* tsy negative margin intsony → tsy miantona */
+      height: 100px;
+  }
+
+  h1 {
+      text-align: center;
+      font-size: 32px;
+      letter-spacing: 3px;
+      margin-bottom: 40px;
+      text-transform: uppercase;
+      color: #1d3e72;
+      font-weight: bold;
+  }
+
+  p {
+      font-size: 18px;
+      line-height: 1.7;
+      text-align: justify;
+      margin-bottom: 20px;
+  }
+
+  .highlight {
+      padding: 18px 20px;
+      margin: 25px 0;
+      background: #f4f7fc;
+      border-left: 5px solid #1d3e72;
+      border-radius: 4px;
+      font-size: 19px;
+  }
+
+  .signature-block {
+      margin-top: 60px;
+      text-align: right;
+      font-size: 18px;
+      line-height: 1.8;
+  }
+
+  .footer {
+      margin-top: 60px;
+      text-align: center;
+      font-size: 15px;
+      padding-top: 15px;
+      border-top: 1px solid #999;
+      color: #333;
+  }
+
+  @media print {
+      body {
+          background: white;
+          padding: 0;
+      }
+
+      .document {
+          box-shadow: none;
+          border-width: 8px;
+          padding-top: 70px;
+      }
+
+      .logo {
+          margin-bottom: 25px;
+      }
+  }
+
+
+
+  ===========================================================================================================
+  CertificatTravailPDF.jsx : 
+  // import React from 'react';
+// import { Document, Page, Text, View, StyleSheet } from '@react-pdf/renderer';
+
+// // Create styles
+// const styles = StyleSheet.create({
+//   page: {
+//     flexDirection: 'column',
+//     backgroundColor: '#FFFFFF',
+//     padding: 40,
+//     fontSize: 12,
+//     fontFamily: 'Helvetica',
+//   },
+//   header: {
+//     flexDirection: 'row',
+//     marginBottom: 30,
+//   },
+//   logo: {
+//     width: 80,
+//     height: 80,
+//     marginRight: 20,
+//   },
+//   company: {
+//     flex: 1,
+//     fontSize: 10,
+//   },
+//   companyTitle: {
+//     fontSize: 14,
+//     fontWeight: 'bold',
+//     marginBottom: 5,
+//   },
+//   title: {
+//     fontSize: 18,
+//     fontWeight: 'bold',
+//     textAlign: 'center',
+//     marginBottom: 30,
+//   },
+//   content: {
+//     lineHeight: 1.5,
+//     marginBottom: 40,
+//   },
+//   highlight: {
+//     backgroundColor: '#f0f0f0',
+//     padding: 10,
+//     marginVertical: 10,
+//     fontWeight: 'bold',
+//   },
+//   jobHistory: {
+//     marginLeft: 20,
+//     marginVertical: 5,
+//   },
+//   signatureBlock: {
+//     marginTop: 50,
+//     textAlign: 'left',
+//   },
+//   signName: {
+//     marginTop: 20,
+//     fontWeight: 'bold',
+//   },
+// });
+
+// const CertificatTravailPDF = () => (
+//   <Document>
+//     <Page size="A4" style={styles.page}>
+//       <View style={styles.header}>
+//         {/* <Image style={styles.logo} src={logo} /> */}
+//         <View style={{ width: 80, height: 80, marginRight: 20, backgroundColor: '#f0f0f0' }} />
+//         <View style={styles.company}>
+//           <Text style={styles.companyTitle}>GULFSAT MADAGASCAR</Text>
+//           <Text>
+//             Lot IVR 41 Avenue de l'Indépendance{'\n'}
+//             Antanimena – 101 Antananarivo{'\n'}
+//             Tél : 020 23 320 10 | info@gulfsat.mg
+//           </Text>
+//         </View>
+//       </View>
+
+//       <Text style={styles.title}>Certificat de Travail</Text>
+
+//       <View style={styles.content}>
+//         <Text>
+//           Nous soussignée, la <Text style={{ fontWeight: 'bold' }}>Société GULFSAT MADAGASCAR</Text>, sise au Lot IVR 41 Avenue de l'Indépendance, Antanimena – 101 Antananarivo,{'\n'}
+//           certifions par la présente que :{'\n'}
+//           {'\n'}
+//           <View style={styles.highlight}>
+//             <Text style={{ fontWeight: 'bold' }}>Madame RAKOTOBE Mariane</Text>{'\n'}
+//             Titulaire de la CIN n° <Text style={{ fontWeight: 'bold' }}>101 252 190 721</Text>{'\n'}
+//             Délivrée le 31 mars 2015 à Antananarivo V{'\n'}
+//             Résidant au Lot II C 10 D Bis A Manjakaray
+//           </View>
+//           a été employée au sein de notre société en qualité de :{'\n'}
+//           {'\n'}
+//           <View style={styles.jobHistory}>
+//             <Text>• « <Text style={{ fontWeight: 'bold' }}>Assistante Commerciale</Text> » du <Text style={{ fontWeight: 'bold' }}>01 janvier 2020 au 08 octobre 2022</Text></Text>{'\n'}
+//             <Text>• « <Text style={{ fontWeight: 'bold' }}>Chargée de Clientèle</Text> » du <Text style={{ fontWeight: 'bold' }}>09 octobre 2022 au 28 février 2023</Text></Text>{'\n'}
+//             <Text>• « <Text style={{ fontWeight: 'bold' }}>Responsable Commerciale</Text> » du <Text style={{ fontWeight: 'bold' }}>01 mars 2023 au 08 octobre 2025</Text></Text>
+//           </View>
+//           {'\n'}
+//           Elle nous quitte libre de tout engagement.{'\n'}
+//           {'\n'}
+//           En foi de quoi, le présent certificat lui est délivré pour servir et valoir ce que de droit.
+//         </Text>
+//       </View>
+
+//       <View style={styles.signatureBlock}>
+//         <Text>Fait à Antananarivo, le <Text style={{ fontWeight: 'bold' }}>08 octobre 2025</Text></Text>
+//         <Text style={styles.signName}>Johary RAJAONARIVONY</Text>
+//         <Text>Responsable des Ressources Humaines</Text>
+//       </View>
+//     </Page>
+//   </Document>
+// );
+
+// export default CertificatTravailPDF;
+
+
+// import React from 'react';
+// import { Document, Page, Text, View, StyleSheet } from '@react-pdf/renderer';
+
+// // Create styles
+// const styles = StyleSheet.create({
+//   page: {
+//     flexDirection: 'column',
+//     backgroundColor: '#FFFFFF',
+//     padding: 40,
+//     fontSize: 12,
+//     fontFamily: 'Helvetica',
+//   },
+//   header: {
+//     flexDirection: 'row',
+//     marginBottom: 30,
+//   },
+//   logo: {
+//     width: 80,
+//     height: 80,
+//     marginRight: 20,
+//   },
+//   company: {
+//     flex: 1,
+//     fontSize: 10,
+//   },
+//   companyTitle: {
+//     fontSize: 14,
+//     fontWeight: 'bold',
+//     marginBottom: 5,
+//   },
+//   title: {
+//     fontSize: 18,
+//     fontWeight: 'bold',
+//     textAlign: 'center',
+//     marginBottom: 30,
+//   },
+//   content: {
+//     lineHeight: 1.5,
+//     marginBottom: 40,
+//   },
+//   highlight: {
+//     backgroundColor: '#f0f0f0',
+//     padding: 10,
+//     marginVertical: 10,
+//   },
+//   highlightText: {
+//     fontWeight: 'bold',
+//   },
+//   jobHistory: {
+//     marginLeft: 20,
+//     marginVertical: 5,
+//   },
+//   signatureBlock: {
+//     marginTop: 50,
+//     textAlign: 'left',
+//   },
+//   signName: {
+//     marginTop: 20,
+//     fontWeight: 'bold',
+//   },
+// });
+
+// const CertificatTravailPDF = () => (
+//   <Document>
+//     <Page size="A4" style={styles.page}>
+//       <View style={styles.header}>
+//         {/* <Image style={styles.logo} src={logo} /> */}
+//         <View style={{ width: 80, height: 80, marginRight: 20, backgroundColor: '#f0f0f0' }} />
+//         <View style={styles.company}>
+//           <Text style={styles.companyTitle}>GULFSAT MADAGASCAR</Text>
+//           <Text>
+//             Lot IVR 41 Avenue de l'Indépendance{'\n'}
+//             Antanimena – 101 Antananarivo{'\n'}
+//             Tél : 020 23 320 10 | info@gulfsat.mg
+//           </Text>
+//         </View>
+//       </View>
+
+//       <Text style={styles.title}>Certificat de Travail</Text>
+
+//       <View style={styles.content}>
+//         <Text>
+//           Nous soussignée, la <Text style={{ fontWeight: 'bold' }}>Société GULFSAT MADAGASCAR</Text>, sise au Lot IVR 41 Avenue de l'Indépendance, Antanimena – 101 Antananarivo,
+//         </Text>
+//         <Text style={{ marginTop: 10 }}>
+//           certifions par la présente que :
+//         </Text>
+        
+//         <View style={styles.highlight}>
+//           <Text style={styles.highlightText}>Madame RAKOTOBE Mariane</Text>
+//           <Text>
+//             Titulaire de la CIN n° <Text style={styles.highlightText}>101 252 190 721</Text>
+//           </Text>
+//           <Text>Délivrée le 31 mars 2015 à Antananarivo V</Text>
+//           <Text>Résidant au Lot II C 10 D Bis A Manjakaray</Text>
+//         </View>
+        
+//         <Text style={{ marginTop: 10 }}>
+//           a été employée au sein de notre société en qualité de :
+//         </Text>
+        
+//         <View style={styles.jobHistory}>
+//           <Text>
+//             • « <Text style={styles.highlightText}>Assistante Commerciale</Text> » du <Text style={styles.highlightText}>01 janvier 2020 au 08 octobre 2022</Text>
+//           </Text>
+//           <Text>
+//             • « <Text style={styles.highlightText}>Chargée de Clientèle</Text> » du <Text style={styles.highlightText}>09 octobre 2022 au 28 février 2023</Text>
+//           </Text>
+//           <Text>
+//             • « <Text style={styles.highlightText}>Responsable Commerciale</Text> » du <Text style={styles.highlightText}>01 mars 2023 au 08 octobre 2025</Text>
+//           </Text>
+//         </View>
+        
+//         <Text style={{ marginTop: 10 }}>
+//           Elle nous quitte libre de tout engagement.
+//         </Text>
+        
+//         <Text style={{ marginTop: 10 }}>
+//           En foi de quoi, le présent certificat lui est délivré pour servir et valoir ce que de droit.
+//         </Text>
+//       </View>
+
+//       <View style={styles.signatureBlock}>
+//         <Text>
+//           Fait à Antananarivo, le <Text style={styles.highlightText}>08 octobre 2025</Text>
+//         </Text>
+//         <Text style={styles.signName}>Johary RAJAONARIVONY</Text>
+//         <Text>Responsable des Ressources Humaines</Text>
+//       </View>
+//     </Page>
+//   </Document>
+// );
+
+// export default CertificatTravailPDF;
+
+
+
+
+
+
+
+
+
+=============================================================================================================
+certificat-travail.css : 
+body {
+    margin: 0;
+    padding: 0;
+    background: #f4f4f4;
+    font-family: 'Calibri', 'Arial', sans-serif;
+}
+
+/* === FORMAT A4 === */
+.a4 {
+    width: 21cm;
+    min-height: 29.7cm;
+    margin: 30px auto;
+    background: white;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
+    position: relative;
+    overflow: hidden;
+    padding-bottom: 120px;
+    box-sizing: border-box;
+}
+
+/* === EN-TÊTE === */
+.header {
+    height: 140px;
+    background: linear-gradient(90deg, #003087, #0050b3);
+    color: white;
+    padding: 20px 50px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: relative;
+}
+
+/* Logo positionné à gauche */
+.logo {
+    position: absolute;
+    left: 75px;
+    top: 25px;
+    height: 90px;
+    max-width: 280px;
+    object-fit: contain;
+    opacity: 1;
+    z-index: 10;
+}
+
+/* Informations de l'entreprise à droite */
+.company {
+    text-align: right;
+    flex: 1;
+    font-size: 15px;
+    line-height: 1.6;
+}
+
+.company h1 {
+    font-size: 28px;
+    margin: 0 0 8px 0;
+    font-weight: normal;
+}
+
+/* === TITRE PRINCIPAL === */
+.title {
+    text-align: center;
+    font-size: 26px;
+    font-weight: bold;
+    margin: 60px 0 50px;
+    text-transform: uppercase;
+    letter-spacing: 3px;
+    color: #003087;
+}
+
+/* === CONTENU === */
+.content {
+    padding: 0 80px;
+    font-size: 17px;
+    line-height: 2;
+    text-align: justify;
+}
+
+/* Bloc d'information mis en évidence */
+.highlight {
+    background: #f0f5ff;
+    padding: 20px;
+    border-left: 6px solid #003087;
+    margin: 30px 0;
+    font-size: 18px;
+}
+
+/* Historique des postes (spécifique au certificat) */
+.job-history {
+    margin: 20px 0 20px 40px;
+    line-height: 1.8;
+}
+
+.job-history p {
+    margin: 8px 0;
+}
+
+/* === SIGNATURE === */
+.signature-block {
+    margin-top: 60px;
+    padding-right: 120px;
+    padding-bottom: 60px;
+    text-align: right;
+    font-size: 17px;
+    line-height: 1.8;
+}
+
+.signature-line {
+    width: 320px;
+    border-top: 2px solid #003087;
+    margin: 35px 0 15px auto;
+}
+
+.sign-name {
+    font-weight: bold;
+    font-size: 18px;
+}
+
+/* === IMPRESSION === */
+@media print {
+    body {
+        background: none;
+    }
+
+    .a4 {
+        margin: 0;
+        box-shadow: none;
+        padding-bottom: 100px;
+    }
+}
+
+
+
+=========================================================================================================
+AttestationConge.jsx : 
+// import React, { useEffect, useState } from "react";
+// import { Container, Button } from '@mantine/core';
+// import { Select } from "@mantine/core";
+
+// import '../models/assets/css/attestation-conge.css';
+
+// import logo from './assets/img/logo.png';
+
+// import { Margin, usePDF } from 'react-to-pdf';
+// import axios from "axios";
+
+// export const AttestationConge = () => {
+//   const [employeeList, setEmployeeList] = useState([]);
+//   const [selectedEmployeeId, setSelectedEmployeeId] = useState(null);
+//   const [isPDFVisible, setIsPDFVisible] = useState(false); 
+//   const LIST_EMPLOYEE_API = 'http://localhost:8000/api/attestations/employes/';
+
+//   useEffect(() => {
+//     const config = {
+//       headers: {
+//         'Authorization': `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzY3NTAzNTM3LCJpYXQiOjE3NjQ5MTE1MzcsImp0aSI6IjA1NGY4YTZmNWNlNjQzNWZiYWIxY2Q0MzAxMzFhMTdjIiwidXNlcl9pZCI6IjIifQ.f0Rw6qSTKTdAPu-LfHv8SHj6ZE3q9f2lHlR6iIMFLps`,
+//         'Content-Type': 'application/json'
+//       }
+//     };
+
+//     const fetchEmployeeData = async () => {
+//       try {
+//         const response = await axios.get(`${LIST_EMPLOYEE_API}`, config);
+//         console.log('Données des employés récupérées :', response.data);
+//         setEmployeeList(response.data || []);
+//       } catch (error) {
+//         console.error('Erreur lors de la récupération des employés :', error);
+//       }
+//     };
+
+//     fetchEmployeeData();
+//   }, []);
+
+//   const handleEmployeeSelect = (employeeId) => {
+//     setSelectedEmployeeId(employeeId);
+//     setIsPDFVisible(true); 
+//     console.log("Employé sélectionné ID :", employeeId);
+//     // Eto afaka manao fetch détails an'ny employé iray raha ilaina any aoriana
+//   };
+
+//    const [employeeData, setEmployeeData] = useState({
+//       name: "RAKOTO Andrinirina",
+//       sexe: "Mâle",
+//       cin: "101 221 169 331",
+//       cinIssueDate: "11 juin 2014",
+//       cinIssuePlace: "Antananarivo IV",
+//       address: "Lot III 67 A Mahamasina Sud – 101 Antananarivo",
+//       position: "Commercial Grand Public",
+//       startDate: "23 août 2024",
+//       issueDate: "21 novembre 2025",
+//       hrName: "Johary RAJAONARIVONY",
+//     });
+
+//   const { toPDF, targetRef } = usePDF({
+//     filename: 'attestation-de-conge.pdf',
+//     page: { margin: Margin.SMALL, orientation: 'portrait' },
+//   });
+
+//   return (
+//     <Container size="md" py="xl">
+//       <div>
+//         <Select
+//           label="Sélectionner l'employé par matricule"
+//           placeholder="Rechercher le nom ou matricule de l'employé"
+//           data={employeeList.map((emp) => ({
+//             value: emp.id.toString(),
+//             label: `${emp.matricule} - ${String(emp.nom).toUpperCase()} ${emp.prenom}`
+//           }))}
+//           searchable
+//           onChange={handleEmployeeSelect}
+//         />
+//       </div>
+//       <Button 
+//         onClick={() => toPDF()} 
+//         disabled={!selectedEmployeeId}
+//         style={{ marginTop: '1rem', marginBottom: '1rem' }}
+//       >
+//         Imprimer PDF
+//       </Button>
+
+//       <div className={isPDFVisible ? 'a4 block' : 'hidden'} ref={targetRef}>
+//         <div className="header">
+//           <img src={logo} className="logo" alt="GULFSAT" />
+//           <div className="company">
+//             Lot IVR 41 Avenue de l'Indépendance
+//             <br />
+//             Antanimena – 101 Antananarivo
+//             <br />
+//             Tél : 020 23 320 10 | info@gulfsat.mg
+//           </div>
+//         </div>
+
+//         <div className="title">Attestation de Congé</div>
+
+//         <div className="content">
+//           Nous soussignés, la <strong>Société GULFSAT MADAGASCAR</strong>,<br />
+//           attestons par la présente que :<br />
+//           <div className="highlight">
+//             <strong>Madame RAKOTO Andrianirina</strong>
+//             <br />
+//             Née le <strong>29 novembre 1980</strong> à Soavinandriana Madagascar
+//           </div>
+//           est employée au sein de notre société en qualité de «{" "}
+//           <strong>Responsable …….</strong> » depuis le{" "}
+//           <strong>09 septembre 2013</strong>.<br />
+//           <br />
+//           Madame RAKOTO Andrianirina partira en congé du{" "}
+//           <strong>23 juillet 2025</strong> au <strong>31 août 2025</strong>.<br />
+//           <br />
+//           Sitôt le congé terminé, elle est tenue de retourner à Madagascar et de
+//           reprendre son poste de travail au sein de la Société.
+//           <br />
+//           <br />
+//           Délivrée à l’intéressée, sur sa demande, pour servir et valoir ce que de
+//           droit.
+//         </div>
+
+//         <div className="signature-block">
+//           Antananarivo, le <strong>03 juin 2025</strong>
+//           <br></br>
+//           <br></br>
+//           <br></br>
+//           <div className="sign-name">Ndrianja RAJEMISON</div>
+//           Directeur Administratif et Financier
+//         </div>
+//       </div>
+//     </Container>
+//   );
+// };
+
+// export default AttestationConge;
+
+
+
+
+
+// import React, { useEffect, useState } from "react";
+// import { Container, Button, Space } from "@mantine/core";
+// import "../models/assets/css/attestation-conge.css"; // À adapter si besoin
+// import logo from "./assets/img/logo.png";
+// import { Margin, usePDF } from "react-to-pdf";
+// import { Select } from "@mantine/core";
+// import axios from "axios";
+
+// export const AttestationConge = () => {
+//   const [employeeList, setEmployeeList] = useState([]);
+//   const [selectedEmployeeId, setSelectedEmployeeId] = useState(null);
+//   const [isPDFVisible, setIsPDFVisible] = useState(false);
+
+//   const LIST_EMPLOYEE_API = "http://localhost:8000/api/attestations/employes/";
+
+//   useEffect(() => {
+//     const config = {
+//       headers: {
+//         Authorization: `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzY3NTAzNTM3LCJpYXQiOjE3NjQ5MTE1MzcsImp0aSI6IjA1NGY4YTZmNWNlNjQzNWZiYWIxY2Q0MzAxMzFhMTdjIiwidXNlcl9pZCI6IjIifQ.f0Rw6qSTKTdAPu-LfHv8SHj6ZE3q9f2lHlR6iIMFLps`,
+//         "Content-Type": "application/json",
+//       },
+//     };
+
+//     const fetchEmployeeData = async () => {
+//       try {
+//         const response = await axios.get(LIST_EMPLOYEE_API, config);
+//         setEmployeeList(response.data || []);
+//       } catch (error) {
+//         console.error("Erreur lors de la récupération des employés :", error);
+//       }
+//     };
+
+//     fetchEmployeeData();
+//   }, []);
+
+//   // Fonction indispensable pour afficher le PDF après sélection
+//   const handleSeePDF = (employeeId) => {
+//     console.log("Employé sélectionné ID :", employeeId);
+//     setSelectedEmployeeId(employeeId);
+//     setIsPDFVisible(true);
+//   };
+
+//   // Exemple de données employé (à adapter ou charger dynamiquement plus tard)
+//   const [employeeData, setEmployeeData] = useState({
+//     name: "RAKOTOVAO Harilanto",
+//     sexe: "Mâle",
+//     cin: "101 241 169 331",
+//     cinIssueDate: "11 juin 2014",
+//     cinIssuePlace: "Antananarivo IV",
+//     address: "Lot III 67 A Mahamasina Sud – 101 Antananarivo",
+//     position: "Commercial Grand Public",
+//     startDate: "23 août 2024",
+//     // ... autres champs nécessaires pour l'attestation de congé
+//   });
+
+//   const { toPDF, targetRef } = usePDF({
+//     filename: "attestation-conge.pdf",
+//     page: { margin: Margin.SMALL, orientation: "portrait" },
+//   });
+
+//   return (
+//     <Container size="md" py="xl">
+//       {/* Select aligné à gauche, largeur max 500px */}
+//       <div style={{ maxWidth: "500px", marginBottom: "1.5rem" }}>
+//         <Select
+//           label="Sélectionner l'employé par matricule"
+//           placeholder="Rechercher le nom ou matricule de l'employé"
+//           data={employeeList.map((emp) => ({
+//             value: emp.id.toString(),
+//             label: `${emp.matricule} - ${String(emp.nom).toUpperCase()} ${emp.prenom}`,
+//           }))}
+//           searchable
+//           onChange={handleSeePDF}
+//         />
+//       </div>
+
+//       {/* Bouton aligné à gauche */}
+//       <div style={{ marginBottom: "2rem" }}>
+//         <Button
+//           onClick={() => toPDF()}
+//           disabled={!selectedEmployeeId}
+//         >
+//           Imprimer PDF
+//         </Button>
+//       </div>
+
+//       <Space h="md" />
+
+//       {/* Zone d'aperçu PDF */}
+//       <div className={isPDFVisible ? "a4 block" : "hidden"} ref={targetRef}>
+//         <div className="header">
+//           <img src={logo} className="logo" alt="GULFSAT" />
+//           <div className="company">
+//             Lot IVR 41 Avenue de l'Indépendance <br />
+//             Antanimena – 101 Antananarivo <br />
+//             Tél : 020 23 320 10 | info@gulfsat.mg
+//           </div>
+//         </div>
+//         <div className="title">Attestation de Congé</div>
+//         <div className="content">
+//           {/* Contenu spécifique à l'attestation de congé */}
+//           {/* À compléter selon ton modèle exact */}
+//           Nous soussignés, la <strong>Société GULFSAT MADAGASCAR</strong>,
+//           attestons que <strong>{employeeData.name}</strong> est en congé du ... au ...
+//           <br />
+//           <br />
+//           Fait à Antananarivo, le <strong>12 décembre 2025</strong>
+//         </div>
+//         {/* Signature, etc. */}
+//       </div>
+//     </Container>
+//   );
+// };
+
+// export default AttestationConge;
+
+
+
+
+=========================================================================================================
+AttestationTravail.jsx : 
+// import React, { useEffect } from "react";
+// import { Container, Button } from "@mantine/core"; // Import de Button
+
+// import '../models/assets/css/attestation-travail.css'
+
+// import logo from "./assets/img/logo.png";
+
+// // Import nécessaire pour générer le PDF à partir du HTML visible
+// import { Margin, usePDF } from "react-to-pdf";
+// import { useState } from "react";
+
+// import { Select } from "@mantine/core";
+
+// import axios from "axios";
+
+// export const AttestationTravail = () => {
+//   const [employeeList, setEmployeeList] = useState([]);
+
+//   const bearerToken = localStorage.getItem('access_token') || '';
+
+//   const [isPDFVisible, setIsPDFVisible] = useState(false);
+
+//   const handleSeePDF = (employeeId) => {
+//     console.log("Employé sélectionné ID :", employeeId);
+//     // Ici, vous pouvez implémenter la logique pour récupérer les données de l'employé sélectionné
+//     // et mettre à jour l'état employeeData en conséquence.
+//     setIsPDFVisible(!isPDFVisible);
+//   }
+
+//   // L'URL de l'API que nous allons interroger (exemple public)
+//   const LIST_EMPLOYEE_API = 'http://localhost:8000/api/attestations/employes/';
+
+//   useEffect(() => {
+//     // 🌟 Configuration d'Axios pour inclure le Bearer Token 🌟
+//     const config = {
+//         headers: {
+//             'Authorization': `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzY3NTAzNTM3LCJpYXQiOjE3NjQ5MTE1MzcsImp0aSI6IjA1NGY4YTZmNWNlNjQzNWZiYWIxY2Q0MzAxMzFhMTdjIiwidXNlcl9pZCI6IjIifQ.f0Rw6qSTKTdAPu-LfHv8SHj6ZE3q9f2lHlR6iIMFLps`,
+//             'Content-Type': 'application/json' // Souvent inclus par bonne pratique
+//         }
+//     };
+
+//     const fetchEmployeeData = async () => {
+//       try {
+//         const response = await axios.get(`${LIST_EMPLOYEE_API}`, config);
+//         console.log('Données des employés récupérées :', response.data);
+//         // Traitez les données comme nécessaire
+
+//         setEmployeeList(response.data || []);
+//       }
+//       catch (error) {
+//         console.error('Erreur lors de la récupération des données des employés :', error);
+//       }
+//     }
+
+//     fetchEmployeeData();
+//   }, []);
+
+//   // setEmployeeData(response.data.employee)
+
+//   const [employeeData, setEmployeeData] = useState({
+//     name: "RAKOTOVAO Harilanto",
+//     sexe: "Mâle",
+//     cin: "101 241 169 331",
+//     cinIssueDate: "11 juin 2014",
+//     cinIssuePlace: "Antananarivo IV",
+//     address: "Lot III 67 A Mahamasina Sud – 101 Antananarivo",
+//     position: "Commercial Grand Public",
+//     startDate: "23 août 2024",
+//     issueDate: "21 novembre 2025",
+//     hrName: "Johary RAJAONARIVONY",
+//   });
+
+//   // 1. Initialisation du hook usePDF
+//   const { toPDF, targetRef } = usePDF({
+//     filename: "attestation-de-travail.pdf",
+//     page: { margin: Margin.SMALL, orientation: "portrait" },
+//   });
+
+//   return (
+//     <Container size="md" py="xl">
+//       <div>
+//         <Select
+//           label="Sélectionner l'employé par matricule"
+//           placeholder="Rechercher le nom ou matricule de l'employé"
+//           data={employeeList.map((emp) => ({
+//             value: emp.id.toString(),
+//             label: `${emp.matricule} - ${String(emp.nom).toUpperCase()} ${emp.prenom}`}))}
+//           searchable
+//           onChange={handleSeePDF}
+//         />
+//       </div>
+
+//       {/* BOUTON DE TÉLÉCHARGEMENT */}
+//       <Button onClick={() => toPDF()}>Imprimer PDF</Button>
+//       {/* 2. CONTENEUR A4 AVEC LA RÉFÉRENCE POUR LE PDF */}{" "}
+//       <div className={isPDFVisible ? 'a4 block' : 'hidden'} ref={targetRef}>
+//         {" "}
+//         <div className="header">
+//           <img src={logo} className="logo" alt="GULFSAT" />
+//           {" "}
+//           <div className="company">
+//             Lot IVR 41 Avenue de l'Indépendance {" "}
+//             <br />
+//             Antanimena – 101 Antananarivo  <br />
+//             Tél : 020 23 320 10 | info@gulfsat.mg  {" "}
+//           </div>
+//           {" "}
+//         </div>
+//         <div className="title">Attestation d'emploi</div>{" "}
+//         <div className="content">
+//           Nous soussignés, la{" "}
+//           <strong>Société GULFSAT MADAGASCAR</strong>,<br />
+//           attestons par la présente que :<br />
+//           <br /> {" "}
+//           <div className="highlight">
+//             {" "}
+//             <strong>{employeeData.sexe == 'Mâle' ? 'Monsieur' : 'Madame'} {employeeData.name}</strong>
+//             <br /> Titulaire de la CIN n°{" "}
+//             <strong>{employeeData.cin}</strong>
+//             <br />
+//             Délivrée le {employeeData.cinIssueDate} à {employeeData.cinIssuePlace}
+//             <br /> Résidant au {employeeData.address}
+//           </div>
+//           est employé dans notre société en qualité de{" "}
+//           <strong>{employeeData.position}</strong>
+//           <br />depuis le <strong>{employeeData.startDate}</strong>, sous
+//           contrat à durée indéterminée (CDI) à temps plein.
+//           <br />
+//           <br />La présente attestation est délivrée à
+//           l'intéressé, à sa demande, pour servir et valoir ce que de droit.
+//           {" "}
+//         </div>
+//         {/* BLOC DE SIGNATURE CORRIGÉ */}{" "}
+//         <div className="signature-block">
+//           Antananarivo, le <strong>10 décembre 2025</strong>
+//           <br />
+//           <br />
+//           <br />
+//           <br /> {/* Espacement uniforme pour la signature */}
+//           <div className="sign-name">{employeeData.hrName}</div>
+//           Responsable des Ressources Humaines {" "}
+//         </div>
+//         {" "}
+//       </div>
+//       {/* Rétrait du PDFViewer redondant */}{" "}
+//     </Container>
+//   );
+// };
+
+// export default AttestationTravail;
+
+
+
+========================================================================================================================
+Certificat de travail :
+
+// import React from "react";
+// import { Container, Button } from "@mantine/core";
+// // Nous utilisons react-to-pdf, donc ces imports de PDF/viewer sont retirés ou commentés
+// // import CertificatTravailPDF from "./CertificatTravailPDF";
+// // import PDFViewer from "./PDFViewer";
+
+// import '../models/assets/css/certificat-travail.css'
+// import logo from "./assets/img/logo.png";
+
+// // Import nécessaire pour générer le PDF à partir du HTML visible
+// import { Margin, usePDF } from "react-to-pdf";
+
+// export const CertificatTravail = () => {
+//   // 1. Initialisation du hook usePDF
+//   const { toPDF, targetRef } = usePDF({
+//     filename: "certificat-de-travail.pdf",
+//     page: { margin: Margin.SMALL, orientation: "portrait" },
+//   });
+
+//   return (
+//     <Container size="md" py="xl">
+//       {/* BOUTON DE TÉLÉCHARGEMENT (comme dans l'Attestation de Congé) */}
+//       <Button onClick={() => toPDF()}>Imprimer PDF</Button>
+
+//       {/* 2. CONTENEUR A4 AVEC LA RÉFÉRENCE POUR LE PDF */}
+//       <div className="a4" ref={targetRef}>
+//         <div className="header">
+//           <img src={logo} className="logo" alt="GULFSAT" />{" "}
+//           <div className="company">
+//             Lot IVR 41 Avenue de l'Indépendance <br />
+//             Antanimena – 101 Antananarivo <br />
+//             Tél : 020 23 320 10 | info@gulfsat.mg{" "}
+//           </div>{" "}
+//         </div>
+//         <div className="title">Certificat de Travail</div>{" "}
+//         <div className="content">
+//           Nous soussignée, la <strong>Société GULFSAT MADAGASCAR</strong>, sise
+//           au Lot IVR 41 Avenue de l'Indépendance, Antanimena – 101 Antananarivo,{" "}
+//           <br />
+//           certifions par la présente que :<br />
+//           <br />{" "}
+//           <div className="highlight" style={{ marginTop: '-10px', marginBottom: '20px'}}>
+//             <strong>Madame RAKOTOBE Mariane</strong>
+//             <br />
+//             Titulaire de la CIN n° <strong>101 252 190 721</strong>
+//             <br /> Délivrée le 31 mars 2015 à Antananarivo V <br /> Résidant au
+//             Lot II C 10 D Bis A Manjakaray{" "}
+//           </div>
+//           a été employée au sein de notre société en qualité de :
+//           <br />{" "}
+//           <div className="job-history">
+//             {" "}
+//             <p>
+//               • « <strong>Assistante Commerciale</strong> » du{" "}
+//               <strong>01 janvier 2020 au 08 octobre 2022</strong>
+//             </p>{" "}
+//             <p>
+//               • « <strong>Chargée de Clientèle</strong> » du{" "}
+//               <strong>09 octobre 2022 au 28 février 2023</strong>
+//             </p>{" "}
+//             <p>
+//               • « <strong>Responsable Commerciale</strong> » du{" "}
+//               <strong>01 mars 2023 au 08 octobre 2025</strong>
+//             </p>{" "}
+//           </div>
+//           Elle nous quitte libre de tout engagement. <br />
+//           <br />
+//           En foi de quoi, le présent certificat lui est délivré pour servir et
+//           valoir ce que de droit.{" "}
+//         </div>{" "}
+//         {/* BLOC DE SIGNATURE CORRIGÉ ET ESPACÉ */}
+//         <div className="signature-block">
+//           Fait à Antananarivo, le <strong>08 octobre 2025</strong>
+//           <br />
+//           <br />
+//           <br /> {/* Espace vide pour la signature (4 sauts de ligne) */}
+//           <div className="sign-name">Johary RAJAONARIVONY</div>
+//           Responsable des Ressources Humaines{" "}
+//         </div>{" "}
+//       </div>{" "}
+//     </Container>
+//   );
+// };
+
+// export default CertificatTravail;
