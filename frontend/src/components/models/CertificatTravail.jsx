@@ -71,7 +71,7 @@ export const CertificatTravail = () => {
           placeholder="Rechercher le nom ou matricule de l'employé"
           data={employeeList.map((emp) => ({
             value: emp.id.toString(),
-            label: `${emp.number || 'N/A'} - ${String(emp.name || '').toUpperCase()}`
+            label: `${emp.number || '-'} - ${String(emp.name || '').toUpperCase()}`
           }))}
           searchable
           onChange={handleEmployeeSelect}
@@ -118,17 +118,17 @@ export const CertificatTravail = () => {
                 {String(selectedEmployee.name || '').toUpperCase()}
               </strong>
               <br />
-              Titulaire de la CIN n° <strong>{formatBy3(selectedEmployee.identification_id) || 'N/A'}</strong>
+              Titulaire de la CIN n° <strong>{formatBy3(selectedEmployee.identification_id) || '-'}</strong>
               <br />
-              Délivrée le {selectedEmployee.date_delivrance_cin ? new Date(selectedEmployee.date_delivrance_cin).toLocaleDateString('fr-FR') : 'N/A'} à {selectedEmployee.lieu_delivrance_cin || 'N/A'}
+              Délivrée le {selectedEmployee.date_delivrance_cin ? new Date(selectedEmployee.date_delivrance_cin).toLocaleDateString('fr-FR') : '-'} à {selectedEmployee.lieu_delivrance_cin || '-'}
               <br />
-              Résidant au {selectedEmployee?.address_home_id[1] || 'N/A'}
+              Résidant au {selectedEmployee?.address_home_id[1] || '-'}
             </div>
 
             a été employée au sein de notre société en qualité de :
             <div className="job-history">
               <p>
-                • « <strong>{selectedEmployee?.job_id[1] || 'N/A'}</strong> »
+                • « <strong>{selectedEmployee?.job_id[1] || '-'}</strong> »
               </p>
             </div>
 
