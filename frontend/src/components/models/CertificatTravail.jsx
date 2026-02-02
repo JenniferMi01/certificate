@@ -128,7 +128,7 @@ export const CertificatTravail = () => {
             a été employée au sein de notre société en qualité de :
             <div className="job-history">
               <p>
-                • « <strong>{selectedEmployee.department?.name || 'Employé'}</strong> »
+                • « <strong>{selectedEmployee?.job_id[1] || 'N/A'}</strong> »
               </p>
             </div>
 
