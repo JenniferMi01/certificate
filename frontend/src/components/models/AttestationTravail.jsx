@@ -7,6 +7,7 @@ import logo from "./assets/img/logo.png";
 
 import { Margin, usePDF } from "react-to-pdf";
 import axios from "axios";
+import { formatDateToFrench } from "../../utils/utilities";
 
 export const AttestationTravail = () => {
   const [employeeList, setEmployeeList] = useState([]);
@@ -15,13 +16,6 @@ export const AttestationTravail = () => {
 
   // ✅ API ODOO
   const LIST_EMPLOYEE_API = "http://localhost:5000/employees";
-
-  const formatDateToFrench = (dateString) => {
-    const date = new Date(dateString);
-
-    const options = { day: 'numeric', month: 'long', year: 'numeric' };
-    return date.toLocaleDateString('fr-FR', options);
-  }
 
   useEffect(() => {
     const fetchEmployeeData = async () => {
