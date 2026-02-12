@@ -4,7 +4,7 @@ import { Select, TextInput } from "@mantine/core";
 import { DatePickerInput } from "@mantine/dates";
 
 import "../models/assets/css/attestation-conge.css";
-import logo from "./assets/img/logo.png";
+import Gulfsat from "./assets/img/Gulfsatlogo.jpeg";
 
 import { Margin, usePDF } from "react-to-pdf";
 import axios from "axios";
@@ -111,7 +111,7 @@ export const AttestationConge = () => {
       {selectedEmployee && (
         <div className={isPDFVisible ? "a4 block" : "hidden"} ref={targetRef}>
           <div className="header">
-            <img src={logo} className="logo" alt="GULFSAT" />
+            <img src={Gulfsat} className="logo" alt="GULFSAT" />
             <div className="company">
               Lot IVR 41 Avenue de l'Indépendance
               <br />
