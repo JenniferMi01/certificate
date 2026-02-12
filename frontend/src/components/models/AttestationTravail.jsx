@@ -15,8 +15,7 @@ export const AttestationTravail = () => {
   const [isPDFVisible, setIsPDFVisible] = useState(false);
 
   // ✅ API ODOO
-  const LIST_EMPLOYEE_API = `${import.meta.env.VITE_API_BASE_URL}/employees`;
-
+    const LIST_EMPLOYEE_API = "http://localhost:5000/employees";
   useEffect(() => {
     const fetchEmployeeData = async () => {
       try {

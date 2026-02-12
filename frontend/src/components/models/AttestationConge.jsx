@@ -19,8 +19,7 @@ export const AttestationConge = () => {
   const [destination, setDestination] = useState("");
 
   // API Odoo
-  const LIST_EMPLOYEE_API = `${import.meta.env.VITE_API_BASE_URL}/employees`;
-
+    const LIST_EMPLOYEE_API = "http://localhost:5000/employees";
   useEffect(() => {
     const fetchEmployeeData = async () => {
       try {

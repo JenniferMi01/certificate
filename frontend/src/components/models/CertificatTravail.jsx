@@ -16,7 +16,7 @@ export const CertificatTravail = () => {
   // ✅ AJOUT UNIQUEMENT
   const [libreEngagement, setLibreEngagement] = useState(false);
 
-  const LIST_EMPLOYEE_API = `${import.meta.env.VITE_API_BASE_URL}/employees`;
+   const LIST_EMPLOYEE_API = 'http://localhost:5000/employees';
 
   useEffect(() => {
     const fetchEmployeeData = async () => {

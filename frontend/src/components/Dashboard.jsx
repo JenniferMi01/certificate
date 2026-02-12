@@ -43,7 +43,7 @@ import axios from 'axios';
 
 function Dashboard() {
   const [userData, setUserData] = useState(null);
-  const USER_INFO = `${import.meta.env.VITE_API_BASE_DJANGO}/api/me/`;
+   const USER_INFO = "http://localhost:8000/api/me/";
   const TOKEN = localStorage.getItem("access_token") || "";
 
   const config = {

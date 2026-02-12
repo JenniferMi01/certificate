@@ -25,7 +25,7 @@ SECRET_KEY = 'django-insecure-%z#c#3hrz92+-#br3_e@9742hxo3xk+e$hz+uwr%jqv$fs&mc_
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ["*"]
+ALLOWED_HOSTS = []
 
 
 # Application definition
@@ -154,6 +154,12 @@ GRAPH_MODELS = {
     'app_labels': ['attestations'],
 }
 
+
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:5173",  # ton app React
+    "http://127.0.0.1:5174",
+
+]
 # CORS_ALLOWED_ORIGINS = [
 #     "http://localhost:5173",  # ton app React
 #     "http://127.0.0.1:5174",
