@@ -4,7 +4,8 @@ import { DatePickerInput } from "@mantine/dates";
 import { useDebouncedValue } from "@mantine/hooks";
 
 import "../models/assets/css/attestation-conge.css";
-import Gulfsat from "./assets/img/Gulfsatlogo.jpeg";
+import GulfsatLogo from "./assets/img/Gulfsatlogo.jpeg";
+import BluelineLogo from "./assets/img/BluelineLogo.jpeg";   // ← Import marina
 
 import { Margin, usePDF } from "react-to-pdf";
 import axios from "axios";
@@ -22,6 +23,23 @@ export const AttestationConge = () => {
   const [periodeConge, setPeriodeConge] = useState([null, null]);
   const [destination, setDestination] = useState("");
 
+  // Sélection de la société
+  const [selectedCompany, setSelectedCompany] = useState("gulfsat");
+
+  const companyData = {
+    gulfsat: {
+      logo: GulfsatLogo,
+      name: "Société GULFSAT MADAGASCAR",
+    },
+    blueline: {
+      logo: BluelineLogo,           // ← Logo Blueline tena misy
+      name: "Société BLUELINE",
+    },
+  };
+
+  const commonAddress = "Lot IVR 41 Avenue de l'Indépendance<br />Antanimena – 101 Antananarivo";
+  const commonContact = "Tél : 020 23 320 10 | info@gulfsat.mg";
+
   const LIST_EMPLOYEE_API = "http://localhost:5000/employees";
 
   const fetchEmployees = useCallback(async (search = "") => {
@@ -31,19 +49,17 @@ export const AttestationConge = () => {
       const response = await axios.get(LIST_EMPLOYEE_API, { params });
       setEmployeeList(response.data.data || []);
     } catch (error) {
-      console.error("Erreur lors de la récupération des employés :", error);
+      console.error("Erreur chargement employés :", error);
       setEmployeeList([]);
     } finally {
       setLoading(false);
     }
   }, []);
 
-  // Chargement initial (sans recherche)
   useEffect(() => {
     fetchEmployees();
   }, [fetchEmployees]);
 
-  // Rechargement quand la recherche change (debounced)
   useEffect(() => {
     fetchEmployees(debouncedSearch);
   }, [debouncedSearch, fetchEmployees]);
@@ -60,7 +76,7 @@ export const AttestationConge = () => {
       setSelectedEmployee(response.data);
       setIsPDFVisible(true);
     } catch (error) {
-      console.error("Erreur lors de la récupération des détails de l'employé :", error);
+      console.error("Erreur employé :", error);
       setSelectedEmployee(null);
       setIsPDFVisible(false);
     }
@@ -81,24 +97,41 @@ export const AttestationConge = () => {
 
   return (
     <Container size="md" py="xl">
+      {/* Sélection Société */}
+      <div style={{ maxWidth: "500px", marginBottom: "1.5rem" }}>
+        <Select
+          label="Société"
+          placeholder="Choisir la société"
+          value={selectedCompany}
+          onChange={setSelectedCompany}
+          data={[
+            { value: "gulfsat", label: "Gulfsat Madagascar" },
+            { value: "blueline", label: "Blueline" },
+          ]}
+          nothingFoundMessage="Aucune société trouvée"
+        />
+      </div>
+
+      {/* Sélection Employé */}
       <div style={{ maxWidth: "500px", marginBottom: "1.5rem", position: "relative" }}>
         <Select
           label="Sélectionner l'employé par matricule"
           placeholder="Rechercher le nom ou matricule de l'employé"
           data={employeeList.map((emp) => ({
             value: emp.id.toString(),
-            label: `${emp.number || "-"} - ${emp.name?.toUpperCase()}`,
+            label: `${emp.number || "-"} - ${emp.name?.toUpperCase() || ""}`,
           }))}
           searchable
           searchValue={searchValue}
           onSearchChange={setSearchValue}
           onChange={handleEmployeeSelect}
-          nothingFound="Aucun employé trouvé"
+          nothingFoundMessage="Aucun employé trouvé"
           rightSection={loading ? <Loader size="xs" /> : null}
           maxDropdownHeight={280}
         />
       </div>
 
+      {/* Période de congé */}
       <div style={{ maxWidth: "500px", marginBottom: "1.5rem" }}>
         <DatePickerInput
           type="range"
@@ -110,6 +143,7 @@ export const AttestationConge = () => {
         />
       </div>
 
+      {/* Destination */}
       <div style={{ maxWidth: "500px", marginBottom: "1.5rem" }}>
         <TextInput
           label="Destination"
@@ -130,75 +164,61 @@ export const AttestationConge = () => {
       {selectedEmployee && (
         <div className={isPDFVisible ? "a4 block" : "hidden"} ref={targetRef}>
           <div className="header">
-            <img src={Gulfsat} className="logo" alt="GULFSAT" />
+            <img
+              src={companyData[selectedCompany].logo}
+              className="logo"
+              alt={companyData[selectedCompany].name}
+              style={{ maxWidth: "180px", height: "auto" }}
+            />
             <div className="company">
-              Lot IVR 41 Avenue de l'Indépendance
+              {companyData[selectedCompany].name}
               <br />
-              Antanimena – 101 Antananarivo
+              <span dangerouslySetInnerHTML={{ __html: commonAddress }} />
               <br />
-              Tél : 020 23 320 10 | info@gulfsat.mg
+              {commonContact}
             </div>
           </div>
 
           <div className="title">Attestation de Congé</div>
 
           <div className="content">
-            Nous soussignés, la <strong>Société GULFSAT MADAGASCAR</strong>,
-            attestons par la présente que :
+            Nous soussignés, la <strong>{companyData[selectedCompany].name}</strong>,
+            attestons par la présente que :<br /><br />
+
             <div className="highlight">
               <strong>
                 {selectedEmployee.gender === "female" ? "Madame" : "Monsieur"}{" "}
                 {selectedEmployee.name?.toUpperCase() || "-"}
-              </strong>
-              <br />
-              Née le{" "}
-              <strong>
-                {formatDateToFrench(selectedEmployee.birthday) || "-"}
-              </strong>{" "}
-              à {selectedEmployee.place_of_birth || "-"}
+              </strong><br />
+              Née le <strong>{formatDateToFrench(selectedEmployee.birthday) || "-"}</strong> à{" "}
+              {selectedEmployee.place_of_birth || "-"}
             </div>
 
             est employé(e) au sein de notre société en qualité de «{" "}
-            <strong>
-              {selectedEmployee.job_id?.[1] || "Employé"}
-            </strong>{" "}
-            » depuis le{" "}
-            <strong>
-              {formatDateToFrench(selectedEmployee.start_date) || "-"}
-            </strong>
-            .
-            <br />
-            <br />
+            <strong>{selectedEmployee.job_id?.[1] || "Employé"}</strong>{" "}
+            » depuis le <strong>{formatDateToFrench(selectedEmployee.start_date) || "-"}</strong>.<br /><br />
+
             {selectedEmployee.gender === "female" ? "Madame" : "Monsieur"}{" "}
             {selectedEmployee.name?.toUpperCase() || "-"} partira en congé du{" "}
             <strong>{dateDebut}</strong> au <strong>{dateFin}</strong> à destination de{" "}
-            <strong>{destination || "—"}</strong>.
-            <br />
-            <br />
+            <strong>{destination || "—"}</strong>.<br /><br />
+
             Sitôt le congé terminé, {selectedEmployee.gender === "female" ? "elle" : "il"} est tenu
             {selectedEmployee.gender === "female" ? "e" : ""} de retourner à Madagascar
-            et de reprendre son poste de travail au sein de la Société.
-            <br />
-            <br />
-            Délivrée à l'intéressé(e), sur sa demande, pour servir et valoir ce que
-            de droit.
+            et de reprendre son poste de travail au sein de la Société.<br /><br />
+
+            Délivrée à l'intéressé(e), sur sa demande, pour servir et valoir ce que de droit.
           </div>
 
           <div className="signature-block">
-            Antananarivo, le <strong>{new Date().toLocaleDateString("fr-FR")}</strong>
-            <br />
-            <br />
-            <br />
+            Antananarivo, le <strong>{new Date().toLocaleDateString("fr-FR")}</strong><br /><br /><br />
             <div className="sign-name">Johary RAJAONARIVONY</div>
             Responsable des Ressources Humaines
           </div>
 
           <div className="footer">
-            Route Digue domaine d’Andranoabo – B.P 8127 - 101 – ANTANANARIVO –
-            <br />
-            Tél : 23 320 10 – Fax : 22 331 96 – 1 691 640
-            <br />
-            Mail: info@gulfsat.mg
+            <span dangerouslySetInnerHTML={{ __html: commonAddress }} /><br />
+            {commonContact}
           </div>
         </div>
       )}

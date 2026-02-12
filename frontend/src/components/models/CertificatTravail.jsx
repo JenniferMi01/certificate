@@ -3,7 +3,8 @@ import { Container, Button, Space, Checkbox, Loader, Select } from "@mantine/cor
 import { useDebouncedValue } from "@mantine/hooks";
 
 import '../models/assets/css/certificat-travail.css';
-import Gulfsat from "./assets/img/Gulfsatlogo.jpeg";
+import GulfsatLogo from "./assets/img/Gulfsatlogo.jpeg";
+import BluelineLogo from "./assets/img/BluelineLogo.jpeg";   // ← Import correct (même dossier)
 
 import { Margin, usePDF } from "react-to-pdf";
 import axios from "axios";
@@ -17,8 +18,25 @@ export const CertificatTravail = () => {
   const [selectedEmployee, setSelectedEmployee] = useState(null);
   const [isPDFVisible, setIsPDFVisible] = useState(false);
 
-  // ✅ AJOUT UNIQUEMENT
+  // Checkbox "libre de tout engagement"
   const [libreEngagement, setLibreEngagement] = useState(false);
+
+  // Sélection de la société
+  const [selectedCompany, setSelectedCompany] = useState("gulfsat");
+
+  const companyData = {
+    gulfsat: {
+      logo: GulfsatLogo,
+      name: "Société GULFSAT MADAGASCAR",
+    },
+    blueline: {
+      logo: BluelineLogo,           // ← Logo Blueline maintenant utilisé
+      name: "Société BLUELINE",
+    },
+  };
+
+  const commonAddress = "Lot IVR 41 Avenue de l'Indépendance<br />Antanimena – 101 Antananarivo";
+  const commonContact = "Tél : 020 23 320 10 | info@gulfsat.mg";
 
   const LIST_EMPLOYEE_API = 'http://localhost:5000/employees';
 
@@ -38,12 +56,10 @@ export const CertificatTravail = () => {
     }
   }, []);
 
-  // Chargement initial (sans recherche)
   useEffect(() => {
     fetchEmployees();
   }, [fetchEmployees]);
 
-  // Rechargement quand la recherche change (debounced)
   useEffect(() => {
     fetchEmployees(debouncedSearch);
   }, [debouncedSearch, fetchEmployees]);
@@ -80,6 +96,22 @@ export const CertificatTravail = () => {
 
   return (
     <Container size="md" py="xl">
+      {/* Sélection Société */}
+      <div style={{ maxWidth: "500px", marginBottom: "1.5rem" }}>
+        <Select
+          label="Société"
+          placeholder="Choisir la société"
+          value={selectedCompany}
+          onChange={setSelectedCompany}
+          data={[
+            { value: "gulfsat", label: "Gulfsat Madagascar" },
+            { value: "blueline", label: "Blueline" },
+          ]}
+          nothingFoundMessage="Aucune société trouvée"
+        />
+      </div>
+
+      {/* Sélection Employé */}
       <div style={{ maxWidth: "500px", marginBottom: "1.5rem", position: "relative" }}>
         <Select
           label="Sélectionner l'employé par matricule"
@@ -92,13 +124,13 @@ export const CertificatTravail = () => {
           searchValue={searchValue}
           onSearchChange={setSearchValue}
           onChange={handleEmployeeSelect}
-          nothingFound="Aucun employé trouvé"
+          nothingFoundMessage="Aucun employé trouvé"
           rightSection={loading ? <Loader size="xs" /> : null}
           maxDropdownHeight={280}
         />
       </div>
 
-      {/* ✅ CHECKBOX AJOUTÉE */}
+      {/* Checkbox */}
       <Checkbox
         label="L’employé quitte libre de tout engagement"
         checked={libreEngagement}
@@ -117,26 +149,31 @@ export const CertificatTravail = () => {
       {selectedEmployee && (
         <div className={isPDFVisible ? 'a4 block' : 'hidden'} ref={targetRef}>
           <div className="header">
-            <img src={Gulfsat} className="logo" alt="GULFSAT" />
+            <img
+              src={companyData[selectedCompany].logo}
+              className="logo"
+              alt={companyData[selectedCompany].name}
+              style={{ maxWidth: "180px", height: "auto" }}
+            />
             <div className="company">
-              Lot IVR 41 Avenue de l'Indépendance <br />
-              Antanimena – 101 Antananarivo <br />
-              Tél : 020 23 320 10 | info@gulfsat.mg
+              {companyData[selectedCompany].name}
+              <br />
+              <span dangerouslySetInnerHTML={{ __html: commonAddress }} />
+              <br />
+              {commonContact}
             </div>
           </div>
 
           <div className="title">Certificat de Travail</div>
 
           <div className="content">
-            Nous soussignée, la <strong>Société GULFSAT MADAGASCAR</strong>,
+            Nous soussignée, la <strong>{companyData[selectedCompany].name}</strong>,
             sise au Lot IVR 41 Avenue de l'Indépendance, Antanimena – 101 Antananarivo,
             certifions par la présente que :
             <br /><br />
 
             <div className="highlight">
-              <strong>
-                {String(selectedEmployee.name || '').toUpperCase()}
-              </strong>
+              <strong>{String(selectedEmployee.name || '').toUpperCase()}</strong>
               <br />
               Titulaire de la CIN n° <strong>{formatBy3(selectedEmployee.identification_id) || '-'}</strong>
               <br />
@@ -152,7 +189,6 @@ export const CertificatTravail = () => {
               </p>
             </div>
 
-            {/* ✅ PHRASE CONDITIONNELLE */}
             {libreEngagement && (
               <>
                 {selectedEmployee.name ? (selectedEmployee.name.toLowerCase().includes('femme') ? 'Elle' : 'Il') : 'Il'} nous quitte libre de tout engagement.
@@ -160,8 +196,7 @@ export const CertificatTravail = () => {
               </>
             )}
 
-            En foi de quoi, le présent certificat lui est délivré pour servir et
-            valoir ce que de droit.
+            En foi de quoi, le présent certificat lui est délivré pour servir et valoir ce que de droit.
           </div>
 
           <div className="signature-block">
@@ -171,11 +206,10 @@ export const CertificatTravail = () => {
             Responsable des Ressources Humaines
           </div>
 
-          {/* ✅ FOOTER BIEN PRÉSENT */}
           <div className="footer">
-            Gulfsat Madagascar SARL au capital de 5 000 000 000 Ar – Siège social : 41 avenue Lénine Antanimena Antananarivo 101 – <br />
-            BP 8127 - RCS Antananarivo 2001 B 000 25 - NIF N° 4000004897 – STAT N° 61906 11 2001 0 10059 <br />
-            Tél : 23 320 10 – Mail : info@gulfsat.mg
+            <span dangerouslySetInnerHTML={{ __html: commonAddress }} />
+            <br />
+            {commonContact}
           </div>
         </div>
       )}
