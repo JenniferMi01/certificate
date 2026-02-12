@@ -1,43 +1,58 @@
-import React, { useEffect, useState } from "react";
-import { Container, Button, Space, Checkbox } from "@mantine/core";
-import { Select } from "@mantine/core";
+import React, { useEffect, useState, useCallback } from "react";
+import { Container, Button, Space, Checkbox, Loader, Select } from "@mantine/core";
+import { useDebouncedValue } from "@mantine/hooks";
 
 import '../models/assets/css/certificat-travail.css';
-import logo from "./assets/img/logo.png";
+import Gulfsat from "./assets/img/Gulfsatlogo.jpeg";
 
 import { Margin, usePDF } from "react-to-pdf";
 import axios from "axios";
 
 export const CertificatTravail = () => {
   const [employeeList, setEmployeeList] = useState([]);
+  const [searchValue, setSearchValue] = useState("");
+  const [debouncedSearch] = useDebouncedValue(searchValue, 350);
+  const [loading, setLoading] = useState(false);
+
   const [selectedEmployee, setSelectedEmployee] = useState(null);
   const [isPDFVisible, setIsPDFVisible] = useState(false);
 
   // ✅ AJOUT UNIQUEMENT
   const [libreEngagement, setLibreEngagement] = useState(false);
 
-   const LIST_EMPLOYEE_API = 'http://localhost:5000/employees';
+  const LIST_EMPLOYEE_API = 'http://localhost:5000/employees';
 
-  useEffect(() => {
-    const fetchEmployeeData = async () => {
-      try {
-        const response = await axios.get(LIST_EMPLOYEE_API);
-        console.log("Réponse de l'API :", response);
-        setEmployeeList(response.data.data || []);
-      } catch (error) {
-        console.error('Erreur lors de la récupération des employés:', error);
-        console.error('Détails de l\'erreur:', error.response?.data);
-        // Optionnel : afficher un message d'erreur à l'utilisateur
-      }
-    };
-    fetchEmployeeData();
+  const fetchEmployees = useCallback(async (search = "") => {
+    setLoading(true);
+    try {
+      const params = search.trim() ? { search: search.trim() } : { limit: 20 };
+      const response = await axios.get(LIST_EMPLOYEE_API, { params });
+      console.log("Réponse de l'API :", response);
+      setEmployeeList(response.data.data || []);
+    } catch (error) {
+      console.error('Erreur lors de la récupération des employés:', error);
+      console.error('Détails de l\'erreur:', error.response?.data);
+      setEmployeeList([]);
+    } finally {
+      setLoading(false);
+    }
   }, []);
+
+  // Chargement initial (sans recherche)
+  useEffect(() => {
+    fetchEmployees();
+  }, [fetchEmployees]);
+
+  // Rechargement quand la recherche change (debounced)
+  useEffect(() => {
+    fetchEmployees(debouncedSearch);
+  }, [debouncedSearch, fetchEmployees]);
 
   const formatBy3 = (value) => {
     return value
       .toString()
       .replace(/\B(?=(\d{3})+(?!\d))/g, " ");
-  }
+  };
 
   const handleEmployeeSelect = async (employeeId) => {
     if (!employeeId) {
@@ -65,7 +80,7 @@ export const CertificatTravail = () => {
 
   return (
     <Container size="md" py="xl">
-      <div style={{ maxWidth: "500px", marginBottom: "1.5rem" }}>
+      <div style={{ maxWidth: "500px", marginBottom: "1.5rem", position: "relative" }}>
         <Select
           label="Sélectionner l'employé par matricule"
           placeholder="Rechercher le nom ou matricule de l'employé"
@@ -74,7 +89,12 @@ export const CertificatTravail = () => {
             label: `${emp.number || '-'} - ${String(emp.name || '').toUpperCase()}`
           }))}
           searchable
+          searchValue={searchValue}
+          onSearchChange={setSearchValue}
           onChange={handleEmployeeSelect}
+          nothingFound="Aucun employé trouvé"
+          rightSection={loading ? <Loader size="xs" /> : null}
+          maxDropdownHeight={280}
         />
       </div>
 
@@ -97,7 +117,7 @@ export const CertificatTravail = () => {
       {selectedEmployee && (
         <div className={isPDFVisible ? 'a4 block' : 'hidden'} ref={targetRef}>
           <div className="header">
-            <img src={logo} className="logo" alt="GULFSAT" />
+            <img src={Gulfsat} className="logo" alt="GULFSAT" />
             <div className="company">
               Lot IVR 41 Avenue de l'Indépendance <br />
               Antanimena – 101 Antananarivo <br />
@@ -122,13 +142,13 @@ export const CertificatTravail = () => {
               <br />
               Délivrée le {selectedEmployee.date_delivrance_cin ? new Date(selectedEmployee.date_delivrance_cin).toLocaleDateString('fr-FR') : '-'} à {selectedEmployee.lieu_delivrance_cin || '-'}
               <br />
-              Résidant au {selectedEmployee?.address_home_id[1] || '-'}
+              Résidant au {selectedEmployee?.address_home_id?.[1] || '-'}
             </div>
 
             a été employée au sein de notre société en qualité de :
             <div className="job-history">
               <p>
-                • « <strong>{selectedEmployee?.job_id[1] || '-'}</strong> »
+                • « <strong>{selectedEmployee?.job_id?.[1] || '-'}</strong> »
               </p>
             </div>
 
@@ -164,5 +184,3 @@ export const CertificatTravail = () => {
 };
 
 export default CertificatTravail;
-
-

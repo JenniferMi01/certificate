@@ -1,7 +1,7 @@
-import React, { useEffect, useState } from "react";
-import { Container, Button, Space } from "@mantine/core";
-import { Select, TextInput } from "@mantine/core";
+import React, { useEffect, useState, useCallback } from "react";
+import { Container, Button, Space, Loader, Select, TextInput } from "@mantine/core";
 import { DatePickerInput } from "@mantine/dates";
+import { useDebouncedValue } from "@mantine/hooks";
 
 import "../models/assets/css/attestation-conge.css";
 import Gulfsat from "./assets/img/Gulfsatlogo.jpeg";
@@ -12,26 +12,41 @@ import { formatDateToFrench } from "../../utils/utilities";
 
 export const AttestationConge = () => {
   const [employeeList, setEmployeeList] = useState([]);
+  const [searchValue, setSearchValue] = useState("");
+  const [debouncedSearch] = useDebouncedValue(searchValue, 350);
+  const [loading, setLoading] = useState(false);
+
   const [selectedEmployee, setSelectedEmployee] = useState(null);
   const [isPDFVisible, setIsPDFVisible] = useState(false);
 
   const [periodeConge, setPeriodeConge] = useState([null, null]);
   const [destination, setDestination] = useState("");
 
-  // API Odoo
-    const LIST_EMPLOYEE_API = "http://localhost:5000/employees";
-  useEffect(() => {
-    const fetchEmployeeData = async () => {
-      try {
-        const response = await axios.get(LIST_EMPLOYEE_API);
-        setEmployeeList(response.data.data || []);
-      } catch (error) {
-        console.error("Erreur lors de la récupération des employés :", error);
-      }
-    };
+  const LIST_EMPLOYEE_API = "http://localhost:5000/employees";
 
-    fetchEmployeeData();
+  const fetchEmployees = useCallback(async (search = "") => {
+    setLoading(true);
+    try {
+      const params = search.trim() ? { search: search.trim() } : { limit: 20 };
+      const response = await axios.get(LIST_EMPLOYEE_API, { params });
+      setEmployeeList(response.data.data || []);
+    } catch (error) {
+      console.error("Erreur lors de la récupération des employés :", error);
+      setEmployeeList([]);
+    } finally {
+      setLoading(false);
+    }
   }, []);
+
+  // Chargement initial (sans recherche)
+  useEffect(() => {
+    fetchEmployees();
+  }, [fetchEmployees]);
+
+  // Rechargement quand la recherche change (debounced)
+  useEffect(() => {
+    fetchEmployees(debouncedSearch);
+  }, [debouncedSearch, fetchEmployees]);
 
   const handleEmployeeSelect = async (employeeId) => {
     if (!employeeId) {
@@ -66,7 +81,7 @@ export const AttestationConge = () => {
 
   return (
     <Container size="md" py="xl">
-      <div style={{ maxWidth: "500px", marginBottom: "1.5rem" }}>
+      <div style={{ maxWidth: "500px", marginBottom: "1.5rem", position: "relative" }}>
         <Select
           label="Sélectionner l'employé par matricule"
           placeholder="Rechercher le nom ou matricule de l'employé"
@@ -75,7 +90,12 @@ export const AttestationConge = () => {
             label: `${emp.number || "-"} - ${emp.name?.toUpperCase()}`,
           }))}
           searchable
+          searchValue={searchValue}
+          onSearchChange={setSearchValue}
           onChange={handleEmployeeSelect}
+          nothingFound="Aucun employé trouvé"
+          rightSection={loading ? <Loader size="xs" /> : null}
+          maxDropdownHeight={280}
         />
       </div>
 

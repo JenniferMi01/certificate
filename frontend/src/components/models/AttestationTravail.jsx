@@ -1,34 +1,45 @@
-import React, { useEffect, useState } from "react";
-import { Container, Button, Space } from "@mantine/core";
-import { Select } from "@mantine/core";
-
+import React, { useEffect, useState, useCallback } from "react";
+import { Container, Button, Space, Loader, Select } from "@mantine/core";
+import { useDebouncedValue } from "@mantine/hooks";
 import "../models/assets/css/attestation-travail.css";
-import logo from "./assets/img/logo.png";
-
+import Gulfsat from "./assets/img/Gulfsatlogo.jpeg";
 import { Margin, usePDF } from "react-to-pdf";
 import axios from "axios";
 import { formatDateToFrench } from "../../utils/utilities";
 
 export const AttestationTravail = () => {
   const [employeeList, setEmployeeList] = useState([]);
+  const [searchValue, setSearchValue] = useState("");
+  const [debouncedSearch] = useDebouncedValue(searchValue, 350);
+  const [loading, setLoading] = useState(false);
   const [selectedEmployee, setSelectedEmployee] = useState(null);
   const [isPDFVisible, setIsPDFVisible] = useState(false);
 
-  // ✅ API ODOO
-    const LIST_EMPLOYEE_API = "http://localhost:5000/employees";
-  useEffect(() => {
-    const fetchEmployeeData = async () => {
-      try {
-        const response = await axios.get(LIST_EMPLOYEE_API);
-        console.log("Employés Odoo :", response.data);
-        setEmployeeList(response.data.data || []);
-      } catch (error) {
-        console.error("Erreur chargement employés :", error);
-      }
-    };
+  const LIST_EMPLOYEE_API = "http://localhost:5000/employees";
 
-    fetchEmployeeData();
+  const fetchEmployees = useCallback(async (search = "") => {
+    setLoading(true);
+    try {
+      const params = search.trim() ? { search: search.trim() } : { limit: 20 };
+      const response = await axios.get(LIST_EMPLOYEE_API, { params });
+      setEmployeeList(response.data.data || []);
+    } catch (error) {
+      console.error("Erreur chargement employés :", error);
+      setEmployeeList([]);
+    } finally {
+      setLoading(false);
+    }
   }, []);
+
+  // Chargement voalohany (tsy misy recherche)
+  useEffect(() => {
+    fetchEmployees();
+  }, [fetchEmployees]);
+
+  // Rechargement rehefa miova ny debounced search
+  useEffect(() => {
+    fetchEmployees(debouncedSearch);
+  }, [debouncedSearch, fetchEmployees]);
 
   const handleSeePDF = async (employeeId) => {
     if (!employeeId) {
@@ -55,16 +66,21 @@ export const AttestationTravail = () => {
 
   return (
     <Container size="md" py="xl">
-      <div style={{ maxWidth: "500px", marginBottom: "1.5rem" }}>
+      <div style={{ maxWidth: "500px", marginBottom: "1.5rem", position: "relative" }}>
         <Select
-          label="Sélectionner l'employé par matricule"
+          label="Sélectionner l'employé par matricule ou nom"
           placeholder="Rechercher le nom ou matricule de l'employé"
           data={employeeList.map((emp) => ({
             value: emp.id.toString(),
-            label: `${emp.number || "-"} - ${emp.name?.toUpperCase()}`,
+            label: `${emp.number || "-"} - ${emp.name?.toUpperCase() || ""}`,
           }))}
           searchable
+          searchValue={searchValue}
+          onSearchChange={setSearchValue}
           onChange={handleSeePDF}
+          nothingFound="Tsy hita ny employé"
+          rightSection={loading ? <Loader size="xs" /> : null}
+          maxDropdownHeight={280}
         />
       </div>
 
@@ -81,7 +97,7 @@ export const AttestationTravail = () => {
       {selectedEmployee && (
         <div className={isPDFVisible ? "a4 block" : "hidden"} ref={targetRef}>
           <div className="header">
-            <img src={logo} className="logo" alt="GULFSAT" />
+            <img src={Gulfsat} className="logo" alt="GULFSAT" />
             <div className="company">
               Lot IVR 41 Avenue de l'Indépendance <br />
               Antanimena – 101 Antananarivo <br />
