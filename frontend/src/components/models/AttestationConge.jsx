@@ -217,8 +217,11 @@ export const AttestationConge = () => {
           </div>
 
           <div className="footer">
-            <span dangerouslySetInnerHTML={{ __html: commonAddress }} /><br />
-            {commonContact}
+            Route Digue domaine d’Andranoabo – B.P 8127 - 101 – ANTANANARIVO –
+            <br />
+            Tél : 23 320 10 – Fax : 22 331 96 – 1 691 640
+            <br />
+            Mail: info@gulfsat.mg
           </div>
         </div>
       )}

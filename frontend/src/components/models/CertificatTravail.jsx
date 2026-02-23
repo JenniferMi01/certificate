@@ -207,9 +207,9 @@ export const CertificatTravail = () => {
           </div>
 
           <div className="footer">
-            <span dangerouslySetInnerHTML={{ __html: commonAddress }} />
-            <br />
-            {commonContact}
+            Gulfsat Madagascar SARL au capital de 5 000 000 000 Ar – Siège social : 41 avenue Lénine Antanimena Antananarivo 101 – <br />
+            BP 8127 - RCS Antananarivo 2001 B 000 25 - NIF N° 4000004897 – STAT N° 61906 11 2001 0 10059 <br />
+            Tél : 23 320 10 – Mail : info@gulfsat.mg
           </div>
         </div>
       )}
