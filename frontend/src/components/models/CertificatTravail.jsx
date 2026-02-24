@@ -4,7 +4,7 @@ import { useDebouncedValue } from "@mantine/hooks";
 
 import '../models/assets/css/certificat-travail.css';
 import GulfsatLogo from "./assets/img/Gulfsatlogo.jpeg";
-import BluelineLogo from "./assets/img/BluelineLogo.jpeg";   // ← Import correct (même dossier)
+import BluelineLogo from "./assets/img/BluelineLogo.jpeg";   
 
 import { Margin, usePDF } from "react-to-pdf";
 import axios from "axios";

@@ -24,12 +24,6 @@ body {
     align-items: center;
     justify-content: space-between;
 }
-/* 
-.logo {
-    height: 90px;
-    max-width: 280px;
-    object-fit: contain;
-} */
 
 .logo {
     height: 90px;
@@ -99,7 +93,7 @@ body {
     }
 }
 
-/* === FOOTER OFFICIEL (DEMANDE ENCADREUR) === */
+
 .footer {
     position: absolute;
     bottom: 25px;

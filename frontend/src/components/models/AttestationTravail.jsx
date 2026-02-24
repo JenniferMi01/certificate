@@ -4,7 +4,7 @@ import { useDebouncedValue } from "@mantine/hooks";
 
 import "../models/assets/css/attestation-travail.css";
 import GulfsatLogo from "./assets/img/Gulfsatlogo.jpeg";
-import BluelineLogo from "./assets/img/BluelineLogo.jpeg";   // ← Import du logo Blueline (même dossier)
+import BluelineLogo from "./assets/img/BluelineLogo.jpeg";   
 
 import { Margin, usePDF } from "react-to-pdf";
 import axios from "axios";
@@ -181,9 +181,7 @@ export const AttestationTravail = () => {
           </div>
 
           <div className="footer">
-            {/* <span dangerouslySetInnerHTML={{ __html: commonAddress }} />
-            <br />
-            {commonContact} */}
+            
             Gulfsat Madagascar SARL au capital de 5 000 000 000 Ar – Siège
             social : 41 avenue Lénine Antanimena Antananarivo 101 – <br />
             BP 8127 - RCS Antananarivo 2001 B 000 25 - NIF N° 4000004897 – STAT

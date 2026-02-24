@@ -5,7 +5,7 @@ import { useDebouncedValue } from "@mantine/hooks";
 
 import "../models/assets/css/attestation-conge.css";
 import GulfsatLogo from "./assets/img/Gulfsatlogo.jpeg";
-import BluelineLogo from "./assets/img/BluelineLogo.jpeg";   // ← Import marina
+import BluelineLogo from "./assets/img/BluelineLogo.jpeg";   
 
 import { Margin, usePDF } from "react-to-pdf";
 import axios from "axios";
@@ -32,7 +32,7 @@ export const AttestationConge = () => {
       name: "Société GULFSAT MADAGASCAR",
     },
     blueline: {
-      logo: BluelineLogo,           // ← Logo Blueline tena misy
+      logo: BluelineLogo,           
       name: "Société BLUELINE",
     },
   };

@@ -1,32 +1,3 @@
-# from rest_framework.decorators import api_view, permission_classes
-# from rest_framework.permissions import AllowAny
-# from rest_framework.response import Response
-# from rest_framework.authtoken.models import Token
-# from django.contrib.auth import authenticate, login
-# from rest_framework.status import HTTP_400_BAD_REQUEST, HTTP_200_OK
-
-# @api_view(['POST'])
-# @permission_classes([AllowAny])
-# def login_view(request):
-#     username = request.data.get('username')  # ✅ Utilise 'username' (comme dans ton frontend)
-#     password = request.data.get('password')
-#     user = authenticate(request, username=username, password=password)
-
-#     if user is not None:
-#         login(request, user)
-#         token, _ = Token.objects.get_or_create(user=user)
-#         return Response({
-#             'token': token.key,
-#             'user_id': user.id,
-#             'username': user.username,  # ✅ Retourne 'username' pour cohérence
-#         }, status=HTTP_200_OK)
-#     else:
-#         return Response(
-#             {'error': 'Identifiants invalides'},
-#             status=HTTP_400_BAD_REQUEST
-#         )
-
-
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response

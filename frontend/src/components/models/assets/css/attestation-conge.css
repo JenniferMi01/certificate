@@ -29,16 +29,6 @@ body {
     position: relative;
 }
 
-/* .logo {
-    position: absolute; */
-    /* left: 200px;   ← logo un peu plus à gauche, exactement comme tu veux */
-    /* top: 26px;
-    height: 86px; */
-    /* margin-left: -80px;     ← C’EST ÇA LA VALEUR MAGIQUE ! */
-    /* transform: translateX(-50%);
-    opacity: 1 !important; */
-    /* z-index: 10;
-} */
 
 .logo {
     position: absolute;
@@ -51,7 +41,7 @@ body {
     opacity: 1 !important;
 }
 
-/* Raha te hifanaraka tsara kokoa ny texte eo ankavanana */
+
 .company {
     text-align: right;
     flex: 1;
@@ -119,7 +109,7 @@ body {
 }
 
 
-/* === FOOTER OFFICIEL (DEMANDE ENCADREUR) === */
+
 .footer {
     position: absolute;
     bottom: 25px;
