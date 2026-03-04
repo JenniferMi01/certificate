@@ -38,7 +38,7 @@ export const CertificatTravail = () => {
   const commonAddress = "Lot IVR 41 Avenue de l'Indépendance<br />Antanimena – 101 Antananarivo";
   const commonContact = "Tél : 020 23 320 10 | info@gulfsat.mg";
 
-  const LIST_EMPLOYEE_API = 'http://localhost:5000/employees';
+  const LIST_EMPLOYEE_API = `${import.meta.env.VITE_API_BASE_ODOO}/employees`;
 
   const fetchEmployees = useCallback(async (search = "") => {
     setLoading(true);

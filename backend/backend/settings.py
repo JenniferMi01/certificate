@@ -10,6 +10,7 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.2/ref/settings/
 """
 
+import os
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -20,12 +21,12 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-%z#c#3hrz92+-#br3_e@9742hxo3xk+e$hz+uwr%jqv$fs&mc_'
+SECRET_KEY = os.environ.get('SECRET_KEY', 'django-insecure-%z#c#3hrz92+-#br3_e@9742hxo3xk+e$hz+uwr%jqv$fs&mc_')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = os.environ.get('DEBUG', '1') == '1'
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = os.environ.get('ALLOWED_HOSTS', 'localhost,127.0.0.1').split(',')
 
 
 # Application definition
@@ -78,12 +79,35 @@ WSGI_APPLICATION = 'backend.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+if os.environ.get('DATABASE_URL'):
+    import re
+    db_url = os.environ['DATABASE_URL']
+    match = re.match(r'postgresql://(?P<user>[^:]+):(?P<password>[^@]+)@(?P<host>[^:]+):(?P<port>\d+)/(?P<name>.+)', db_url)
+    if match:
+        DATABASES = {
+            'default': {
+                'ENGINE': 'django.db.backends.postgresql',
+                'NAME': match.group('name'),
+                'USER': match.group('user'),
+                'PASSWORD': match.group('password'),
+                'HOST': match.group('host'),
+                'PORT': match.group('port'),
+            }
+        }
+    else:
+        DATABASES = {
+            'default': {
+                'ENGINE': 'django.db.backends.sqlite3',
+                'NAME': BASE_DIR / 'db.sqlite3',
+            }
+        }
+else:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': BASE_DIR / 'db.sqlite3',
+        }
     }
-}
 
 
 # Password validation
@@ -156,16 +180,7 @@ GRAPH_MODELS = {
 }
 
 
-CORS_ALLOWED_ORIGINS = [
-    "http://localhost:5173",  # ton app React
-    "http://127.0.0.1:5174",
+_cors_origins = os.environ.get('CORS_ALLOWED_ORIGINS', 'http://localhost:5173,http://127.0.0.1:5174')
+CORS_ALLOWED_ORIGINS = [origin.strip() for origin in _cors_origins.split(',')]
 
-]
-# CORS_ALLOWED_ORIGINS = [
-#     "http://localhost:5173",  # ton app React
-#     "http://127.0.0.1:5174",
-
-# ] 
-
-# Si tu veux autoriser tous les domaines (à utiliser seulement en DEV)
-CORS_ALLOW_ALL_ORIGINS = True
+CORS_ALLOW_ALL_ORIGINS = DEBUG
