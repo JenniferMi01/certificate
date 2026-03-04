@@ -1,0 +1,343 @@
+{
+  "info": {
+    "name": "Odoo 10 API",
+    "description": "Postman collection for Odoo 10 API endpoints",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "version": "1.0.0"
+  },
+  "item": [
+    {
+      "name": "Partners",
+      "item": [
+        {
+          "name": "Get Partners",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/partners",
+              "host": ["{{base_url}}"],
+              "path": ["partners"]
+            }
+          },
+          "response": [
+            {
+              "name": "Success Response",
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"count\": 3,\n  \"data\": [\n    {\n      \"id\": 1,\n      \"name\": \"Partner 1\",\n      \"email\": \"partner1@example.com\",\n      \"phone\": \"+1234567890\"\n    }\n  ]\n}"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Employees",
+      "item": [
+        {
+          "name": "Get All Employees",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/employees",
+              "host": ["{{base_url}}"],
+              "path": ["employees"]
+            },
+            "description": "Get all employees with optional filters"
+          },
+          "response": [
+            {
+              "name": "Success Response",
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"count\": 2,\n  \"data\": [\n    {\n      \"id\": 1,\n      \"name\": \"John Doe\",\n      \"number\": \"EMP001\",\n      \"work_email\": \"john.doe@example.com\",\n      \"work_phone\": \"+1234567890\",\n      \"job_title\": \"Software Engineer\",\n      \"department\": {\n        \"id\": 1,\n        \"name\": \"IT Department\"\n      },\n      \"is_active\": true,\n      \"identification_id\": \"ID123456\",\n      \"date_delivrance_cin\": \"2020-01-15\",\n      \"lieu_delivrance_cin\": \"City Hall\"\n    }\n  ]\n}"
+            }
+          ]
+        },
+        {
+          "name": "Get Employees with Filters",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/employees?limit=50&active=true",
+              "host": ["{{base_url}}"],
+              "path": ["employees"],
+              "query": [
+                {
+                  "key": "limit",
+                  "value": "50"
+                },
+                {
+                  "key": "active",
+                  "value": "true"
+                }
+              ]
+            },
+            "description": "Get employees with limit and active status filter"
+          },
+          "response": [
+            {
+              "name": "Success Response",
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"count\": 1,\n  \"data\": [\n    {\n      \"id\": 1,\n      \"name\": \"John Doe\",\n      \"number\": \"EMP001\",\n      \"work_email\": \"john.doe@example.com\",\n      \"work_phone\": \"+1234567890\",\n      \"job_title\": \"Software Engineer\",\n      \"department\": {\n        \"id\": 1,\n        \"name\": \"IT Department\"\n      },\n      \"is_active\": true,\n      \"identification_id\": \"ID123456\",\n      \"date_delivrance_cin\": \"2020-01-15\",\n      \"lieu_delivrance_cin\": \"City Hall\"\n    }\n  ]\n}"
+            }
+          ]
+        },
+        {
+          "name": "Get Employee by ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/employees/1",
+              "host": ["{{base_url}}"],
+              "path": ["employees", "1"]
+            },
+            "description": "Get a single employee by their ID"
+          },
+          "response": [
+            {
+              "name": "Success Response",
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"id\": 1,\n  \"name\": \"John Doe\",\n  \"number\": \"EMP001\",\n  \"work_email\": \"john.doe@example.com\",\n  \"work_phone\": \"+1234567890\",\n  \"job_title\": \"Software Engineer\",\n  \"department\": {\n    \"id\": 1,\n    \"name\": \"IT Department\"\n  },\n  \"is_active\": true,\n  \"identification_id\": \"ID123456\",\n  \"date_delivrance_cin\": \"2020-01-15\",\n  \"lieu_delivrance_cin\": \"City Hall\"\n}"
+            },
+            {
+              "name": "Employee Not Found",
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"detail\": \"Employee not found\"\n}"
+            }
+          ]
+        },
+        {
+          "name": "Search Employee by Number",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/employees/search?number=EMP001",
+              "host": ["{{base_url}}"],
+              "path": ["employees", "search"],
+              "query": [
+                {
+                  "key": "number",
+                  "value": "EMP001"
+                }
+              ]
+            },
+            "description": "Search for employees by employee number"
+          },
+          "response": [
+            {
+              "name": "Success Response",
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"count\": 1,\n  \"data\": [\n    {\n      \"id\": 1,\n      \"name\": \"John Doe\",\n      \"number\": \"EMP001\",\n      \"work_email\": \"john.doe@example.com\",\n      \"work_phone\": \"+1234567890\",\n      \"job_title\": \"Software Engineer\",\n      \"department\": {\n        \"id\": 1,\n        \"name\": \"IT Department\"\n      },\n      \"is_active\": true,\n      \"identification_id\": \"ID123456\",\n      \"date_delivrance_cin\": \"2020-01-15\",\n      \"lieu_delivrance_cin\": \"City Hall\"\n    }\n  ]\n}"
+            },
+            {
+              "name": "No Employees Found",
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"detail\": \"No employees found\"\n}"
+            }
+          ]
+        },
+        {
+          "name": "Search Employee by Name",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/employees/search?name=John",
+              "host": ["{{base_url}}"],
+              "path": ["employees", "search"],
+              "query": [
+                {
+                  "key": "name",
+                  "value": "John"
+                }
+              ]
+            },
+            "description": "Search for employees by name (case-insensitive partial match)"
+          },
+          "response": [
+            {
+              "name": "Success Response",
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"count\": 1,\n  \"data\": [\n    {\n      \"id\": 1,\n      \"name\": \"John Doe\",\n      \"number\": \"EMP001\",\n      \"work_email\": \"john.doe@example.com\",\n      \"work_phone\": \"+1234567890\",\n      \"job_title\": \"Software Engineer\",\n      \"department\": {\n        \"id\": 1,\n        \"name\": \"IT Department\"\n      },\n      \"is_active\": true,\n      \"identification_id\": \"ID123456\",\n      \"date_delivrance_cin\": \"2020-01-15\",\n      \"lieu_delivrance_cin\": \"City Hall\"\n    }\n  ]\n}"
+            },
+            {
+              "name": "No Employees Found",
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"detail\": \"No employees found\"\n}"
+            }
+          ]
+        },
+        {
+          "name": "Search Employee by Number and Name",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/employees/search?number=EMP001&name=John",
+              "host": ["{{base_url}}"],
+              "path": ["employees", "search"],
+              "query": [
+                {
+                  "key": "number",
+                  "value": "EMP001"
+                },
+                {
+                  "key": "name",
+                  "value": "John"
+                }
+              ]
+            },
+            "description": "Search for employees by both number and name"
+          },
+          "response": [
+            {
+              "name": "Success Response",
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"count\": 1,\n  \"data\": [\n    {\n      \"id\": 1,\n      \"name\": \"John Doe\",\n      \"number\": \"EMP001\",\n      \"work_email\": \"john.doe@example.com\",\n      \"work_phone\": \"+1234567890\",\n      \"job_title\": \"Software Engineer\",\n      \"department\": {\n        \"id\": 1,\n        \"name\": \"IT Department\"\n      },\n      \"is_active\": true,\n      \"identification_id\": \"ID123456\",\n      \"date_delivrance_cin\": \"2020-01-15\",\n      \"lieu_delivrance_cin\": \"City Hall\"\n    }\n  ]\n}"
+            },
+            {
+              "name": "No Employees Found",
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"detail\": \"No employees found\"\n}"
+            }
+          ]
+        },
+        {
+          "name": "Search Employee - Missing Parameters",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/employees/search",
+              "host": ["{{base_url}}"],
+              "path": ["employees", "search"]
+            },
+            "description": "Search without providing number or name parameter"
+          },
+          "response": [
+            {
+              "name": "Bad Request",
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"detail\": \"Either 'number' or 'name' parameter must be provided\"\n}"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://localhost:8000",
+      "type": "string",
+      "description": "Base URL for the API (change this to your actual server URL)"
+    }
+  ],
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "// Pre-request script can be added here if needed"
+        ]
+      }
+    },
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "// Test script can be added here if needed"
+        ]
+      }
+    }
+  ]
+}
