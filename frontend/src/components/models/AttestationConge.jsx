@@ -183,7 +183,7 @@ export const AttestationConge = () => {
 
           <div className="content">
             Nous soussignés, la <strong>{companyData[selectedCompany].name}</strong>,
-            attestons par la présente que :<br /><br />
+            attestons par la présente que :<br />
 
             <div className="highlight">
               <strong>
