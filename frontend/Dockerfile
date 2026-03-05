@@ -9,8 +9,8 @@ RUN bun install --frozen-lockfile
 COPY . .
 
 # Build with empty API bases so requests go to same origin (nginx proxies them)
-ENV VITE_API_BASE_DJANGO=http://localhost:8000
-ENV VITE_API_BASE_ODOO=http://localhost:5000
+ENV VITE_API_BASE_DJANGO=""
+ENV VITE_API_BASE_ODOO=""
 RUN bun run build
 
 # Stage 2: Serve with nginx

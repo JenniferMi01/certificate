@@ -29,9 +29,10 @@ services:
     environment:
       SECRET_KEY: django-insecure-change-me-in-production
       DEBUG: "0"
-      ALLOWED_HOSTS: localhost,127.0.0.1,backend
+      ALLOWED_HOSTS: localhost,127.0.0.1,backend,197.158.64.13
       DATABASE_URL: postgresql://postgres:postgres@db:5432/certificate_db
-      CORS_ALLOWED_ORIGINS: http://localhost,http://localhost:8080,http://frontend
+      CORS_ALLOWED_ORIGINS: http://localhost,http://localhost:8080,http://frontend,http://197.158.64.13,http://197.158.64.13:8080
+      CSRF_TRUSTED_ORIGINS: http://197.158.64.13,http://197.158.64.13:8080,http://localhost,http://localhost:8080
     volumes:
       - static_files:/app/staticfiles
 
@@ -39,7 +40,7 @@ services:
     build: ./frontend
     container_name: certificate_frontend
     ports:
-      - "8080:80"
+      - "80:80"
     restart: unless-stopped
     depends_on:
       - backend

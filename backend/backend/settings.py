@@ -184,3 +184,7 @@ _cors_origins = os.environ.get('CORS_ALLOWED_ORIGINS', 'http://localhost:5173,ht
 CORS_ALLOWED_ORIGINS = [origin.strip() for origin in _cors_origins.split(',')]
 
 CORS_ALLOW_ALL_ORIGINS = DEBUG
+
+_csrf_origins = os.environ.get('CSRF_TRUSTED_ORIGINS', '')
+if _csrf_origins:
+    CSRF_TRUSTED_ORIGINS = [origin.strip() for origin in _csrf_origins.split(',')]
