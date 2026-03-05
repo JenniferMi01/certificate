@@ -40,7 +40,7 @@ services:
     build: ./frontend
     container_name: certificate_frontend
     ports:
-      - "8080:80"
+      - "80:80"
     restart: unless-stopped
     depends_on:
       - backend
