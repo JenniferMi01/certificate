@@ -31,10 +31,11 @@ services:
       DEBUG: "0"
       ALLOWED_HOSTS: localhost,127.0.0.1,backend,197.158.64.13
       DATABASE_URL: postgresql://postgres:postgres@db:5432/certificate_db
-      CORS_ALLOWED_ORIGINS: http://localhost,http://localhost:8080,http://frontend,http://197.158.64.13,http://197.158.64.13:8080,blueline-dev-certificate.blueline.mg,blueline-prod-certificate.blueline.mg
-      CSRF_TRUSTED_ORIGINS: http://197.158.64.13,http://197.158.64.13:8080,http://localhost,http://localhost:8080,blueline-dev-certificate.blueline.mg,blueline-prod-certificate.blueline.mg
+      CORS_ALLOWED_ORIGINS: http://localhost,http://localhost:8080,http://frontend,http://197.158.64.13,http://197.158.64.13:8080,http://blueline-dev-certificate.blueline.mg,http://blueline-prod-certificate.blueline.mg
+      CSRF_TRUSTED_ORIGINS: http://197.158.64.13,http://197.158.64.13:8080,http://localhost,http://localhost:8080,http://blueline-dev-certificate.blueline.mg,http://blueline-prod-certificate.blueline.mg
     volumes:
       - static_files:/app/staticfiles
+      - backup_data:/app/backups
 
   frontend:
     build: ./frontend
@@ -71,3 +72,4 @@ services:
 volumes:
   postgres_data:
   static_files:
+  backup_data:

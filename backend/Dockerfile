@@ -9,7 +9,11 @@ WORKDIR /app
 RUN apt-get update && apt-get install -y --no-install-recommends \
     libpq-dev \
     postgresql-client \
+    cron \
     && rm -rf /var/lib/apt/lists/*
+
+# Setup cron service
+RUN mkdir -p /var/log && touch /var/log/db-backup.log
 
 # Install Python dependencies
 COPY requirements.txt .
@@ -18,8 +22,11 @@ RUN pip install --no-cache-dir -r requirements.txt
 # Copy project
 COPY . .
 
-# Make entrypoint script executable
+# Make scripts executable
 RUN chmod +x entrypoint.sh
+RUN chmod +x scripts/backup_db.sh
+RUN chmod +x scripts/restore_db.sh
+RUN chmod +x scripts/setup_cron.sh
 
 EXPOSE 8000
 
