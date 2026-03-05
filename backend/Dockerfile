@@ -17,11 +17,11 @@ RUN pip install --no-cache-dir -r requirements.txt
 # Copy project
 COPY . .
 
-# Collect static files
-RUN python manage.py collectstatic --noinput
-RUN python manage.py makemigrations --noinput
-RUN python manage.py migrate --noinput
+# Make entrypoint script executable
+RUN chmod +x entrypoint.sh
 
 EXPOSE 8000
 
+# Use entrypoint script
+ENTRYPOINT ["./entrypoint.sh"]
 CMD ["gunicorn", "backend.wsgi:application", "--bind", "0.0.0.0:8000", "--workers", "3"]
