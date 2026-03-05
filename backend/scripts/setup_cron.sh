@@ -10,8 +10,8 @@ BACKUP_SCRIPT="/app/scripts/backup_db.sh"
 
 # Create the cron job entry
 cat > $CRON_FILE << EOF
-# Database backup every minute
-*/1 * * * * root $BACKUP_SCRIPT >> /var/log/db-backup.log 2>&1
+# Database backup every 60 minutes
+*/60 * * * * root $BACKUP_SCRIPT >> /var/log/db-backup.log 2>&1
 
 # Clean up old log files (keep last 1000 lines)
 0 0 * * * root tail -n 1000 /var/log/db-backup.log > /var/log/db-backup.log.tmp && mv /var/log/db-backup.log.tmp /var/log/db-backup.log
