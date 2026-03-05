@@ -40,11 +40,13 @@ services:
     build: ./frontend
     container_name: certificate_frontend
     ports:
-      - "80:80"
+      - "8080:80"
     restart: unless-stopped
     depends_on:
       - backend
-
+      - odoo_api
+    volumes:
+      - static_files:/app/staticfiles:ro
 
   odoo_api:
     build: ./odoo_api
