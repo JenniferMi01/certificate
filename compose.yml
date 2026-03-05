@@ -3,7 +3,7 @@ services:
     image: postgres:16-alpine
     container_name: certificate_database
     ports:
-      - "15432:5432"
+      - "5432:5432"
     restart: unless-stopped
     environment:
       POSTGRES_DB: certificate_db
