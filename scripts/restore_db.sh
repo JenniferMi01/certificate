@@ -6,7 +6,7 @@
 set -e
 
 # Database connection parameters
-DB_HOST="db"
+DB_HOST="localhost"
 DB_PORT="5432"
 DB_NAME="certificate_db"
 DB_USER="postgres"
