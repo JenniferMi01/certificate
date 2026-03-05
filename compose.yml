@@ -35,6 +35,7 @@ services:
       CSRF_TRUSTED_ORIGINS: http://197.158.64.13,http://197.158.64.13:8080,http://localhost,http://localhost:8080,http://blueline-dev-certificate.blueline.mg,http://blueline-prod-certificate.blueline.mg
     volumes:
       - static_files:/app/staticfiles
+      - backup_data:/app/backups
 
   frontend:
     build: ./frontend
@@ -71,3 +72,4 @@ services:
 volumes:
   postgres_data:
   static_files:
+  backup_data:

@@ -37,9 +37,9 @@ else
     exit 1
 fi
 
-# Keep only the last 10 backups
-echo "Cleaning up old backups (keeping last 10)..."
+# Keep only the last 5 backups
+echo "Cleaning up old backups (keeping last 5)..."
 cd $BACKUP_DIR
-ls -t database_backup_*.sql.gz | tail -n +11 | xargs -r rm -f
+ls -t database_backup_*.sql.gz | tail -n +6 | xargs -r rm -f
 
 echo "Backup process completed."

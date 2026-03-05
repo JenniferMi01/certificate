@@ -9,29 +9,33 @@ done
 
 echo "Database is ready!"
 
-# Check if we need to restore from backup
+# Setup cron job for database backups
+echo "Setting up cron job for database backups..."
+/app/scripts/setup_cron.sh
+
+# Start cron service
+echo "Starting cron service..."
+service cron start
+
+# Always restore the latest backup if available
 BACKUP_DIR="/app/backups"
 if [ -d "$BACKUP_DIR" ]; then
     LATEST_BACKUP=$(ls -t $BACKUP_DIR/database_backup_*.sql.gz 2>/dev/null | head -n1)
     if [ -n "$LATEST_BACKUP" ]; then
-        echo "Found backup file: $LATEST_BACKUP"
-        echo "Checking if database needs to be restored..."
+        echo "Found latest backup file: $LATEST_BACKUP"
+        echo "Restoring database from latest backup..."
         
-        # Check if database is empty (no tables)
-        TABLE_COUNT=$(PGPASSWORD=postgres psql -h db -p 5432 -U postgres -d certificate_db -t -c "SELECT COUNT(*) FROM information_schema.tables WHERE table_schema = 'public';" 2>/dev/null | xargs)
-        
-        if [ "$TABLE_COUNT" = "0" ]; then
-            echo "Database appears to be empty, restoring from backup..."
-            /app/scripts/restore_db.sh
-            if [ $? -eq 0 ]; then
-                echo "Database restored successfully!"
-            else
-                echo "Database restore failed, continuing with migrations..."
-            fi
+        /app/scripts/restore_db.sh
+        if [ $? -eq 0 ]; then
+            echo "Database restored successfully from latest backup!"
         else
-            echo "Database already has tables, skipping restore"
+            echo "Database restore failed, continuing with migrations..."
         fi
+    else
+        echo "No backup files found, proceeding with migrations..."
     fi
+else
+    echo "Backup directory does not exist, proceeding with migrations..."
 fi
 
 # Run migrations
