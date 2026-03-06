@@ -31,6 +31,7 @@ RUN chmod +x entrypoint.sh
 RUN chmod +x scripts/backup_db.sh
 RUN chmod +x scripts/restore_db.sh
 RUN chmod +x scripts/setup_cron.sh
+RUN chmod +x scripts/fix_postgres_auth.sh
 
 EXPOSE 8000
 
