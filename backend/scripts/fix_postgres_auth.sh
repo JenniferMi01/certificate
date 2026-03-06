@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Fix PostgreSQL authentication issues
-# This script addresses common PostgreSQL authentication problems including missing users
+# This script addresses common PostgreSQL authentication problems
 
 set -e
 
@@ -36,40 +36,17 @@ except Exception as e:
 " 2>/dev/null
 }
 
-# Function to create PostgreSQL user if it doesn't exist
-create_postgres_user() {
-    echo "Creating PostgreSQL user if needed..."
+# Function to reset PostgreSQL password
+reset_postgres_password() {
+    echo "Resetting PostgreSQL password..."
     
-    # Try to connect as superuser (usually postgres or root) to create the user
-    # First try with default postgres user
-    if PGPASSWORD=postgres psql -h $DB_HOST -p $DB_PORT -U postgres -d postgres -c "SELECT 1;" 2>/dev/null; then
-        # User exists, just reset password
-        PGPASSWORD=postgres psql -h $DB_HOST -p $DB_PORT -U postgres -d postgres -c "ALTER USER postgres PASSWORD '$DB_PASSWORD';" 2>/dev/null
-        if [ $? -eq 0 ]; then
-            echo "✓ PostgreSQL password reset successful"
-        else
-            echo "⚠ Could not reset password (might not be needed)"
-        fi
+    # Try to connect and reset password
+    PGPASSWORD=postgres psql -h $DB_HOST -p $DB_PORT -U postgres -d postgres -c "ALTER USER postgres PASSWORD '$DB_PASSWORD';" 2>/dev/null
+    
+    if [ $? -eq 0 ]; then
+        echo "✓ PostgreSQL password reset successful"
     else
-        # Try with root user
-        if PGPASSWORD=root psql -h $DB_HOST -p $DB_PORT -U root -d postgres -c "SELECT 1;" 2>/dev/null; then
-            echo "Creating postgres user with root..."
-            PGPASSWORD=root psql -h $DB_HOST -p $DB_PORT -U root -d postgres -c "CREATE USER postgres WITH SUPERUSER PASSWORD '$DB_PASSWORD';" 2>/dev/null || true
-            echo "✓ PostgreSQL user created with root"
-        else
-            # Try with no password (trust authentication)
-            if psql -h $DB_HOST -p $DB_PORT -U postgres -d postgres -c "SELECT 1;" 2>/dev/null; then
-                psql -h $DB_HOST -p $DB_PORT -U postgres -d postgres -c "ALTER USER postgres PASSWORD '$DB_PASSWORD';" 2>/dev/null
-                echo "✓ PostgreSQL password reset with no auth"
-            else
-                # Try creating user with no auth
-                if psql -h $DB_HOST -p $DB_PORT -U postgres -d postgres -c "CREATE USER postgres WITH SUPERUSER PASSWORD '$DB_PASSWORD';" 2>/dev/null; then
-                    echo "✓ PostgreSQL user created with no auth"
-                else
-                    echo "⚠ Could not create or reset postgres user"
-                fi
-            fi
-        fi
+        echo "⚠ Could not reset password (might not be needed)"
     fi
 }
 
@@ -140,7 +117,7 @@ echo "Database connection failed, applying fixes..."
 
 # Apply fixes
 fix_data_permissions
-create_postgres_user
+reset_postgres_password
 check_hba_config
 
 # Restart PostgreSQL

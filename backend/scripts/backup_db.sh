@@ -9,8 +9,8 @@ set -e
 DB_HOST="localhost"
 DB_PORT="5432"
 DB_NAME="certificate_db"
-DB_USER="postgres"
-DB_PASSWORD="postgres"
+DB_USER="certificate_user"
+DB_PASSWORD="cErt1f1c@teP@ssw0rd"
 
 # Backup directory and filename
 BACKUP_DIR="/app/backups"
