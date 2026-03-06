@@ -5,6 +5,10 @@ services:
     ports:
       - "5432:5432"
     restart: unless-stopped
+    # environment:
+    #   POSTGRES_DB: ${POSTGRES_DB:-certificate_db}
+    #   POSTGRES_USER: ${POSTGRES_USER:-certificate_user}
+    #   POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-cErt1f1c@teP@ssw0rd}
     env_file:
       - .env
     volumes:
