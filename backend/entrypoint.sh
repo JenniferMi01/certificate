@@ -65,6 +65,10 @@ python manage.py collectstatic --noinput
 python manage.py makemigrations --noinput
 python manage.py migrate --noinput
 
+# Create RH users
+echo "Creating RH users..."
+python manage.py create_rh_users
+
 # Start the application
 echo "Starting the application..."
 exec "$@"
