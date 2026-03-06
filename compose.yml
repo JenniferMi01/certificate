@@ -11,7 +11,6 @@ services:
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-certificate_password}
     volumes:
       - postgres_data:/var/lib/postgresql/data
-      - ./scripts/init-db.sql:/docker-entrypoint-initdb.d/init-db.sql
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -d  ${POSTGRES_DB} -U ${POSTGRES_USER} -h localhost -p 5432 || exit 1"]
       interval: 5s
@@ -52,7 +51,7 @@ services:
     build: ./frontend
     container_name: certificate_frontend
     ports:
-      - "8080:80"
+      - "80:80"
     restart: unless-stopped
     depends_on:
       - backend
