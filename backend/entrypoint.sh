@@ -9,21 +9,6 @@ done
 
 echo "Database is ready!"
 
-# Check for PostgreSQL authentication issues and fix them
-echo "Checking for PostgreSQL authentication issues..."
-if ! python -c "import psycopg2; psycopg2.connect(host='db', port=5432, user='certificate_user', password='certificate_password', database='certificate_db')" 2>/dev/null; then
-    echo "⚠ PostgreSQL authentication issue detected, attempting to fix..."
-    /app/scripts/fix_postgres_auth.sh
-    if [ $? -eq 0 ]; then
-        echo "✓ PostgreSQL authentication issue fixed"
-    else
-        echo "⚠ Could not automatically fix PostgreSQL authentication issue"
-        echo "You may need to manually reset the database or check the configuration"
-    fi
-else
-    echo "✓ PostgreSQL authentication is working correctly"
-fi
-
 # Setup cron job for database backups
 echo "Setting up cron job for database backups..."
 /app/scripts/setup_cron.sh
