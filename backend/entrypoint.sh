@@ -2,7 +2,7 @@
 
 # Wait for database to be ready
 echo "Waiting for database to be ready..."
-until python -c "import psycopg2; psycopg2.connect(host='db', port=5432, user='certificate_user', password='cErt1f1c@teP@ssw0rd', database='certificate_db')" 2>/dev/null; do
+until python -c "import psycopg2; psycopg2.connect(host='db', port=5432, user='certificate_user', password='certificate_password', database='certificate_db')" 2>/dev/null; do
   echo "Database is not ready yet, waiting..."
   sleep 2
 done
@@ -11,7 +11,7 @@ echo "Database is ready!"
 
 # Check for PostgreSQL authentication issues and fix them
 echo "Checking for PostgreSQL authentication issues..."
-if ! python -c "import psycopg2; psycopg2.connect(host='db', port=5432, user='certificate_user', password='cErt1f1c@teP@ssw0rd', database='certificate_db')" 2>/dev/null; then
+if ! python -c "import psycopg2; psycopg2.connect(host='db', port=5432, user='certificate_user', password='certificate_password', database='certificate_db')" 2>/dev/null; then
     echo "⚠ PostgreSQL authentication issue detected, attempting to fix..."
     /app/scripts/fix_postgres_auth.sh
     if [ $? -eq 0 ]; then

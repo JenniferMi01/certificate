@@ -12,7 +12,7 @@ DB_HOST="localhost"
 DB_PORT="5432"
 DB_NAME="certificate_db"
 DB_USER="certificate_user"
-DB_PASSWORD="cErt1f1c@teP@ssw0rd"
+DB_PASSWORD="certificate_password"
 
 # Function to check if database is accessible
 check_db_connection() {

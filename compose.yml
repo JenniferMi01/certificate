@@ -5,17 +5,15 @@ services:
     ports:
       - "5432:5432"
     restart: unless-stopped
-    # environment:
-    #   POSTGRES_DB: ${POSTGRES_DB:-certificate_db}
-    #   POSTGRES_USER: ${POSTGRES_USER:-certificate_user}
-    #   POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-cErt1f1c@teP@ssw0rd}
-    env_file:
-      - .env
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-certificate_db}
+      POSTGRES_USER: ${POSTGRES_USER:-certificate_user}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-certificate_password}
     volumes:
       - postgres_data:/var/lib/postgresql/data
       - ./scripts/init-db.sql:/docker-entrypoint-initdb.d/init-db.sql
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      test: ["CMD-SHELL", "pg_isready -d  ${POSTGRES_DB} -U ${POSTGRES_USER} -h localhost -p 5432 || exit 1"]
       interval: 5s
       timeout: 5s
       retries: 5
@@ -29,6 +27,21 @@ services:
     depends_on:
       db:
         condition: service_healthy
+    environment:
+      # Django Environment Variables
+      - SECRET_KEY=django-insecure-development-key-for-docker
+      - DEBUG=1
+      - ALLOWED_HOSTS=localhost,127.0.0.1,backend,197.158.64.13,blueline-dev-certificate.blueline.mg,blueline-prod-certificate.blueline.mg
+
+      # Database Configuration
+      - DATABASE_URL=postgresql://certificate_user:certificate_password@db:5432/certificate_db
+
+      # CORS Settings
+      - CORS_ALLOWED_ORIGINS=http://localhost,http://localhost:8080,http://frontend,http://197.158.64.13,http://197.158.64.13:8080,http://blueline-dev-certificate.blueline.mg,http://blueline-prod-certificate.blueline.mg
+
+      # Static Files
+      - STATIC_URL=/static/
+      - STATIC_ROOT=/app/staticfiles
     env_file:
       - .env
     volumes:
@@ -52,8 +65,11 @@ services:
     container_name: certificate_odoo_api
     ports:
       - "5000:5000"
-    env_file:
-      - .env
+    environment:
+      - ODOO_URL=${ODOO_URL}
+      - ODOO_DB=${ODOO_DB}
+      - ODOO_USER=${ODOO_USER}
+      - ODOO_PASSWORD=${ODOO_PASSWORD}
     restart: unless-stopped
     healthcheck:
       test: ["CMD", "python", "-c", "import requests; requests.get('http://localhost:5000/partners', timeout=5)"]
