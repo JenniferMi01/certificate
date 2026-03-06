@@ -41,7 +41,7 @@ reset_postgres_password() {
     echo "Resetting PostgreSQL password..."
     
     # Try to connect and reset password
-    PGPASSWORD=postgres psql -h $DB_HOST -p $DB_PORT -U postgres -d postgres -c "ALTER USER postgres PASSWORD '$DB_PASSWORD';" 2>/dev/null
+    PGPASSWORD=$DB_PASSWORD psql -h $DB_HOST -p $DB_PORT -U $DB_USER -d $DB_NAME -c "ALTER USER $DB_USER PASSWORD '$DB_PASSWORD';" 2>/dev/null
     
     if [ $? -eq 0 ]; then
         echo "✓ PostgreSQL password reset successful"
