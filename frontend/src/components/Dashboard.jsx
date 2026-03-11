@@ -49,7 +49,7 @@ function Dashboard() {
         <Container size="xl" px={0} style={{ maxWidth: '100%' }}>
           <Box mb="xl">
             <Title order={2} mb="xs">
-              Bienvenue, <span style={{ color: '#228be6' }}>{userData?.username}</span>
+              Bienvenue, <span style={{ color: '#228be6' }}>{userData?.last_name} {userData?.first_name}</span>
             </Title>
             <Text size="sm" c="dimmed">
               Génerez vos documents en quelques clics

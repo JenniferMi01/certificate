@@ -18,6 +18,9 @@ export const CertificatTravail = () => {
   const [selectedEmployee, setSelectedEmployee] = useState(null);
   const [isPDFVisible, setIsPDFVisible] = useState(false);
 
+
+  const [signName, setSignName] = useState("");
+
   // Checkbox "libre de tout engagement"
   const [libreEngagement, setLibreEngagement] = useState(false);
 
@@ -39,6 +42,45 @@ export const CertificatTravail = () => {
   const commonContact = "Tél : 020 23 320 10 | info@gulfsat.mg";
 
   const LIST_EMPLOYEE_API = `${import.meta.env.VITE_API_BASE_ODOO}/employees`;
+
+
+  const USER_INFO = `${import.meta.env.VITE_API_BASE_DJANGO}/api/me/`;
+const TOKEN = localStorage.getItem("access_token") || "";
+
+const config = {
+  headers: {
+    Authorization: `Bearer ${TOKEN}`,
+    "Content-Type": "application/json",
+  },
+};
+
+
+
+useEffect(() => {
+  const fetchUserData = async () => {
+    try {
+      const response = await axios.get(USER_INFO, config);
+      console.log("User data:", response.data);
+
+      let fullName = "";
+
+      if (response.data.last_name) {
+        fullName += response.data.last_name.toUpperCase() + " ";
+      }
+
+      if (response.data.first_name) {
+        fullName += response.data.first_name;
+      }
+
+      setSignName(fullName || response.data?.username || "Responsable RH");
+    } catch (error) {
+      console.error("Erreur récupération utilisateur :", error);
+    }
+  };
+
+  fetchUserData();
+}, []);
+
 
   const fetchEmployees = useCallback(async (search = "") => {
     setLoading(true);
@@ -202,7 +244,7 @@ export const CertificatTravail = () => {
           <div className="signature-block">
             Fait à Antananarivo, le <strong>{new Date().toLocaleDateString('fr-FR')}</strong>
             <br /><br /><br />
-            <div className="sign-name">Johary RAJAONARIVONY</div>
+            <div className="sign-name">{signName}</div>
             Responsable des Ressources Humaines
           </div>
 
