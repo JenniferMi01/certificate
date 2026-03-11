@@ -20,6 +20,9 @@ export const AttestationConge = () => {
   const [selectedEmployee, setSelectedEmployee] = useState(null);
   const [isPDFVisible, setIsPDFVisible] = useState(false);
 
+
+  const [signName, setSignName] = useState("");
+
   const [periodeConge, setPeriodeConge] = useState([null, null]);
   const [destination, setDestination] = useState("");
 
@@ -41,6 +44,34 @@ export const AttestationConge = () => {
   const commonContact = "Tél : 020 23 320 10 | info@gulfsat.mg";
 
   const LIST_EMPLOYEE_API = `${import.meta.env.VITE_API_BASE_ODOO}/employees`;
+
+
+  const USER_INFO = `${import.meta.env.VITE_API_BASE_DJANGO}/api/me/`;
+const TOKEN = localStorage.getItem("access_token") || "";
+
+const config = {
+  headers: {
+    Authorization: `Bearer ${TOKEN}`,
+    "Content-Type": "application/json",
+  },
+};
+
+
+
+useEffect(() => {
+  const fetchUserData = async () => {
+    try {
+      const response = await axios.get(USER_INFO, config);
+      console.log("User data:", response.data);
+      setSignName(response.data?.username || "Responsable RH");
+    } catch (error) {
+      console.error("Erreur récupération utilisateur :", error);
+    }
+  };
+
+  fetchUserData();
+}, []);
+
 
   const fetchEmployees = useCallback(async (search = "") => {
     setLoading(true);
@@ -212,7 +243,7 @@ export const AttestationConge = () => {
 
           <div className="signature-block">
             Antananarivo, le <strong>{new Date().toLocaleDateString("fr-FR")}</strong><br /><br /><br />
-            <div className="sign-name">Johary RAJAONARIVONY</div>
+            <div className="sign-name">{signName}</div>
             Responsable des Ressources Humaines
           </div>
 
