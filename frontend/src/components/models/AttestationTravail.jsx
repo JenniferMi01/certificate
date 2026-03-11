@@ -49,20 +49,31 @@ export const AttestationTravail = () => {
     },
   };
 
-  useEffect(() => {
-    const fetchUserData = async () => {
-      try {
-        const response = await axios.get(USER_INFO, config);
+useEffect(() => {
+  const fetchUserData = async () => {
+    try {
+      const response = await axios.get(USER_INFO, config);
 
-        console.log("User data:", response.data);
-        setSignName(response.data?.username || "Responsable RH");
-      } catch (error) {
-        console.error("Erreur lors de la récupération des employés :", error);
+      console.log("User data:", response.data);
+
+      let fullName = "";
+
+      if (response.data.last_name) {
+        fullName += response.data.last_name.toUpperCase() + " ";
       }
-    };
 
-    fetchUserData();
-  }, []);
+      if (response.data.first_name) {
+        fullName += response.data.first_name;
+      }
+
+      setSignName(fullName || response.data?.username || "Responsable RH");
+    } catch (error) {
+      console.error("Erreur lors de la récupération des employés :", error);
+    }
+  };
+
+  fetchUserData();
+}, []);
 
   const fetchEmployees = useCallback(async (search = "") => {
     setLoading(true);

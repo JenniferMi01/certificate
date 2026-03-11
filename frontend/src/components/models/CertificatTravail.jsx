@@ -61,7 +61,18 @@ useEffect(() => {
     try {
       const response = await axios.get(USER_INFO, config);
       console.log("User data:", response.data);
-      setSignName(response.data?.username || "Responsable RH");
+
+      let fullName = "";
+
+      if (response.data.last_name) {
+        fullName += response.data.last_name.toUpperCase() + " ";
+      }
+
+      if (response.data.first_name) {
+        fullName += response.data.first_name;
+      }
+
+      setSignName(fullName || response.data?.username || "Responsable RH");
     } catch (error) {
       console.error("Erreur récupération utilisateur :", error);
     }
