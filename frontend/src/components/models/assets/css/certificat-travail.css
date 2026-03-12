@@ -5,6 +5,22 @@ body {
     font-family: 'Calibri', 'Arial', sans-serif;
 }
 
+/* === HEADER === */
+.header {
+    height: 140px;
+    background: white;
+    padding: 20px 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.logo {
+    height: 100px;
+    width: 350px;
+    object-fit: contain;
+}
+
 /* === FORMAT A4 === */
 .a4 {
     width: 21cm;

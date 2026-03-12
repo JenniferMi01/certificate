@@ -209,17 +209,10 @@ useEffect(() => {
           <div className="header">
             <img
               src={companyData[selectedCompany].logo}
-              className="logo"
+              className="logo mt-20"
               alt={companyData[selectedCompany].name}
-              style={{ maxWidth: "180px", height: "auto" }}
+              style={{ width: "275px", height: "auto" }}
             />
-            <div className="company">
-              {companyData[selectedCompany].name}
-              <br />
-              <span dangerouslySetInnerHTML={{ __html: commonAddress }} />
-              <br />
-              {commonContact}
-            </div>
           </div>
 
           <div className="title">Attestation de Congé</div>

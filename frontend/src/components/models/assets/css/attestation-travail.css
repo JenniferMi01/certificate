@@ -17,24 +17,17 @@ body {
 
 .header {
     height: 140px;
-    background: linear-gradient(90deg, #000000, #000000);
-    color: white;
+    background: white;
     padding: 20px 50px;
     display: flex;
     align-items: center;
-    justify-content: space-between;
+    justify-content: center;
 }
 
 .logo {
-    height: 90px;
-    max-width: 280px;
+    height: 100px;
+    width: 350px;
     object-fit: contain;
-
-    /* AJOUTE UNIQUEMENT CES 4 LIGNES CI-DESSOUS */
-    position: absolute;
-    left: 75px;          /* logo bien à gauche, exactement comme tu veux */
-    top: 25px;           /* hauteur parfaite */
-    z-index: 10;
 }
 
 .company h1 {
