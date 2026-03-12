@@ -11,34 +11,30 @@ class OdooClient:
         self.db = db
         self.username = username
         self.password = password
+        
+        # Authenticate once and store UID
+        self._authenticate()
 
+    def _authenticate(self):
+        """Authenticate and get UID"""
         try:
-            # Test connection to common endpoint first
-            logger.info(f"Connecting to Odoo server: {url}")
-            self.common = xmlrpc.client.ServerProxy(f"{url}/xmlrpc/2/common")
+            logger.info(f"Connecting to Odoo server: {self.url}")
+            common = xmlrpc.client.ServerProxy(f"{self.url}/xmlrpc/2/common")
             
-            # Get server version info
-            try:
-                version_info = self.common.version()
-                logger.info(f"Odoo server version: {version_info}")
-            except Exception as e:
-                logger.warning(f"Could not retrieve server version: {e}")
+            version_info = common.version()
+            logger.info(f"Odoo server version: {version_info}")
             
-            # Attempt authentication
-            logger.info(f"Authenticating user: {username}")
-            self.uid = self.common.authenticate(db, username, password, {})
+            self.uid = common.authenticate(self.db, self.username, self.password, {})
             
             if not self.uid:
                 raise Exception("Odoo authentication failed: Invalid credentials or user not found")
             
             logger.info(f"Authentication successful. UID: {self.uid}")
             
-            self.models = xmlrpc.client.ServerProxy(f"{url}/xmlrpc/2/object")
-
         except xmlrpc.client.ProtocolError as e:
             logger.error(f"Protocol Error: {e}")
             if e.errcode == 403:
-                raise Exception("403 Forbidden: Check if the Odoo server allows XML-RPC connections and if the credentials are correct")
+                raise Exception("403 Forbidden: Check if the Odoo server allows XML-RPC connections")
             elif e.errcode == 404:
                 raise Exception("404 Not Found: Check if the Odoo server URL is correct")
             else:
@@ -50,7 +46,11 @@ class OdooClient:
             logger.error(f"Authentication failed: {e}")
             raise Exception(f"Connection failed: {str(e)}")
 
-    def search_read(self, model, domain=None, fields=None, limit=None):
+    def _get_models(self):
+        """Create a fresh models proxy for each request"""
+        return xmlrpc.client.ServerProxy(f"{self.url}/xmlrpc/2/object")
+
+    def search_read(self, model, domain=None, fields=None, limit=None, retry=2):
         domain = domain or []
         fields = fields or []
 
@@ -58,28 +58,55 @@ class OdooClient:
         if limit is not None:
             params['limit'] = limit
 
-        try:
-            result = self.models.execute_kw(
-                self.db,
-                self.uid,
-                self.password,
-                model,
-                'search_read',
-                [domain],
-                params
-            )
-            return result
-        except xmlrpc.client.Fault as e:
-            logger.error(f"XML-RPC Fault in search_read: {e}")
-            raise Exception(f"Odoo Server Error: {e.faultString}")
-        except Exception as e:
-            logger.error(f"Error in search_read: {e}")
-            raise Exception(f"Search failed: {str(e)}")
+        last_error = None
+        for attempt in range(retry):
+            try:
+                models = self._get_models()
+                result = models.execute_kw(
+                    self.db,
+                    self.uid,
+                    self.password,
+                    model,
+                    'search_read',
+                    [domain],
+                    params
+                )
+                return result
+            except xmlrpc.client.Fault as e:
+                error_msg = str(e.faultString)
+                # Check for connection errors that warrant a retry
+                if "Request-sent" in error_msg or "Idle" in error_msg or "Connection" in error_msg:
+                    logger.warning(f"Connection error (attempt {attempt + 1}/{retry}): {error_msg}")
+                    last_error = error_msg
+                    # Re-authenticate on retry
+                    try:
+                        self._authenticate()
+                    except:
+                        pass
+                    continue
+                logger.error(f"XML-RPC Fault in search_read: {e}")
+                raise Exception(f"Odoo Server Error: {error_msg}")
+            except Exception as e:
+                error_msg = str(e)
+                if "Request-sent" in error_msg or "Idle" in error_msg:
+                    logger.warning(f"Connection error (attempt {attempt + 1}/{retry}): {error_msg}")
+                    last_error = error_msg
+                    try:
+                        self._authenticate()
+                    except:
+                        pass
+                    continue
+                logger.error(f"Error in search_read: {e}")
+                raise Exception(f"Search failed: {error_msg}")
+        
+        raise Exception(f"Search failed after {retry} attempts: {last_error}")
 
     def search_count(self, model, domain=None):
         domain = domain or []
+        
         try:
-            result = self.models.execute_kw(
+            models = self._get_models()
+            result = models.execute_kw(
                 self.db,
                 self.uid,
                 self.password,
