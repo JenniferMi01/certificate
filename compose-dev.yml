@@ -1,0 +1,82 @@
+services:
+  db:
+    image: postgres:16-alpine
+    container_name: certificate_database_dev
+    ports:
+      - "5432:5432"
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-certificate_db}
+      POSTGRES_USER: ${POSTGRES_USER:-certificate_user}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-certificate_password}
+    volumes:
+      - postgres_data_dev:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -d ${POSTGRES_DB} -U ${POSTGRES_USER} -h localhost -p 5432 || exit 1"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile.dev
+    container_name: certificate_backend_dev
+    ports:
+      - "8000:8000"
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      - SECRET_KEY=django-insecure-development-key-for-docker
+      - DEBUG=1
+      - ALLOWED_HOSTS=localhost,127.0.0.1,backend,frontend
+      - DATABASE_URL=postgresql://certificate_user:certificate_password@db:5432/certificate_db
+      - CORS_ALLOWED_ORIGINS=http://localhost,http://localhost:5173,http://frontend,http://127.0.0.1:5173
+      - STATIC_URL=/static/
+      - STATIC_ROOT=/app/staticfiles
+    env_file:
+      - .env
+    volumes:
+      - ./backend:/app
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile.dev
+    container_name: certificate_frontend_dev
+    ports:
+      - "5173:5173"
+    restart: unless-stopped
+    environment:
+      - VITE_API_BASE_DJANGO=http://localhost:8000
+      - VITE_API_BASE_ODOO=http://localhost:5000
+    depends_on:
+      - backend
+      - odoo_api
+    volumes:
+      - ./frontend/src:/app/src
+      - ./frontend/public:/app/public
+      - ./frontend/index.html:/app/index.html
+      - ./frontend/vite.config.js:/app/vite.config.js
+      - ./frontend/postcss.config.cjs:/app/postcss.config.cjs
+      - node_modules_dev:/app/node_modules
+
+  odoo_api:
+    build:
+      context: ./odoo_api
+      dockerfile: Dockerfile.dev
+    container_name: certificate_odoo_api_dev
+    ports:
+      - "5000:5000"
+    environment:
+      - ODOO_URL=${ODOO_URL}
+      - ODOO_DB=${ODOO_DB}
+      - ODOO_USER=${ODOO_USER}
+      - ODOO_PASSWORD=${ODOO_PASSWORD}
+    restart: unless-stopped
+
+volumes:
+  postgres_data_dev:
+  node_modules_dev:

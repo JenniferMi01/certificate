@@ -20,6 +20,9 @@ export const AttestationConge = () => {
   const [selectedEmployee, setSelectedEmployee] = useState(null);
   const [isPDFVisible, setIsPDFVisible] = useState(false);
 
+
+  const [signName, setSignName] = useState("");
+
   const [periodeConge, setPeriodeConge] = useState([null, null]);
   const [destination, setDestination] = useState("");
 
@@ -41,6 +44,46 @@ export const AttestationConge = () => {
   const commonContact = "Tél : 020 23 320 10 | info@gulfsat.mg";
 
   const LIST_EMPLOYEE_API = `${import.meta.env.VITE_API_BASE_ODOO}/employees`;
+
+
+  const USER_INFO = `${import.meta.env.VITE_API_BASE_DJANGO}/api/me/`;
+const TOKEN = localStorage.getItem("access_token") || "";
+
+const config = {
+  headers: {
+    Authorization: `Bearer ${TOKEN}`,
+    "Content-Type": "application/json",
+  },
+};
+
+
+
+useEffect(() => {
+  const fetchUserData = async () => {
+    try {
+      const response = await axios.get(USER_INFO, config);
+      console.log("User data:", response.data);
+
+      let fullName = "";
+
+      if (response.data.last_name) {
+        fullName += response.data.last_name.toUpperCase() + " ";
+      }
+
+      if (response.data.first_name) {
+        fullName += response.data.first_name;
+      }
+
+
+      setSignName(fullName || response.data?.username || "Responsable RH");
+    } catch (error) {
+      console.error("Erreur récupération utilisateur :", error);
+    }
+  };
+
+  fetchUserData();
+}, []);
+
 
   const fetchEmployees = useCallback(async (search = "") => {
     setLoading(true);
@@ -166,17 +209,10 @@ export const AttestationConge = () => {
           <div className="header">
             <img
               src={companyData[selectedCompany].logo}
-              className="logo"
+              className="logo mt-20"
               alt={companyData[selectedCompany].name}
-              style={{ maxWidth: "180px", height: "auto" }}
+              style={{ width: "275px", height: "auto" }}
             />
-            <div className="company">
-              {companyData[selectedCompany].name}
-              <br />
-              <span dangerouslySetInnerHTML={{ __html: commonAddress }} />
-              <br />
-              {commonContact}
-            </div>
           </div>
 
           <div className="title">Attestation de Congé</div>
@@ -212,7 +248,7 @@ export const AttestationConge = () => {
 
           <div className="signature-block">
             Antananarivo, le <strong>{new Date().toLocaleDateString("fr-FR")}</strong><br /><br /><br />
-            <div className="sign-name">Johary RAJAONARIVONY</div>
+            <div className="sign-name">{signName}</div>
             Responsable des Ressources Humaines
           </div>
 

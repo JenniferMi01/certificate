@@ -13,6 +13,8 @@ def me_view(request):
         'id': user.id,
         'username': user.username,
         'email': user.email,
+        'first_name': user.first_name or "",
+        'last_name': str(user.last_name).upper() or "",
     }, status=status.HTTP_200_OK)
 
 @api_view(['POST'])
