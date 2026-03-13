@@ -207,7 +207,7 @@ useEffect(() => {
             <br />
             <br />
             <br />
-            <div className="sign-name">{signName}</div>
+            <div className="sign-name">RAJAONARIVONY Johary</div>
             Responsable des Ressources Humaines
           </div>
 

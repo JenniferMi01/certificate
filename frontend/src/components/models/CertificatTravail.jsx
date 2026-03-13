@@ -237,7 +237,7 @@ useEffect(() => {
           <div className="signature-block">
             Fait à Antananarivo, le <strong>{new Date().toLocaleDateString('fr-FR')}</strong>
             <br /><br /><br />
-            <div className="sign-name">{signName}</div>
+            <div className="sign-name">RAJAONARIVONY Johary</div>
             Responsable des Ressources Humaines
           </div>
 
