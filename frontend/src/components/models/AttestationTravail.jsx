@@ -17,9 +17,10 @@ export const AttestationTravail = () => {
   const [loading, setLoading] = useState(false);
   const [selectedEmployee, setSelectedEmployee] = useState(null);
   const [isPDFVisible, setIsPDFVisible] = useState(false);
-  const [signName, setSignName] = useState("");
+  const [signName, setSignName] = useState("RAJAONARIVONY Johary");
 
   // Sélection de la société
+  
   const [selectedCompany, setSelectedCompany] = useState("gulfsat");
 
   const companyData = {
@@ -33,8 +34,9 @@ export const AttestationTravail = () => {
     },
   };
 
-  const commonAddress = "Lot IVR 41 Avenue de l'Indépendance<br />Antanimena – 101 Antananarivo";
-  const commonContact = "Tél : 020 23 320 10 | info@gulfsat.mg";
+  // const commonAddress = "Lot IVR 41 Avenue de l'Indépendance<br />Antanimena – 101 Antananarivo";
+  // const commonContact = "Tél : 020 23 320 10 | info@gulfsat.mg";
+
 
   const LIST_EMPLOYEE_API = `${import.meta.env.VITE_API_BASE_ODOO}/employees`;
 
@@ -44,36 +46,28 @@ export const AttestationTravail = () => {
 
   const config = {
     headers: {
-      Authorization: `Bearer ${TOKEN}`,
+      Authorization: `Token ${TOKEN}`,
       "Content-Type": "application/json",
     },
   };
 
-useEffect(() => {
-  const fetchUserData = async () => {
-    try {
-      const response = await axios.get(USER_INFO, config);
+  useEffect(() => {
+    const fetchUserData = async () => {
+      try {
+        const response = await axios.get(USER_INFO, config);
 
-      console.log("User data:", response.data);
-
-      let fullName = "";
-
-      if (response.data.last_name) {
-        fullName += response.data.last_name.toUpperCase() + " ";
+        console.log("User data:", response.data);
+        let fullName = "";
+        if (response.data.last_name) {
+          fullName += response.data.first_name.toUpperCase() + "";
+        }
+      } catch (error) {
+        console.error("Erreur lors de la récupération des employés :", error);
       }
+    };
 
-      if (response.data.first_name) {
-        fullName += response.data.first_name;
-      }
-
-      setSignName(fullName || response.data?.username || "Responsable RH");
-    } catch (error) {
-      console.error("Erreur lors de la récupération des employés :", error);
-    }
-  };
-
-  fetchUserData();
-}, []);
+    fetchUserData();
+  }, []);
 
   const fetchEmployees = useCallback(async (search = "") => {
     setLoading(true);
@@ -106,6 +100,7 @@ useEffect(() => {
 
     try {
       const response = await axios.get(`${LIST_EMPLOYEE_API}/${employeeId}`);
+      console.log("ATTESTATION EMPLOYE :", response.data);
       setSelectedEmployee(response.data);
       setIsPDFVisible(true);
     } catch (error) {
@@ -120,6 +115,8 @@ useEffect(() => {
     page: { margin: Margin.SMALL, orientation: "portrait" },
   });
 
+
+  
   return (
     <Container size="md" py="xl">
       {/* Sélection Société */}
@@ -170,11 +167,10 @@ useEffect(() => {
         <div className={isPDFVisible ? "a4 block" : "hidden"} ref={targetRef}>
           <div className="header">
             <img
-              src={companyData[selectedCompany].logo}
-              className="logo mt-20"
-              alt={companyData[selectedCompany].name}
-              style={{ width: "275px", height: "auto" }}
-            />
+             src={companyData[selectedCompany].logo}
+             className="logo"          // ← uniformise la classe (supprime attestation-logo si tu veux)
+             alt={companyData[selectedCompany].name}
+           />
           </div>
 
           <div className="title">Attestation d'emploi</div>
@@ -184,11 +180,22 @@ useEffect(() => {
             attestons par la présente que :
             <br />
             <br />
-            <div className="highlight">
+            {/* <div className="highlight">
               <strong>{selectedEmployee.name}</strong>
               <br />
               Résidant au {selectedEmployee?.address_home_id?.[1] || "-"}
+            </div> */}
+
+            <div className="highlight">
+              <strong>{selectedEmployee.name}</strong>
+              <br />
+              Titulaire de la CIN n° <strong>{selectedEmployee.identification_id ? selectedEmployee.identification_id.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ") : "-"}</strong>
+              <br />
+              Délivrée le <strong>{selectedEmployee.date_delivrance_cin ? new Date(selectedEmployee.date_delivrance_cin).toLocaleDateString("fr-FR") : '-'}</strong> à {selectedEmployee.lieu_delivrance_cin || '-'}
+              <br />
+              Résidant au {selectedEmployee?.address_home_id?.[1] || "-" }
             </div>
+
             est employé(e) dans notre société en qualité de{" "}
             <strong>{selectedEmployee?.job_id?.[1] || "Employé"}</strong>
             <br />
@@ -207,8 +214,8 @@ useEffect(() => {
             <br />
             <br />
             <br />
-            <div className="sign-name">RAJAONARIVONY Johary</div>
-            Responsable des Ressources Humaines
+            <div className="sign-name">{signName}</div>
+            Directeur des Ressources Humaines
           </div>
 
           <div className="footer">

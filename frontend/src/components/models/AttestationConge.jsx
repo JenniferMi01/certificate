@@ -21,10 +21,12 @@ export const AttestationConge = () => {
   const [isPDFVisible, setIsPDFVisible] = useState(false);
 
 
-  const [signName, setSignName] = useState("");
+  const [signName, setSignName] = useState("RAJAONARIVONY Johary");
 
   const [periodeConge, setPeriodeConge] = useState([null, null]);
   const [destination, setDestination] = useState("");
+
+  
 
   // Sélection de la société
   const [selectedCompany, setSelectedCompany] = useState("gulfsat");
@@ -40,18 +42,17 @@ export const AttestationConge = () => {
     },
   };
 
-  const commonAddress = "Lot IVR 41 Avenue de l'Indépendance<br />Antanimena – 101 Antananarivo";
-  const commonContact = "Tél : 020 23 320 10 | info@gulfsat.mg";
+  
 
   const LIST_EMPLOYEE_API = `${import.meta.env.VITE_API_BASE_ODOO}/employees`;
 
 
-  const USER_INFO = `${import.meta.env.VITE_API_BASE_DJANGO}/api/me/`;
+const USER_INFO = `${import.meta.env.VITE_API_BASE_DJANGO}/api/me/`;
 const TOKEN = localStorage.getItem("access_token") || "";
 
 const config = {
   headers: {
-    Authorization: `Bearer ${TOKEN}`,
+    Authorization: `Token ${TOKEN}`,
     "Content-Type": "application/json",
   },
 };
@@ -63,19 +64,14 @@ useEffect(() => {
     try {
       const response = await axios.get(USER_INFO, config);
       console.log("User data:", response.data);
-
-      let fullName = "";
-
-      if (response.data.last_name) {
+      let fuulName = "";
+      if (response.data.last_name){
         fullName += response.data.last_name.toUpperCase() + " ";
       }
-
-      if (response.data.first_name) {
+      if (response.data.first_name){
         fullName += response.data.first_name;
       }
-
-
-      setSignName(fullName || response.data?.username || "Responsable RH");
+      setSignName(fullName || response.data?.username || "Directeur RH");
     } catch (error) {
       console.error("Erreur récupération utilisateur :", error);
     }
@@ -209,10 +205,10 @@ useEffect(() => {
           <div className="header">
             <img
               src={companyData[selectedCompany].logo}
-              className="logo mt-20"
+              className="logo"
               alt={companyData[selectedCompany].name}
-              style={{ width: "275px", height: "auto" }}
             />
+            
           </div>
 
           <div className="title">Attestation de Congé</div>
@@ -232,12 +228,12 @@ useEffect(() => {
 
             est employé(e) au sein de notre société en qualité de «{" "}
             <strong>{selectedEmployee.job_id?.[1] || "Employé"}</strong>{" "}
-            » depuis le <strong>{formatDateToFrench(selectedEmployee.start_date) || "-"}</strong>.<br /><br />
+            » depuis le <strong>{formatDateToFrench(selectedEmployee.start_date) || "-"}</strong>.<br />
 
             {selectedEmployee.gender === "female" ? "Madame" : "Monsieur"}{" "}
             {selectedEmployee.name?.toUpperCase() || "-"} partira en congé du{" "}
             <strong>{dateDebut}</strong> au <strong>{dateFin}</strong> à destination de{" "}
-            <strong>{destination || "—"}</strong>.<br /><br />
+            <strong>{destination || "—"}</strong>.<br />
 
             Sitôt le congé terminé, {selectedEmployee.gender === "female" ? "elle" : "il"} est tenu
             {selectedEmployee.gender === "female" ? "e" : ""} de retourner à Madagascar
@@ -248,8 +244,8 @@ useEffect(() => {
 
           <div className="signature-block">
             Antananarivo, le <strong>{new Date().toLocaleDateString("fr-FR")}</strong><br /><br /><br />
-            <div className="sign-name">RAJAONARIVONY Johary</div>
-            Responsable des Ressources Humaines
+            <div className="sign-name">{signName}</div>
+            Directeur des Ressources Humaines
           </div>
 
           <div className="footer">
