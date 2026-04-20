@@ -274,12 +274,12 @@ export const CertificatTravail = () => {
               )}
             </div>
 
-            {selectedEmployee.start_date && (
+            {/* {selectedEmployee.start_date && (
               <p>
                 Date d'embauche :{" "}
                 <strong>{formatDateFr(selectedEmployee.start_date)}</strong>
               </p>
-            )}
+            )} */}
 
             {libreEngagement && (
               <p>{selectedEmployee.name ? (selectedEmployee.name.toLowerCase().includes('femme') ? 'Elle' : 'Il') : 'Il'} nous quitte libre de tout engagement.</p>

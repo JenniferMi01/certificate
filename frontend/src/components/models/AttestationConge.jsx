@@ -227,7 +227,7 @@ useEffect(() => {
             <strong>{selectedEmployee.job_id?.[1] || "Employé"}</strong>{" "}
             » depuis le <strong>{formatDateToFrench(selectedEmployee.start_date) || "-"}</strong>.</p>
 
-            <p>{selectedEmployee.gender === "female" ? "Madame" : "Monsieur"}{" "}
+            <p>
             {selectedEmployee.name?.toUpperCase() || "-"} partira en congé du{" "}
             <strong>{dateDebut}</strong> au <strong>{dateFin}</strong> à destination de{" "}
             <strong>{destination || "—"}</strong>.</p>
