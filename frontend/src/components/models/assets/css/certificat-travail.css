@@ -96,6 +96,10 @@ body {
     color: #555;
 }
 
+.manual-date {
+    color: #000000;
+}
+
 .signature-space {
     height: 50px;
 }

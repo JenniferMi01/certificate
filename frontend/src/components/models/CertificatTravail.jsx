@@ -20,6 +20,7 @@ export const CertificatTravail = () => {
   const [isPDFVisible, setIsPDFVisible] = useState(false);
 
   const [signName, setSignName] = useState("RAJAONARIVONY Johary");
+  const [signatureDate, setSignatureDate] = useState(new Date());
 
   const [libreEngagement, setLibreEngagement] = useState(false);
 
@@ -222,6 +223,17 @@ export const CertificatTravail = () => {
         <Button variant="outline" size="xs" mt="xs" onClick={addPoste}>+ Ajouter un poste</Button>
       </div>
 
+      <div style={{ marginBottom: "1rem", maxWidth: "300px" }}>
+        <DatePickerInput
+          label="Date de signature"
+          placeholder="Choisir la date"
+          value={signatureDate}
+          onChange={setSignatureDate}
+          locale="fr"
+          valueFormat="DD MMMM YYYY"
+        />
+      </div>
+
       <div style={{ marginBottom: "2rem" }}>
         <Button onClick={() => toPDF()} disabled={!selectedEmployee}>
           Imprimer PDF
@@ -290,7 +302,10 @@ export const CertificatTravail = () => {
 
           <div className="signature-block">
             <div className="signature-date">
-              Fait à Antananarivo, le <strong>{formatDateFr(new Date())}</strong>
+              Fait à Antananarivo, le{" "}
+              <span className="manual-date">
+                {signatureDate ? new Date(signatureDate).toLocaleDateString("fr-FR", { day: '2-digit', month: 'long', year: 'numeric' }) : "......../......../........"}
+              </span>
             </div>
             <div className="signature-space"></div>
             <div className="sign-name">{signName}</div>
