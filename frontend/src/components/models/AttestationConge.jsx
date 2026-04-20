@@ -64,7 +64,7 @@ useEffect(() => {
     try {
       const response = await axios.get(USER_INFO, config);
       console.log("User data:", response.data);
-      let fuulName = "";
+      let fullName = "";
       if (response.data.last_name){
         fullName += response.data.last_name.toUpperCase() + " ";
       }
@@ -211,15 +211,15 @@ useEffect(() => {
             
           </div>
 
-          <div className="title">Attestation de Congé</div>
+          <div className="title" style={{ margin: "-10px 0 15px" }}>Attestation de Congé</div>
 
           <div className="content">
             Nous soussignés, la <strong>{companyData[selectedCompany].name}</strong>,
             attestons par la présente que :<br />
 
-            <div className="highlight">
+            <div className="highlight" style={{ padding: "10px 15px", margin: "10px 0", fontSize: "15px" }}>
               <strong>
-                {selectedEmployee.gender === "female" ? "Madame" : "Monsieur"}{" "}
+                {/* {selectedEmployee.gender === "female" ? "Madame" : "Monsieur"}{" "} */}
                 {selectedEmployee.name?.toUpperCase() || "-"}
               </strong><br />
               Née le <strong>{formatDateToFrench(selectedEmployee.birthday) || "-"}</strong> à{" "}
@@ -242,7 +242,7 @@ useEffect(() => {
             Délivrée à l'intéressé(e), sur sa demande, pour servir et valoir ce que de droit.
           </div>
 
-          <div className="signature-block">
+          <div className="signature-block" style={{ marginTop: "20px" }}>
             Antananarivo, le <strong>{new Date().toLocaleDateString("fr-FR")}</strong><br /><br /><br />
             <div className="sign-name">{signName}</div>
             Directeur des Ressources Humaines

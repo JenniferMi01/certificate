@@ -34,10 +34,7 @@ export const AttestationTravail = () => {
     },
   };
 
-  // const commonAddress = "Lot IVR 41 Avenue de l'Indépendance<br />Antanimena – 101 Antananarivo";
-  // const commonContact = "Tél : 020 23 320 10 | info@gulfsat.mg";
-
-
+  
   const LIST_EMPLOYEE_API = `${import.meta.env.VITE_API_BASE_ODOO}/employees`;
 
 
@@ -173,20 +170,15 @@ export const AttestationTravail = () => {
            />
           </div>
 
-          <div className="title">Attestation d'emploi</div>
+          <div className="title" style={{ margin: "-10px 0 15px"}}>Attestation d'emploi</div>
 
           <div className="content">
             Nous soussignés, la <strong>{companyData[selectedCompany].name}</strong>,
             attestons par la présente que :
             <br />
-            <br />
-            {/* <div className="highlight">
-              <strong>{selectedEmployee.name}</strong>
-              <br />
-              Résidant au {selectedEmployee?.address_home_id?.[1] || "-"}
-            </div> */}
-
-            <div className="highlight">
+            
+           
+            <div className="highlight" style={{ padding:"10px 15px", margin: "10px 0", fontSize:"15px"}}>
               <strong>{selectedEmployee.name}</strong>
               <br />
               Titulaire de la CIN n° <strong>{selectedEmployee.identification_id ? selectedEmployee.identification_id.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ") : "-"}</strong>
