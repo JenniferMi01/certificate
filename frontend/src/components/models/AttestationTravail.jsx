@@ -170,44 +170,36 @@ export const AttestationTravail = () => {
            />
           </div>
 
-          <div className="title" style={{ margin: "-10px 0 15px"}}>Attestation d'emploi</div>
+          <div className="title">Attestation d'emploi</div>
 
           <div className="content">
-            Nous soussignés, la <strong>{companyData[selectedCompany].name}</strong>,
-            attestons par la présente que :
-            <br />
+            <p>Nous soussignés, la <strong>{companyData[selectedCompany].name}</strong>,
+            attestons par la présente que :</p>
             
-           
-            <div className="highlight" style={{ padding:"10px 15px", margin: "10px 0", fontSize:"15px"}}>
-              <strong>{selectedEmployee.name}</strong>
-              <br />
-              Titulaire de la CIN n° <strong>{selectedEmployee.identification_id ? selectedEmployee.identification_id.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ") : "-"}</strong>
-              <br />
-              Délivrée le <strong>{selectedEmployee.date_delivrance_cin ? new Date(selectedEmployee.date_delivrance_cin).toLocaleDateString("fr-FR") : '-'}</strong> à {selectedEmployee.lieu_delivrance_cin || '-'}
-              <br />
-              Résidant au {selectedEmployee?.address_home_id?.[1] || "-" }
+            <div className="highlight">
+              <p><strong>{selectedEmployee.name}</strong></p>
+              <p>Titulaire de la CIN n° <strong>{selectedEmployee.identification_id ? selectedEmployee.identification_id.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ") : "-"}</strong></p>
+              <p>Délivrée le <strong>{selectedEmployee.date_delivrance_cin ? new Date(selectedEmployee.date_delivrance_cin).toLocaleDateString("fr-FR") : '-'}</strong> à {selectedEmployee.lieu_delivrance_cin || '-'}</p>
+              <p>Résidant au {selectedEmployee?.address_home_id?.[1] || "-"}</p>
             </div>
 
-            est employé(e) dans notre société en qualité de{" "}
-            <strong>{selectedEmployee?.job_id?.[1] || "Employé"}</strong>
-            <br />
-            depuis le{" "}
+            <p>est employé(e) dans notre société en qualité de{" "}
+            <strong>{selectedEmployee?.job_id?.[1] || "Employé"}</strong></p>
+            <p>depuis le{" "}
             <strong>{formatDateToFrench(selectedEmployee?.start_date) || "-"}</strong>,
-            sous contrat à durée indéterminée (CDI) à temps plein.
-            <br />
-            <br />
-            La présente attestation est délivrée à l'intéressé(e), à sa demande,
-            pour servir et valoir ce que de droit.
+            sous contrat à durée indéterminée (CDI) à temps plein.</p>
+            <p>La présente attestation est délivrée à l'intéressé(e), à sa demande,
+            pour servir et valoir ce que de droit.</p>
           </div>
 
           <div className="signature-block">
-            Antananarivo, le{" "}
-            <strong>{new Date().toLocaleDateString("fr-FR")}</strong>
-            <br />
-            <br />
-            <br />
+            <div className="signature-date">
+              Antananarivo, le{" "}
+              <strong>{new Date().toLocaleDateString("fr-FR")}</strong>
+            </div>
+            <div className="signature-space"></div>
             <div className="sign-name">{signName}</div>
-            Directeur des Ressources Humaines
+            <div className="signature-title">Directeur des Ressources Humaines</div>
           </div>
 
           <div className="footer">

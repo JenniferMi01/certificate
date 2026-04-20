@@ -13,20 +13,24 @@ body {
     box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
     position: relative;
     overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    box-sizing: border-box;
+    padding: 30px 40px;
 }
 
 .header {
-    height: 140px;
-    background: white;
-    padding: 20px 50px;
     display: flex;
     align-items: center;
     justify-content: center;
+    padding: 15px 0 25px;
+    margin-bottom: 30px;
 }
 
 .logo {
-    height: 100px;
-    width: 350px;
+    height: 80px;
+    width: auto;
+    max-width: 320px;
     object-fit: contain;
 }
 
@@ -38,41 +42,85 @@ body {
 
 .title {
     text-align: center;
-    font-size: 26px;
+    font-size: 24px;
     font-weight: bold;
-    margin: 60px 0 50px;
+    margin: 0 0 35px;
     text-transform: uppercase;
-    letter-spacing: 3px;
-    color: #000000;
+    letter-spacing: 4px;
+    color: #333;
+    padding-bottom: 15px;
 }
 
 .content {
-    padding: 0 80px;
-    font-size: 17px;
-    line-height: 2;
+    flex: 1;
+    font-size: 16px;
+    line-height: 1.9;
     text-align: justify;
+    padding: 0 20px;
+    color: #333;
+}
+
+.content p {
+    margin: 0 0 15px;
 }
 
 .highlight {
-    background: #f0f5ff;
-    padding: 20px;
-    border-left: 6px solid #003087;
-    margin: 30px 0;
-    font-size: 18px;
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    padding: 10px 25px;
+    border-left: 5px solid #000000;
+    margin: 20px 0;
+    font-size: 15px;
+    line-height: 1.2;
+    border-radius: 0 8px 8px 0;
+}
+
+.highlight p {
+    margin: 8px 0;
 }
 
 .signature-block {
     margin-top: 40px;
-    /* exactement comme dans ton congé */
-    padding-right: 120px;
+    padding: 25px 0;
     text-align: right;
-    font-size: 17px;
-    line-height: 1.8;
+    padding-right: 30px;
+    border-top: 1px solid #ccc;
+}
+
+.signature-date {
+    font-size: 15px;
+    margin-bottom: 30px;
+    color: #555;
+}
+
+.signature-space {
+    height: 50px;
 }
 
 .sign-name {
     font-weight: bold;
-    font-size: 18px;
+    font-size: 16px;
+    color: #000000;
+    margin-bottom: 5px;
+}
+
+.signature-title {
+    font-size: 14px;
+    color: #666;
+    font-style: italic;
+}
+
+.footer {
+    margin-top: auto;
+    padding-top: 20px;
+    border-top: 1px solid #999;
+    font-size: 10px;
+    line-height: 1.5;
+    text-align: center;
+    color: #666;
+}
+
+.footer p {
+    margin: 3px 0;
 }
 
 @media print {
@@ -83,21 +131,6 @@ body {
     .a4 {
         margin: 0;
         box-shadow: none;
+        min-height: 100vh;
     }
-}
-
-
-.footer {
-    position: absolute;
-    bottom: 25px;
-    left: 60px;
-    right: 60px;
-
-    font-size: 11px;
-    line-height: 1.4;
-    text-align: center;
-    color: #333;
-
-    border-top: 1px solid #999;
-    padding-top: 8px;
 }

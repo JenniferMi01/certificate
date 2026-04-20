@@ -211,41 +211,41 @@ useEffect(() => {
             
           </div>
 
-          <div className="title" style={{ margin: "-10px 0 15px" }}>Attestation de Congé</div>
+          <div className="title">Attestation de Congé</div>
 
           <div className="content">
-            Nous soussignés, la <strong>{companyData[selectedCompany].name}</strong>,
-            attestons par la présente que :<br />
+            <p>Nous soussignés, la <strong>{companyData[selectedCompany].name}</strong>,
+            attestons par la présente que :</p>
 
-            <div className="highlight" style={{ padding: "10px 15px", margin: "10px 0", fontSize: "15px" }}>
-              <strong>
-                {/* {selectedEmployee.gender === "female" ? "Madame" : "Monsieur"}{" "} */}
-                {selectedEmployee.name?.toUpperCase() || "-"}
-              </strong><br />
-              Née le <strong>{formatDateToFrench(selectedEmployee.birthday) || "-"}</strong> à{" "}
-              {selectedEmployee.place_of_birth || "-"}
+            <div className="highlight">
+              <p><strong>{selectedEmployee.name?.toUpperCase() || "-"}</strong></p>
+              <p>Née le <strong>{formatDateToFrench(selectedEmployee.birthday) || "-"}</strong> à{" "}
+              {selectedEmployee.place_of_birth || "-"}</p>
             </div>
 
-            est employé(e) au sein de notre société en qualité de «{" "}
+            <p>est employé(e) au sein de notre société en qualité de «{" "}
             <strong>{selectedEmployee.job_id?.[1] || "Employé"}</strong>{" "}
-            » depuis le <strong>{formatDateToFrench(selectedEmployee.start_date) || "-"}</strong>.<br />
+            » depuis le <strong>{formatDateToFrench(selectedEmployee.start_date) || "-"}</strong>.</p>
 
-            {selectedEmployee.gender === "female" ? "Madame" : "Monsieur"}{" "}
+            <p>{selectedEmployee.gender === "female" ? "Madame" : "Monsieur"}{" "}
             {selectedEmployee.name?.toUpperCase() || "-"} partira en congé du{" "}
             <strong>{dateDebut}</strong> au <strong>{dateFin}</strong> à destination de{" "}
-            <strong>{destination || "—"}</strong>.<br />
+            <strong>{destination || "—"}</strong>.</p>
 
-            Sitôt le congé terminé, {selectedEmployee.gender === "female" ? "elle" : "il"} est tenu
+            <p>Sitôt le congé terminé, {selectedEmployee.gender === "female" ? "elle" : "il"} est tenu
             {selectedEmployee.gender === "female" ? "e" : ""} de retourner à Madagascar
-            et de reprendre son poste de travail au sein de la Société.<br /><br />
+            et de reprendre son poste de travail au sein de la Société.</p>
 
-            Délivrée à l'intéressé(e), sur sa demande, pour servir et valoir ce que de droit.
+            <p>Délivrée à l'intéressé(e), sur sa demande, pour servir et valoir ce que de droit.</p>
           </div>
 
-          <div className="signature-block" style={{ marginTop: "20px" }}>
-            Antananarivo, le <strong>{new Date().toLocaleDateString("fr-FR")}</strong><br /><br /><br />
+          <div className="signature-block">
+            <div className="signature-date">
+              Antananarivo, le <strong>{new Date().toLocaleDateString("fr-FR")}</strong>
+            </div>
+            <div className="signature-space"></div>
             <div className="sign-name">{signName}</div>
-            Directeur des Ressources Humaines
+            <div className="signature-title">Directeur des Ressources Humaines</div>
           </div>
 
           <div className="footer">

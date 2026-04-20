@@ -5,90 +5,137 @@ body {
     font-family: 'Calibri', 'Arial', sans-serif;
 }
 
-/* === HEADER === */
-.header {
-    height: 140px;
-    background: white;
-    padding: 20px 50px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-.logo {
-    height: 100px;
-    width: 350px;
-    object-fit: contain;
-}
-
-/* === FORMAT A4 === */
 .a4 {
     width: 21cm;
-    height: 29.7cm;
+    min-height: 29.7cm;
     margin: 30px auto;
     background: white;
     box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
     position: relative;
-    overflow: visible;
-    /* Gardé pour éviter la coupure */
-    padding-bottom: 80px;
-    
-    /* Réduit de 120px à 80px */
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
     box-sizing: border-box;
+    padding: 30px 40px;
 }
 
+.header {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 15px 0 25px;
+    margin-bottom: 30px;
+}
 
+.logo {
+    height: 80px;
+    width: auto;
+    max-width: 320px;
+    object-fit: contain;
+}
 
-/* === TITRE PRINCIPAL === */
 .title {
     text-align: center;
-    font-size: 26px;
+    font-size: 24px;
     font-weight: bold;
-    margin: 40px 0 40px;
-    
-    /* Réduit l'espace autour du titre */
+    margin: 0 0 35px;
     text-transform: uppercase;
-    letter-spacing: 3px;
-    color: #003087;
+    letter-spacing: 4px;
+    color: #333;
+    padding-bottom: 15px;
 }
 
-/* === CONTENU === */
 .content {
-    padding: 0 80px;
-    font-size: 17px;
-    line-height: 1.7;
-    
-    /* Réduit l'interligne */
+    flex: 1;
+    font-size: 16px;
+    line-height: 1.9;
     text-align: justify;
+    padding: 0 20px;
+    color: #333;
 }
 
+.content p {
+    margin: 0 0 15px;
+}
 
+.highlight {
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    padding: 10px 25px;
+    border-left: 5px solid #000000;
+    margin: 20px 0;
+    font-size: 15px;
+    line-height: 1.2;
+    border-radius: 0 8px 8px 0;
+}
 
-/* === SIGNATURE === */
+.highlight p {
+    margin: 8px 0;
+}
+
+.job-history {
+    margin: 5px 0;
+    padding: 0px 20px;
+    background: #f8f9fa;
+}
+
+.job-history p {
+    margin: 10px 0;
+    font-size: 15px;
+}
+
 .signature-block {
     margin-top: 40px;
-    /* Réduit l'espace avant le bloc de signature */
-    padding-right: 120px;
-    padding-bottom: 60px;
+    padding: 25px 0;
     text-align: right;
-    font-size: 17px;
-    line-height: 1.8;
+    padding-right: 30px;
+    border-top: 1px solid #ccc;
 }
 
+.signature-date {
+    font-size: 15px;
+    margin-bottom: 30px;
+    color: #555;
+}
 
+.signature-space {
+    height: 50px;
+}
 
-/* === FOOTER OFFICIEL (DEMANDE ENCADREUR) === */
+.sign-name {
+    font-weight: bold;
+    font-size: 16px;
+    color: #000000;
+    margin-bottom: 5px;
+}
+
+.signature-title {
+    font-size: 14px;
+    color: #666;
+    font-style: italic;
+}
+
 .footer {
-    position: absolute;
-    bottom: 25px;
-    left: 60px;
-    right: 60px;
-
-    font-size: 11px;
-    line-height: 1.4;
-    text-align: center;
-    color: #333;
-
+    margin-top: auto;
+    padding-top: 20px;
     border-top: 1px solid #999;
-    padding-top: 8px;
+    font-size: 10px;
+    line-height: 1.5;
+    text-align: center;
+    color: #666;
+}
+
+.footer p {
+    margin: 3px 0;
+}
+
+@media print {
+    body {
+        background: none;
+    }
+
+    .a4 {
+        margin: 0;
+        box-shadow: none;
+        min-height: 100vh;
+    }
 }

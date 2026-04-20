@@ -240,24 +240,21 @@ export const CertificatTravail = () => {
             />
           </div>
 
-          <div className="title" style={{ margin: "-10px 0 15px" }}>Certificat de Travail</div>
+          <div className="title">Certificat de Travail</div>
 
           <div className="content">
-            Nous soussignée, la <strong>{companyData[selectedCompany].name}</strong>,
+            <p>Nous soussignée, la <strong>{companyData[selectedCompany].name}</strong>,
             sise au Lot IVR 41 Avenue de l'Indépendance, Antanimena – 101 Antananarivo,
-            certifions par la présente que :
-            <br />
-            <div className="highlight" style={{ padding: "10px 15px", margin: "10px 0", fontSize: "15px" }}>
-              <strong>{String(selectedEmployee.name || '').toUpperCase()}</strong>
-              <br />
-              Titulaire de la CIN n° <strong>{selectedEmployee.identification_id ? formatBy3(selectedEmployee.identification_id) : '-'}</strong>
-              <br />
-              Délivrée le <strong>{formatDateFr(selectedEmployee.date_delivrance_cin)}</strong> à {selectedEmployee.lieu_delivrance_cin || '-'}
-              <br />
-              Résidant au {selectedEmployee?.address_home_id?.[1] || '-'}
+            certifions par la présente que :</p>
+            
+            <div className="highlight">
+              <p><strong>{String(selectedEmployee.name || '').toUpperCase()}</strong></p>
+              <p>Titulaire de la CIN n° <strong>{selectedEmployee.identification_id ? formatBy3(selectedEmployee.identification_id) : '-'}</strong></p>
+              <p>Délivrée le <strong>{formatDateFr(selectedEmployee.date_delivrance_cin)}</strong> à {selectedEmployee.lieu_delivrance_cin || '-'}</p>
+              <p>Résidant au {selectedEmployee?.address_home_id?.[1] || '-'}</p>
             </div>
 
-            a été employée au sein de notre société en qualité de :
+            <p>a été employée au sein de notre société en qualité de :</p>
 
             <div className="job-history">
               {postesHistory.filter(p => p.intitule).length > 0 ? (
@@ -285,20 +282,19 @@ export const CertificatTravail = () => {
             )}
 
             {libreEngagement && (
-              <>
-                {selectedEmployee.name ? (selectedEmployee.name.toLowerCase().includes('femme') ? 'Elle' : 'Il') : 'Il'} nous quitte libre de tout engagement.
-                <br /><br />
-              </>
+              <p>{selectedEmployee.name ? (selectedEmployee.name.toLowerCase().includes('femme') ? 'Elle' : 'Il') : 'Il'} nous quitte libre de tout engagement.</p>
             )}
 
-            En foi de quoi, le présent certificat lui est délivré pour servir et valoir ce que de droit.
+            <p>En foi de quoi, le présent certificat lui est délivré pour servir et valoir ce que de droit.</p>
           </div>
 
-          <div className="signature-block" style={{ marginTop: "20px" }}>
-            Fait à Antananarivo, le <strong>{formatDateFr(new Date())}</strong>
-            <br /><br />
+          <div className="signature-block">
+            <div className="signature-date">
+              Fait à Antananarivo, le <strong>{formatDateFr(new Date())}</strong>
+            </div>
+            <div className="signature-space"></div>
             <div className="sign-name">{signName}</div>
-            Directeur des Ressources Humaines
+            <div className="signature-title">Directeur des Ressources Humaines</div>
           </div>
 
           <div className="footer">
