@@ -29,11 +29,6 @@ services:
       db:
         condition: service_healthy
     environment:
-      - SECRET_KEY=django-insecure-development-key-for-docker
-      - DEBUG=1
-      - ALLOWED_HOSTS=localhost,127.0.0.1,backend,frontend
-      - DATABASE_URL=postgresql://certificate_user:certificate_password@db:5432/certificate_db
-      - CORS_ALLOWED_ORIGINS=http://localhost,http://localhost:5173,http://frontend,http://127.0.0.1:5173
       - STATIC_URL=/static/
       - STATIC_ROOT=/app/staticfiles
     env_file:
