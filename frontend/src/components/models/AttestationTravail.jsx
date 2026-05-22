@@ -199,7 +199,7 @@ export const AttestationTravail = () => {
             </div>
             <div className="signature-space"></div>
             <div className="sign-name">{signName}</div>
-            <div className="signature-title">Directeur des Ressources Humaines</div>
+            <div className="signature-title"> Directeur des Ressources Humaines</div>
           </div>
 
           <div className="footer">
